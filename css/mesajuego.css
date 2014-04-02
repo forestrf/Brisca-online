@@ -27,27 +27,28 @@
 	top: 75%;
 	width: 40%;
 }
-
 #jugador2 {
-	left: 70%;
+	left: 5%;
 	position: absolute;
 	top: 10%;
 	width: 25%;
 }
-
 #jugador3 {
 	left: 37.5%;
 	position: absolute;
 	top: 5%;
 	width: 25%;
 }
-
 #jugador4 {
-	left: 5%;
+	left: 70%;
 	position: absolute;
 	top: 10%;
 	width: 25%;
 }
+
+
+
+
 
 .cartas {
 	text-align: center;

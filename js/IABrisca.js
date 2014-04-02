@@ -513,6 +513,14 @@ function IABriscaMesa(){
 	
 	this.jugadoresPorTirar = 0;
 	
+	this.quienLanzaPrimero = 0;
+	this.quienGanoUltimaPartida = -1;
+	
+	
+	// Tiempos, en milisegundos
+	this.tiempoPensandoIAms = 500;
+	this.tiempoEntreRondas = 1000;
+	
 	
 	// Esta función debe llamarse cuando se inicia la partida. Después debe llamarse a insertaJugadoresEnMesa
 	this.iniciarMesa = function(){
@@ -535,6 +543,8 @@ function IABriscaMesa(){
 				thisT.peticionJugadorRobar(jugadores[i]);
 			}
 		}
+		
+		thisT.quienLanzaPrimero = Math.floor(Math.random() * thisT.jugadoresArray.length);
 	}
 	
 	this.faltanRondasPorJugar = function(){
@@ -567,6 +577,9 @@ function IABriscaMesa(){
 		thisT.cartasEnMesa = [];
 		//this.quienATiradoQueCarta = {};
 		cargaImagenesCartasMesa(thisT.cartasEnMesa);
+		if(thisT.quienGanoUltimaPartida !== -1){
+			thisT.quienLanzaPrimero = thisT.quienGanoUltimaPartida;
+		}
 	}
 	
 	
@@ -578,21 +591,25 @@ function IABriscaMesa(){
 		
 		if(thisT.jugadoresPorTirar !== 0){
 			setTimeout(function(){
-				thisT.peticionJugadorLanzar(thisT.jugadoresArray[thisT.jugadoresArray.length-thisT.jugadoresPorTirar]);
-			}, 50);
+				console.log(thisT.quienLanzaPrimero);
+				var jugadorATirarN = ClampCircular(thisT.quienLanzaPrimero + thisT.jugadoresArray.length - thisT.jugadoresPorTirar, 0, thisT.jugadoresArray.length -1);
+				console.log(jugadorATirarN);
+				thisT.peticionJugadorLanzar(thisT.jugadoresArray[jugadorATirarN]);
+			}, 0);
 		}
 		else if(thisT.jugadoresPorTirar === 0){
 			// Elejir ganador, dar las cartas (quitándolas de la mesa).
 			var cartaGanadora = IABriscaBaseInstancia.ordenCartasPorValor(thisT.cartasEnMesa)[0];
 			console.log('cartaGanadora: '+cartaGanadora);
 			thisT.peticionJugadorGanarMesa(thisT.quienATiradoQueCarta[cartaGanadora]);
+			thisT.quienGanoUltimaPartida = thisT.jugadoresArray.indexOf(thisT.quienATiradoQueCarta[cartaGanadora]);
 			cargaImagenesCartasMesa(thisT.cartasEnMesa);
 			
 			for(var i in thisT.jugadoresArray){
 				thisT.peticionJugadorRobar(thisT.jugadoresArray[i]);
 			}
 			
-			setTimeout(thisT.comienzaPartida, 50);
+			setTimeout(thisT.comienzaPartida, thisT.tiempoEntreRondas);
 		}
 	}
 	
@@ -611,7 +628,7 @@ function IABriscaMesa(){
 		}
 		cargaImagenesCartasJugador(jugador);
 		cargaImagenesCartasMesa(thisT.cartasEnMesa);
-		setTimeout(thisT.lanzaRonda, 200);
+		setTimeout(thisT.lanzaRonda, thisT.tiempoPensandoIAms);
 	}
 	
 	
@@ -685,4 +702,14 @@ function seteaImagen(id, carta){
 		document.getElementById(id).src = "img/cartas/"+carta+".jpg";
 		document.getElementById(id).style.display = "";
 	}
+}
+
+function ClampCircular(numero, minimo, maximo){
+	while(numero < minimo){
+		numero += maximo +1;
+	}
+	while(numero > maximo){
+		numero -= maximo +1;
+	}
+	return numero;
 }
