@@ -677,5 +677,12 @@ function cargaImagenesCartasMesa(cartasMesa){
 }
 
 function seteaImagen(id, carta){
-	document.getElementById(id).src = "img/cartas/"+carta+".png";
+	if(carta === 'blanco'){
+		document.getElementById(id).src = "";
+		document.getElementById(id).style.display = "none";
+	}
+	else{
+		document.getElementById(id).src = "img/cartas/"+carta+".jpg";
+		document.getElementById(id).style.display = "";
+	}
 }

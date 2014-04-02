@@ -37,34 +37,34 @@
 			</div>
 			<div id="mesa">
 				<div id="jugador">
-					<div class="cartas"><img src="img/cartas/blanco.png" id="jugador_1_carta_1"><img src="img/cartas/blanco.png" id="jugador_1_carta_2"><img src="img/cartas/blanco.png" id="jugador_1_carta_3"></div>
+					<div class="cartas"><img class="carta" src="" style="display:none" id="jugador_1_carta_1"><img class="carta" src="" style="display:none" id="jugador_1_carta_2"><img class="carta" src="" style="display:none" id="jugador_1_carta_3"></div>
 					<div class="puntuacion"></div>
 					<div class="nombre"></div>
 				</div>
 				<div id="jugador2">
-					<div class="cartas"><img src="img/cartas/blanco.png" id="jugador_2_carta_1"><img src="img/cartas/blanco.png" id="jugador_2_carta_2"><img src="img/cartas/blanco.png" id="jugador_2_carta_3"></div>
+					<div class="cartas"><img class="carta" src="" style="display:none" id="jugador_2_carta_1"><img class="carta" src="" style="display:none" id="jugador_2_carta_2"><img class="carta" src="" style="display:none" id="jugador_2_carta_3"></div>
 					<div class="puntuacion"></div>
 					<div class="nombre"></div>
 				</div>
 				<div id="jugador3">
-					<div class="cartas"><img src="img/cartas/blanco.png" id="jugador_3_carta_1"><img src="img/cartas/blanco.png" id="jugador_3_carta_2"><img src="img/cartas/blanco.png" id="jugador_3_carta_3"></div>
+					<div class="cartas"><img class="carta" src="" style="display:none" id="jugador_3_carta_1"><img class="carta" src="" style="display:none" id="jugador_3_carta_2"><img class="carta" src="" style="display:none" id="jugador_3_carta_3"></div>
 					<div class="puntuacion"></div>
 					<div class="nombre"></div>
 				</div>
 				<div id="jugador4">
-					<div class="cartas"><img src="img/cartas/blanco.png" id="jugador_4_carta_1"><img src="img/cartas/blanco.png" id="jugador_4_carta_2"><img src="img/cartas/blanco.png" id="jugador_4_carta_3"></div>
+					<div class="cartas"><img class="carta" src="" style="display:none" id="jugador_4_carta_1"><img class="carta" src="" style="display:none" id="jugador_4_carta_2"><img class="carta" src="" style="display:none" id="jugador_4_carta_3"></div>
 					<div class="puntuacion"></div>
 					<div class="nombre"></div>
 				</div>
 				
 				<div id="mazo">
 					<div id="palomando">
-						<img src="img/cartas/blanco.png" id="carta_palo_manda_siempre">
+						<img class="carta" src="" style="display:none" id="carta_palo_manda_siempre">
 					</div>
-					<img src="img/cartas/back2.png">
+					<img class="carta" src="img/cartas/back2.jpg">
 				</div>
 				
-				<div id="cartas_mesa"><img src="img/cartas/blanco.png" id="mesa_carta_1"><img src="img/cartas/blanco.png" id="mesa_carta_2"><img src="img/cartas/blanco.png" id="mesa_carta_3"><img src="img/cartas/blanco.png" id="mesa_carta_4"></div>
+				<div id="cartas_mesa"><img class="carta" src="" style="display:none" id="mesa_carta_1"><img class="carta" src="" style="display:none" id="mesa_carta_2"><img class="carta" src="" style="display:none" id="mesa_carta_3"><img class="carta" src="" style="display:none" id="mesa_carta_4"></div>
 			</div>
 		</div>
 		
