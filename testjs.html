@@ -61,7 +61,7 @@
 					<div id="palomando">
 						<img class="carta" src="" style="display:none" id="carta_palo_manda_siempre">
 					</div>
-					<img class="carta" src="img/cartas/back2.jpg">
+					<img id="carta_mazo" class="carta" src="img/cartas/back2.jpg">
 				</div>
 				
 				<div id="cartas_mesa"><img class="carta" src="" style="display:none" id="mesa_carta_1"><img class="carta" src="" style="display:none" id="mesa_carta_2"><img class="carta" src="" style="display:none" id="mesa_carta_3"><img class="carta" src="" style="display:none" id="mesa_carta_4"></div>
