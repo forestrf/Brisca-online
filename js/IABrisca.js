@@ -672,7 +672,7 @@ function IABriscaMesa(){
 	
 	this.quedanCartasPorRobar = true;
 	this.peticionJugadorRobar = function(jugador){
-		if(quedanCartasPorRobar){
+		if(thisT.quedanCartasPorRobar){
 			if(thisT.mazoCartas.length > 0){
 				var cartaARobar = thisT.mazoCartas.splice(
 					Math.floor(Math.random()*thisT.mazoCartas.length),1)[0];
