@@ -165,7 +165,9 @@
 			IABriscaBaseInstancia = new IABriscaBase();
 			IABriscaMesaInstancia = new IABriscaMesa();
 			IABriscaMesaInstancia.iniciarMesa();
-			
+			console2.on = true;
+			IABriscaMesaInstancia.tiempoPensandoIAms = 0;
+			IABriscaMesaInstancia.tiempoEntreRondas = 0;
 			
 			
 			

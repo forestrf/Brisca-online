@@ -211,20 +211,20 @@ function IABriscaBase(){
 		for(var w2 in W){
 			M.splice(M.indexOf(W[w2]), 1);
 		}
-		// console.log(ordenPalosCartas);
+		// console2.log(ordenPalosCartas);
 		
 		// Se borran las cartas no listadas en la variable "cartas"
 		//for(var i in ordenPalosCartas){
 		for(var palo in W){
 			palo = W[palo];
-			// console.log("mirando palo "+palo);
+			// console2.log("mirando palo "+palo);
 			for(var carta in this.cartasTotalArrayNumero){
-				// console.log(ordenPalosCartas[i][palo]);
+				// console2.log(ordenPalosCartas[i][palo]);
 				for(var carta2 in cartas){
 					if(palo === this.paloCarta(cartas[carta2]) && this.cartasTotalArrayNumero[carta] == this.numeroCarta(cartas[carta2])){
-						// console.log(palo+"=="+palo2);
-						// console.log(ordenPalosCartas[i][palo][carta]+"=="+this.numeroCarta(cartas[carta2]));
-						// console.log("---------");
+						// console2.log(palo+"=="+palo2);
+						// console2.log(ordenPalosCartas[i][palo][carta]+"=="+this.numeroCarta(cartas[carta2]));
+						// console2.log("---------");
 						ordenPalosCartas2.push(cartas[carta2]);
 					}
 				}
@@ -232,23 +232,23 @@ function IABriscaBase(){
 		}
 		
 
-		// console.log("mirando palo "+palo);
+		// console2.log("mirando palo "+palo);
 		for(var carta in this.cartasTotalArrayNumero){
-			// console.log(ordenPalosCartas[i][palo]);
+			// console2.log(ordenPalosCartas[i][palo]);
 			for(var carta2 in cartas){
 				var palo2 = this.paloCarta(cartas[carta2]);
 				if((M.indexOf(palo2)>=0) && this.cartasTotalArrayNumero[carta] == this.numeroCarta(cartas[carta2])){
-					// console.log(palo+"=="+palo2);
-					// console.log(ordenPalosCartas[i][palo][carta]+"=="+this.numeroCarta(cartas[carta2]));
-					// console.log("---------");
+					// console2.log(palo+"=="+palo2);
+					// console2.log(ordenPalosCartas[i][palo][carta]+"=="+this.numeroCarta(cartas[carta2]));
+					// console2.log("---------");
 					ordenPalosCartas2.push(cartas[carta2]);
 				}
 			}
 		}
 		
 		
-		// console.log(ordenPalosCartas);
-		// console.log(ordenPalosCartas2);
+		// console2.log(ordenPalosCartas);
+		// console2.log(ordenPalosCartas2);
 		return ordenPalosCartas2;
 	};
 	
@@ -477,7 +477,7 @@ function IABriscaJugador(){
 		
 		var cartaATirar = IABriscaBaseInstancia.calculaJugada(cartasEnMesa, this.cartasEnMano, paloQueMandaSiempre, paloQueMandaEnMesa, ultimoEnTirar, this.cartasJugadas);
 		
-		console.log('IABriscaBaseInstancia.calculaJugada(['+cartasEnMesa+'], ['+this.cartasEnMano+'], '+paloQueMandaSiempre+', '+paloQueMandaEnMesa+', '+(ultimoEnTirar?'true':'false')+', '+this.cartasJugadas+') = '+cartaATirar);
+		console2.log('IABriscaBaseInstancia.calculaJugada(['+cartasEnMesa+'], ['+this.cartasEnMano+'], '+paloQueMandaSiempre+', '+paloQueMandaEnMesa+', '+(ultimoEnTirar?'true':'false')+', '+this.cartasJugadas+') = '+cartaATirar);
 		
 		if(this.azar != 0 && Math.random() < this.azar){
 			var cartaATirarT = [];
@@ -568,7 +568,7 @@ function IABriscaMesa(){
 		// Se setea el paloQueSiempreManda y se quita del mazo
 		thisT.cartaPaloQueMandaSiempre = thisT.mazoCartas.splice(Math.floor(Math.random()*thisT.mazoCartas.length),1)[0];
 		thisT.paloQueMandaSiempre = IABriscaBaseInstancia.paloCarta(thisT.cartaPaloQueMandaSiempre);
-		console.log('palo que manda siempre: '+thisT.paloQueMandaSiempre);
+		console2.log('palo que manda siempre: '+thisT.paloQueMandaSiempre);
 		seteaImagen('carta_palo_manda_siempre', thisT.cartaPaloQueMandaSiempre);
 	};
 	
@@ -602,7 +602,7 @@ function IABriscaMesa(){
 			IABriscaMesaInstancia.lanzaRonda();
 		}
 		else{
-			console.log('sacabo');
+			console2.log('sacabo');
 		}
 	};
 	
@@ -610,7 +610,7 @@ function IABriscaMesa(){
 	// Por cada ronda se resetea paloQueMandaEnMesa, las cartas en la mesa, quien las ha tidado y el nº de jugadores que faltan por tirar
 	
 	this.ResetRonda = function(){
-		console.log("ResetRonda ronda");
+		console2.log("ResetRonda ronda");
 		thisT.jugadoresPorTirar = thisT.jugadoresArray.length;
 		thisT.paloQueMandaEnMesa = '';
 		thisT.cartasEnMesa = [];
@@ -626,7 +626,7 @@ function IABriscaMesa(){
 	
 	// Lanza la ronda. Llama a la funcion queLlamarAlTerminar una vez terminada la ronda actual
 	this.lanzaRonda = function(){
-		console.log("RONDA");
+		console2.log("RONDA");
 		
 		if(thisT.jugadoresPorTirar !== 0){
 			setTimeout(function(){
@@ -637,7 +637,7 @@ function IABriscaMesa(){
 		else if(thisT.jugadoresPorTirar === 0){
 			// Elejir ganador, dar las cartas (quitándolas de la mesa).
 			var cartaGanadora = IABriscaBaseInstancia.ordenCartasPorValor(thisT.cartasEnMesa, thisT.paloQueMandaSiempre, thisT.paloQueMandaEnMesa)[0];
-			console.log('cartaGanadora: '+cartaGanadora);
+			console2.log('cartaGanadora: '+cartaGanadora);
 			thisT.peticionJugadorGanarMesa(thisT.quienATiradoQueCarta[cartaGanadora]);
 			thisT.quienGanoUltimaPartida = thisT.jugadoresArray.indexOf(thisT.quienATiradoQueCarta[cartaGanadora]);
 			cargaImagenesCartasMesa(thisT.cartasEnMesa);
@@ -742,3 +742,12 @@ function ClampCircular(numero, minimo, maximo){
 	}
 	return numero;
 }
+
+var console2 = {
+	on:false,
+	log:function(what){
+		if(this.on){
+			console.log(what);
+		}
+	}
+};
