@@ -88,7 +88,8 @@ class DB {
 	// Retorna la ID del usuario que tiene ese NICK
 	function idDesdeNick($nick){
 		$nick = $this->mysqli->real_escape_string($nick);
-		return $this->consulta("SELECT ID FROM usuarios WHERE NICK = '$nick'")["ID"];
+		$nick = $this->consulta("SELECT ID FROM usuarios WHERE NICK = '$nick'");
+		return $nick["ID"];
 	}
 	
 	// Retorna la ID
