@@ -85,10 +85,10 @@ function IABriscaBase(){
 	// array con la correspondencia de los puntos con las cartas.
 	this.puntosCartas = {
 		"1":11, "3":10, "12":4, "11":3, "10":2, "9":0, "8":0, "7":0, "6":0, "5":0, "4":0, "2":0
-	}
+	};
 	
 	// array con la correspondencia de los puntos con las cartas.
-	this.palosCartas = ["O","E","B","C"]
+	this.palosCartas = ["O","E","B","C"];
 	
 	// En el siguiente array se guardar�n las cartas gastadas para cada jugada.
 	this.cartasUsadas = {
@@ -96,7 +96,7 @@ function IABriscaBase(){
 		"E":[],
 		"B":[],
 		"C":[]
-	}
+	};
 	
 	
 	
@@ -120,12 +120,12 @@ function IABriscaBase(){
 	// Retorna el palo de una carta
 	this.paloCarta = function(carta){
 		return carta[0];
-	}
+	};
 	
 	// Retorna el n�mero carta
 	this.numeroCarta = function(carta){
 		return carta.substr(1);
-	}
+	};
 	
 	// Retorna el total de puntos en el grupo de cartas dado a partir del array puntosCartas
 	this.totalPuntosEnCartas = function(cartas){
@@ -139,7 +139,7 @@ function IABriscaBase(){
 			suma += this.puntosCartas[n];
 		}
 		return suma;
-	}
+	};
 	
 	
 	
@@ -167,7 +167,7 @@ function IABriscaBase(){
 			}
 		}
 		return false;
-	}
+	};
 	
 	
 	
@@ -187,8 +187,8 @@ function IABriscaBase(){
 		// Ordenadas de mayor a menor por valor
 		var cartasOrdenadas = this.ordenCartasPorValor(cartas, paloQueMandaSiempre, paloQueMandaEnMesa);
 		
-		return cartasOrdenadas[cartasOrdenadas.length-1]
-	}
+		return cartasOrdenadas[cartasOrdenadas.length-1];
+	};
 	
 	
 	
@@ -250,7 +250,7 @@ function IABriscaBase(){
 		// console.log(ordenPalosCartas);
 		// console.log(ordenPalosCartas2);
 		return ordenPalosCartas2;
-	}
+	};
 	
 	
 	
@@ -435,7 +435,7 @@ function IABriscaBase(){
 		else{
 			return cartasEnMano[0];
 		}
-	}
+	};
 
 }
 
@@ -465,7 +465,7 @@ function IABriscaJugador(){
 		if(azar != undefined){
 			this.azar = azar;
 		}
-	}
+	};
 	
 	
 	
@@ -477,11 +477,13 @@ function IABriscaJugador(){
 		
 		var cartaATirar = IABriscaBaseInstancia.calculaJugada(cartasEnMesa, this.cartasEnMano, paloQueMandaSiempre, paloQueMandaEnMesa, ultimoEnTirar, this.cartasJugadas);
 		
+		console.log('IABriscaBaseInstancia.calculaJugada(['+cartasEnMesa+'], ['+this.cartasEnMano+'], '+paloQueMandaSiempre+', '+paloQueMandaEnMesa+', '+(ultimoEnTirar?'true':'false')+', '+this.cartasJugadas+') = '+cartaATirar);
+		
 		if(this.azar != 0 && Math.random() < this.azar){
 			var cartaATirarT = [];
 			for(var i in this.cartasEnMano){
 				if(this.cartasEnMano[i] != cartaATirar){
-					cartaATirarT = cartaATirarT.concat(this.cartasEnMano[i])
+					cartaATirarT = cartaATirarT.concat(this.cartasEnMano[i]);
 				}
 			}
 			if(cartaATirarT.length > 1){
@@ -500,19 +502,19 @@ function IABriscaJugador(){
 			
 		return cartaATirar;
 		
-	}
+	};
 	
 	this.robaCarta = function(carta){
 		this.cartasEnMano = this.cartasEnMano.concat(carta);
-	}
+	};
 	
 	this.ganaMesa = function(cartas){
 		this.cartasGanadas = this.cartasGanadas.concat(cartas);
-	}
+	};
 	
 	this.cartasJugadasMesa = function(cartas){
 		this.cartasJugadas = this.cartasJugadas.concat(cartas);
-	}
+	};
 	
 	
 	
@@ -532,7 +534,7 @@ function IABriscaMesa(){
 	// retorna mazoCartas en un nuevo array
 	this.cartasEnMesaF = function(){
 		return thisT.cartasEnMesa.slice(0); // De esta forma se retorna un nuevo array clonado, por lo que podemos editarlo sin problemas
-	}
+	};
 	
 	// Se setea al inicio, pero puede cambiar ya que los jugadores pueden robar la carta (TENGO QUE MIRAR ME LAS NORMAS)
 	this.paloQueMandaSiempre = '';
@@ -568,7 +570,7 @@ function IABriscaMesa(){
 		thisT.paloQueMandaSiempre = IABriscaBaseInstancia.paloCarta(thisT.cartaPaloQueMandaSiempre);
 		console.log('palo que manda siempre: '+thisT.paloQueMandaSiempre);
 		seteaImagen('carta_palo_manda_siempre', thisT.cartaPaloQueMandaSiempre);
-	}
+	};
 	
 	// inserta a los jugadores en la mesa
 	this.insertaJugadoresEnMesa = function(jugadores){
@@ -582,11 +584,11 @@ function IABriscaMesa(){
 		}
 		
 		thisT.quienLanzaPrimero = Math.floor(Math.random() * thisT.jugadoresArray.length);
-	}
+	};
 	
 	this.faltanRondasPorJugar = function(){
 		return thisT.quienATiradoQueCarta.length < IABriscaBaseInstancia.cartasTotalArray.length;
-	}
+	};
 	
 	
 	
@@ -602,7 +604,7 @@ function IABriscaMesa(){
 		else{
 			console.log('sacabo');
 		}
-	}
+	};
 	
 	// Iniciar la primera ronda o terminar alguna abierta y pasar a la siguiente. reset de contadores para la ronda
 	// Por cada ronda se resetea paloQueMandaEnMesa, las cartas en la mesa, quien las ha tidado y el nº de jugadores que faltan por tirar
@@ -617,7 +619,7 @@ function IABriscaMesa(){
 		if(thisT.quienGanoUltimaPartida !== -1){
 			thisT.quienLanzaPrimero = thisT.quienGanoUltimaPartida;
 		}
-	}
+	};
 	
 	
 	
@@ -646,7 +648,7 @@ function IABriscaMesa(){
 			
 			setTimeout(thisT.comienzaPartida, thisT.tiempoEntreRondas);
 		}
-	}
+	};
 	
 	
 	
@@ -664,31 +666,38 @@ function IABriscaMesa(){
 		cargaImagenesCartasJugador(jugador);
 		cargaImagenesCartasMesa(thisT.cartasEnMesa);
 		setTimeout(thisT.lanzaRonda, thisT.tiempoPensandoIAms);
-	}
+	};
 	
 	
 	
+	this.quedanCartasPorRobar = true;
 	this.peticionJugadorRobar = function(jugador){
-		if(thisT.mazoCartas.length > 0){
-			var cartaARobar = thisT.mazoCartas.splice(
-				Math.floor(Math.random()*thisT.mazoCartas.length),1)[0];
+		if(quedanCartasPorRobar){
+			if(thisT.mazoCartas.length > 0){
+				var cartaARobar = thisT.mazoCartas.splice(
+					Math.floor(Math.random()*thisT.mazoCartas.length),1)[0];
+			}
+			else{
+				var cartaARobar = this.cartaPaloQueMandaSiempre;
+				thisT.cartaPaloQueMandaSiempre = '';
+				thisT.quedanCartasPorRobar = false;
+				seteaImagen('carta_palo_manda_siempre', 'blanco');
+			}
+			jugador.robaCarta(cartaARobar);
+			cargaImagenesCartasJugador(jugador);
+			if(thisT.mazoCartas.length === 0){
+				seteaImagen('carta_mazo', 'blanco');
+			}
 		}
-		else{
-			var cartaARobar = this.cartaPaloQueMandaSiempre;
-			thisT.cartaPaloQueMandaSiempre = '';
-			seteaImagen('carta_palo_manda_siempre', 'blanco');
-		}
-		jugador.robaCarta(cartaARobar);
-		cargaImagenesCartasJugador(jugador);
-		if(thisT.mazoCartas.length === 0){
-			seteaImagen('carta_mazo', 'blanco');
-		}
-	}
+	};
 	
 	this.peticionJugadorGanarMesa = function(jugador){
 		jugador.ganaMesa(thisT.cartasEnMesa);
+		for(var i in thisT.jugadoresArray){
+			thisT.jugadoresArray[i].cartasJugadasMesa(thisT.cartasEnMesa);
+		}
 		thisT.cartasEnMesa = [];
-	}
+	};
 }
 
 function cargaImagenesCartasJugador(jugador){
