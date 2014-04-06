@@ -168,9 +168,12 @@
 			console2.on = true;
 			//IABriscaMesaInstancia.tiempoPensandoIAms = 0;
 			//IABriscaMesaInstancia.tiempoEntreRondas = 0;
-			IABriscaMesaInstancia.tiempoPensandoIAms = 1000;
+			IABriscaMesaInstancia.tiempoPensandoIAms = 1500;
 			IABriscaMesaInstancia.tiempoEntreRondas = 1000;
 			
+			
+			//IABriscaMesaInstancia.tiempoPensandoIAms = 0;
+			//IABriscaMesaInstancia.tiempoEntreRondas = 0;
 			
 			
 			var jugador1 = new IABriscaJugador();

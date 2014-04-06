@@ -127,16 +127,21 @@ function IABriscaBase(){
 		return carta.substr(1);
 	};
 	
+	// Retorna el total de puntos en la carta dada a partir del array puntosCartas
+	this.totalPuntosEnCarta = function(carta){
+		// var palo = cartas[i][0]
+		var n = parseInt(this.numeroCarta(carta));
+		return this.puntosCartas[n];
+	};
+	
 	// Retorna el total de puntos en el grupo de cartas dado a partir del array puntosCartas
 	this.totalPuntosEnCartas = function(cartas){
-		if(cartas.length == 0 || cartas == undefined){
+		if(cartas.length === 0 || cartas == undefined){
 			return 0;
 		}
 		var suma = 0;
 		for(var i in cartas){
-			// var palo = cartas[i][0]
-			var n = parseInt(this.numeroCarta(cartas[i]));
-			suma += this.puntosCartas[n];
+			suma += this.totalPuntosEnCarta(cartas[i]);
 		}
 		return suma;
 	};
@@ -266,16 +271,17 @@ function IABriscaBase(){
 		var thisT = this;
 		
 		function totalPuntosCartasEnManoMayorQue0(){
+			return hayPuntosEnMesa();
 			if(thisT.totalPuntosEnCartas(cartasEnMano) > 0){
-				return hayPuntosEnMesa();
+				return cartaManoDelPaloManda();
 			}
 			else{
-				return cartaManoDelPaloMandaOPaloMandaMesa();
+				return hayPuntosEnMesa();
 			}
 		};
 		
-		function cartaManoDelPaloMandaOPaloMandaMesa(){
-			if(thisT.paloPresenteEnCartas(paloQueMandaSiempre, cartasEnMano) || thisT.paloPresenteEnCartas(paloQueMandaEnMesa, cartasEnMano)){
+		function cartaManoDelPaloManda(){
+			if(thisT.paloPresenteEnCartas(paloQueMandaSiempre, cartasEnMano)){
 				return hayPuntosEnMesa();
 			}
 			else{
@@ -285,10 +291,35 @@ function IABriscaBase(){
 		
 		function hayPuntosEnMesa(){
 			if(thisT.totalPuntosEnCartas(cartasEnMesa) > 0){
-				return puedoGanarLaMesa();
+				return soyUltimoEnTirar();
 			}
 			else{
+				return cartaConPuntosGanadoraNoPaloMandaSiempre();
+			}
+		}
+		
+		function cartaConPuntosGanadoraNoPaloMandaSiempre(){
+			var cartasEnManoConPuntos = [];
+			for(var i in cartasEnMano){
+				if(IABriscaBaseInstancia.totalPuntosEnCarta(cartasEnMano[i]) > 0 && thisT.paloCarta(cartasEnMano[i]) !== paloQueMandaSiempre){
+					cartasEnManoConPuntos.push(cartasEnMano[i]);
+				}
+			}
+			if(cartasEnManoConPuntos.length === 0){
 				return cartaMenorValorManoConPuntos();
+			}
+			else{
+				var mayorCartaMesa = thisT.ordenCartasPorValor(cartasEnMesa, paloQueMandaSiempre, paloQueMandaEnMesa)[0];
+				//Esta variable tiene la carta más alta de la mesa y las cartas de la mano ordenadas por valor
+				var cartasEnManoMayorMesa = thisT.ordenCartasPorValor(cartasEnManoConPuntos.concat(mayorCartaMesa), paloQueMandaSiempre, paloQueMandaEnMesa);
+				var siguenteSeTira = false;
+				var indiceCartaATirar = cartasEnManoMayorMesa.indexOf(mayorCartaMesa)-1;
+				if(indiceCartaATirar == -1){
+					return cartaMenorValorManoConPuntos();
+				}
+				else{
+					return FIN_tiraCartaConPuntosGanadora(cartasEnManoMayorMesa[indiceCartaATirar]);
+				}
 			}
 		}
 		
@@ -298,14 +329,14 @@ function IABriscaBase(){
 				var mayorCartaMano = thisT.ordenCartasPorValor(cartasEnMano, paloQueMandaSiempre, paloQueMandaEnMesa)[0];
 				var mayorCarta = thisT.ordenCartasPorValor([mayorCartaMesa, mayorCartaMano], paloQueMandaSiempre, paloQueMandaEnMesa)[0];
 				if(mayorCarta == mayorCartaMano){
-					return soyUltimoEnTirar();
+					return totalPuntosCartasEnManoMayorQue0();
 				}
 				else{
 					return FIN_tiraCartaMenorValor();
 				}
 			}
 			else{
-				return soyUltimoEnTirar();
+				return FIN_tiraCartaMenorValor();
 			}
 		}
 
@@ -376,7 +407,7 @@ function IABriscaBase(){
 		
 		function cartaMenorValorManoConPuntos(){
 			if(thisT.totalPuntosEnCartas([thisT.cartaMenorValor(cartasEnMano)]) > 0){
-				return puedoGanarLaMesa();
+				return soyUltimoEnTirar();
 			}
 			else{
 				return FIN_tiraCartaMenorValor();
@@ -387,7 +418,8 @@ function IABriscaBase(){
 		// Pasos finales de las decisiones, el lanzamiento de la carta.
 		
 		function FIN_tiraCartaMenorValor(){
-			return thisT.cartaMenorValor(cartasEnMano, paloQueMandaSiempre, paloQueMandaEnMesa);
+			//En esta tirada, todas las cartas menos las del palo que manda siempre son igual de importantes
+			return thisT.cartaMenorValor(cartasEnMano, paloQueMandaSiempre, "");
 		}
 		
 		function FIN_tiraCartaUnoTresNoPaloManda(){
@@ -426,11 +458,16 @@ function IABriscaBase(){
 			}
 		}
 		
+		// Llamamos a la función ya con la carta que debe tirar
+		function FIN_tiraCartaConPuntosGanadora(carta){
+			return carta;
+		}
+		
 		
 		
 		// Iniciar secuencia de preguntas para tirar la carta. se retornará la carta.
 		if(cartasEnMano.length!==1){
-			return totalPuntosCartasEnManoMayorQue0();
+			return puedoGanarLaMesa();
 		}
 		else{
 			return cartasEnMano[0];
@@ -477,7 +514,7 @@ function IABriscaJugador(){
 		
 		var cartaATirar = IABriscaBaseInstancia.calculaJugada(cartasEnMesa, this.cartasEnMano, paloQueMandaSiempre, paloQueMandaEnMesa, ultimoEnTirar, this.cartasJugadas);
 		
-		console2.log('IABriscaBaseInstancia.calculaJugada(['+cartasEnMesa+'], ['+this.cartasEnMano+'], '+paloQueMandaSiempre+', '+paloQueMandaEnMesa+', '+(ultimoEnTirar?'true':'false')+', ['+this.cartasJugadas+']) = '+cartaATirar);
+		console2.log('IABriscaBaseInstancia.calculaJugada('+JSON.stringify(cartasEnMesa)+', '+JSON.stringify(this.cartasEnMano)+'], "'+paloQueMandaSiempre+'", "'+paloQueMandaEnMesa+'", '+(ultimoEnTirar?'true':'false')+', '+JSON.stringify(this.cartasJugadas)+') = '+cartaATirar);
 		
 		if(this.azar != 0 && Math.random() < this.azar){
 			var cartaATirarT = [];
