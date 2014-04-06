@@ -1,10 +1,10 @@
 #chat {
-    background-color: #222;
-    height: 100%;
+	background-color: #222;
+	height: 100%;
 	width: 30%;
 	min-width: 250px;
-    position: absolute;
-    top: 0;
+	position: absolute;
+	top: 0;
 	left: 0;
 	display: table-cell;
 }
@@ -12,7 +12,7 @@
 
 #historial {
 	height: 95%;
-    height: calc(100% - 40px);
+	height: calc(100% - 40px);
 	overflow-y: scroll;
 }
 .globo {
@@ -41,7 +41,7 @@
 
 #entradatxt, #enviar {
 	height: 5%;
-    height: calc(40px);
+	height: calc(40px);
 }
 
 #entradatxt {

@@ -477,7 +477,7 @@ function IABriscaJugador(){
 		
 		var cartaATirar = IABriscaBaseInstancia.calculaJugada(cartasEnMesa, this.cartasEnMano, paloQueMandaSiempre, paloQueMandaEnMesa, ultimoEnTirar, this.cartasJugadas);
 		
-		console2.log('IABriscaBaseInstancia.calculaJugada(['+cartasEnMesa+'], ['+this.cartasEnMano+'], '+paloQueMandaSiempre+', '+paloQueMandaEnMesa+', '+(ultimoEnTirar?'true':'false')+', '+this.cartasJugadas+') = '+cartaATirar);
+		console2.log('IABriscaBaseInstancia.calculaJugada(['+cartasEnMesa+'], ['+this.cartasEnMano+'], '+paloQueMandaSiempre+', '+paloQueMandaEnMesa+', '+(ultimoEnTirar?'true':'false')+', ['+this.cartasJugadas+']) = '+cartaATirar);
 		
 		if(this.azar != 0 && Math.random() < this.azar){
 			var cartaATirarT = [];
@@ -696,6 +696,7 @@ function IABriscaMesa(){
 		for(var i in thisT.jugadoresArray){
 			thisT.jugadoresArray[i].cartasJugadasMesa(thisT.cartasEnMesa);
 		}
+		seteaPuntos('puntos_jugador_'+(thisT.jugadoresArray.indexOf(jugador)+1), IABriscaBaseInstancia.totalPuntosEnCartas(jugador.cartasGanadas));
 		thisT.cartasEnMesa = [];
 	};
 }
@@ -731,6 +732,10 @@ function seteaImagen(id, carta){
 		document.getElementById(id).src = "img/cartas/"+carta+".jpg";
 		document.getElementById(id).style.display = "";
 	}
+}
+
+function seteaPuntos(id, puntos){
+	document.getElementById(id).innerHTML = puntos;
 }
 
 function ClampCircular(numero, minimo, maximo){

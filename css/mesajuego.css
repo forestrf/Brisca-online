@@ -83,31 +83,42 @@
 }
 
 #cartas_mesa > img {
-    width: 100%;
+	width: 100%;
 }
 
 #mesa_carta_1 {
-    left: -40%;
-    position: relative;
-    top: -10%;
+	left: -40%;
+	position: relative;
+	top: -10%;
 }
 #mesa_carta_2 {
-    left: 10%;
-    position: absolute;
-    top: -40%;
+	left: 10%;
+	position: absolute;
+	top: -40%;
 }
 #mesa_carta_3 {
-    left: 40%;
-    position: absolute;
-    top: 10%;
+	left: 40%;
+	position: absolute;
+	top: 10%;
 }
 #mesa_carta_4 {
-    left: -10%;
-    position: absolute;
-    top: 40%;
+	left: -10%;
+	position: absolute;
+	top: 40%;
 }
 
 .carta{
 	border-radius: 7px;
-    box-shadow: 0 0 10px #000000;
+	box-shadow: 0 0 10px #000000;
+}
+
+.puntuacion{
+	background-color: #E0E0E0;
+	border-radius: 5px;
+	color: #000000;
+	line-height: 20px;
+	padding: 0 20px;
+	position: absolute;
+	right: 0;
+	top: -30px;
 }

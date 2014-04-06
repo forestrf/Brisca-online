@@ -38,22 +38,22 @@
 			<div id="mesa">
 				<div id="jugador">
 					<div class="cartas"><img class="carta" src="" style="display:none" id="jugador_1_carta_1"><img class="carta" src="" style="display:none" id="jugador_1_carta_2"><img class="carta" src="" style="display:none" id="jugador_1_carta_3"></div>
-					<div class="puntuacion"></div>
+					<div class="puntuacion" id="puntos_jugador_1">0</div>
 					<div class="nombre"></div>
 				</div>
 				<div id="jugador2">
 					<div class="cartas"><img class="carta" src="" style="display:none" id="jugador_2_carta_1"><img class="carta" src="" style="display:none" id="jugador_2_carta_2"><img class="carta" src="" style="display:none" id="jugador_2_carta_3"></div>
-					<div class="puntuacion"></div>
+					<div class="puntuacion" id="puntos_jugador_2">0</div>
 					<div class="nombre"></div>
 				</div>
 				<div id="jugador3">
 					<div class="cartas"><img class="carta" src="" style="display:none" id="jugador_3_carta_1"><img class="carta" src="" style="display:none" id="jugador_3_carta_2"><img class="carta" src="" style="display:none" id="jugador_3_carta_3"></div>
-					<div class="puntuacion"></div>
+					<div class="puntuacion" id="puntos_jugador_3">0</div>
 					<div class="nombre"></div>
 				</div>
 				<div id="jugador4">
 					<div class="cartas"><img class="carta" src="" style="display:none" id="jugador_4_carta_1"><img class="carta" src="" style="display:none" id="jugador_4_carta_2"><img class="carta" src="" style="display:none" id="jugador_4_carta_3"></div>
-					<div class="puntuacion"></div>
+					<div class="puntuacion" id="puntos_jugador_4">0</div>
 					<div class="nombre"></div>
 				</div>
 				
@@ -166,8 +166,10 @@
 			IABriscaMesaInstancia = new IABriscaMesa();
 			IABriscaMesaInstancia.iniciarMesa();
 			console2.on = true;
-			IABriscaMesaInstancia.tiempoPensandoIAms = 0;
-			IABriscaMesaInstancia.tiempoEntreRondas = 0;
+			//IABriscaMesaInstancia.tiempoPensandoIAms = 0;
+			//IABriscaMesaInstancia.tiempoEntreRondas = 0;
+			IABriscaMesaInstancia.tiempoPensandoIAms = 1000;
+			IABriscaMesaInstancia.tiempoEntreRondas = 1000;
 			
 			
 			
