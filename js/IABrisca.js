@@ -209,7 +209,7 @@ function IABriscaBase(){
 		if(paloQueMandaSiempre != undefined && paloQueMandaSiempre !== ''){
 			W.push(paloQueMandaSiempre);
 		}
-		if(paloQueMandaEnMesa != undefined && paloQueMandaEnMesa !== ''){
+		if(paloQueMandaEnMesa != undefined && paloQueMandaEnMesa !== '' && paloQueMandaSiempre !== paloQueMandaEnMesa){
 			W.push(paloQueMandaEnMesa);
 		}
 		var M=["O","C","E","B"];
