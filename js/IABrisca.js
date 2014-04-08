@@ -514,9 +514,9 @@ function IABriscaJugador(){
 		
 		var cartaATirar = IABriscaBaseInstancia.calculaJugada(cartasEnMesa, this.cartasEnMano, paloQueMandaSiempre, paloQueMandaEnMesa, ultimoEnTirar, this.cartasJugadas);
 		
-		console2.log('IABriscaBaseInstancia.calculaJugada('+JSON.stringify(cartasEnMesa)+', '+JSON.stringify(this.cartasEnMano)+'], "'+paloQueMandaSiempre+'", "'+paloQueMandaEnMesa+'", '+(ultimoEnTirar?'true':'false')+', '+JSON.stringify(this.cartasJugadas)+') = '+cartaATirar);
+		console2.log('IABriscaBaseInstancia.calculaJugada('+JSON.stringify(cartasEnMesa)+', '+JSON.stringify(this.cartasEnMano)+', "'+paloQueMandaSiempre+'", "'+paloQueMandaEnMesa+'", '+(ultimoEnTirar?'true':'false')+', '+JSON.stringify(this.cartasJugadas)+') = '+cartaATirar);
 		
-		if(this.azar != 0 && Math.random() < this.azar){
+		if(this.azar !== 0 && Math.random() < this.azar && this.cartasEnMano.length > 1){
 			var cartaATirarT = [];
 			for(var i in this.cartasEnMano){
 				if(this.cartasEnMano[i] != cartaATirar){
@@ -793,3 +793,11 @@ var console2 = {
 		}
 	}
 };
+
+
+
+
+
+
+IABriscaBaseInstancia = new IABriscaBase();
+IABriscaMesaInstancia = new IABriscaMesa();
