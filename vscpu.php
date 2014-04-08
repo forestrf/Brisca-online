@@ -173,7 +173,7 @@
 			//IABriscaMesaInstancia.tiempoEntreRondas = 0;
 			
 			
-			var jugador1 = new IABriscaJugador();
+			var jugador1 = new HumanoBriscaJugador();
 			jugador1.iniciarJugador(1);
 			var jugador2 = new IABriscaJugador();
 			jugador2.iniciarJugador(2);

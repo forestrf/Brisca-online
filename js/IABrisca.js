@@ -63,15 +63,8 @@ function IABriscaBase(){
 	// C = copas
 	
 	// Para cada jugada es necesario especificar el palo que manda y el palo de la mesa
-	// Est�n ordenadas por valor
-	this.cartasTotal = [
-		{"O":[1,3,12,11,10,9,8,7,6,5,4,2]},
-		{"E":[1,3,12,11,10,9,8,7,6,5,4,2]},
-		{"B":[1,3,12,11,10,9,8,7,6,5,4,2]},
-		{"C":[1,3,12,11,10,9,8,7,6,5,4,2]}
-	];
-	
-	// Lo mismo de antes, pero en array
+
+	// Array con todas las posibles cartas
 	this.cartasTotalArray = [
 		"O1","O3","O12","O11","O10","O9","O8","O7","O6","O5","O4","O2",
 		"E1","E3","E12","E11","E10","E9","E8","E7","E6","E5","E4","E2",
@@ -212,7 +205,7 @@ function IABriscaBase(){
 		if(paloQueMandaEnMesa != undefined && paloQueMandaEnMesa !== '' && paloQueMandaSiempre !== paloQueMandaEnMesa){
 			W.push(paloQueMandaEnMesa);
 		}
-		var M=["O","C","E","B"];
+		var M=this.palosCartas.slice(0);
 		for(var w2 in W){
 			M.splice(M.indexOf(W[w2]), 1);
 		}
@@ -387,8 +380,8 @@ function IABriscaBase(){
 		
 		function cartaSinTirarPaloMandaSinContarEnMiMano(){
 			var cartasDondeMirar = cartasJugadas.slice(0).concat(cartasEnMano);
-			for(var i in thisT.cartasTotal[paloQueMandaSiempre]){
-				if(cartasDondeMirar.indexOf(thisT.cartasTotal[paloQueMandaSiempre][i]) == -1){
+			for(var i in thisT.cartasTotalArrayNumero){
+				if(cartasDondeMirar.indexOf(paloQueMandaSiempre+thisT.cartasTotalArrayNumero[i]) === -1){
 					// Todavía queda en juego (no en mi mano) alguna carta del palo que manda
 					return masDeXPuntosEnLaMesa(8);
 				}
@@ -506,7 +499,7 @@ function IABriscaJugador(){
 	
 	
 	
-	this.lanzaCarta = function(){
+	this.lanzaCarta = function(callback){
 		var cartasEnMesa = IABriscaMesaInstancia.cartasEnMesaF();
 		var paloQueMandaSiempre = IABriscaMesaInstancia.paloQueMandaSiempre;
 		var paloQueMandaEnMesa = IABriscaMesaInstancia.paloQueMandaEnMesa;
@@ -537,8 +530,7 @@ function IABriscaJugador(){
 		
 		this.cartasEnMano.splice(this.cartasEnMano.indexOf(cartaATirar), 1);
 			
-		return cartaATirar;
-		
+		callback(this, cartaATirar);
 	};
 	
 	this.robaCarta = function(carta){
@@ -555,6 +547,65 @@ function IABriscaJugador(){
 	
 	
 	
+}
+
+function HumanoBriscaJugador(){
+	
+	var thisT = this;
+	
+	// el jugador tiene un ID. Será un número para poder identificar al jugador después
+	this.jugadorID = 0;
+	
+	// Cada jugador mantiene un recuento de las cartas usadas. Esto podría realizarse únicamente en la mesa
+	// Pero de esta forma puede cambiarse la IA del jugador más fácilmente, pudiendo poner olvido aleatorio de cartas jugadas para aumentar la jugabilidad
+	
+	this.cartasGanadas = [];
+	
+	this.cartasEnMano = [];
+	
+	
+	
+	
+	// Se inicia al jugador dándole un id y si queremos, azar
+	this.iniciarJugador = function(jugadorID){
+		thisT.jugadorID = jugadorID;
+	};
+	
+	
+	// Para el jugador, esta función guarda el callback y genera los onclick en las cartas del jugador, los caules procovan la jugada.
+	this.lanzaCarta = function(callback){
+		for(var i in thisT.cartasEnMano){
+			var id = 'jugador_'+thisT.jugadorID+'_carta_'+(parseInt(i)+1);
+			document.getElementById(id).onclick = (function(carta, callback, lanzaCartaOnClick){
+				return function(){
+					for(var i in thisT.cartasEnMano){
+						document.getElementById('jugador_'+thisT.jugadorID+'_carta_'+(parseInt(i)+1)).onclick = undefined;
+					}
+					lanzaCartaOnClick(carta, callback);
+				};
+			})(thisT.cartasEnMano[i], callback, thisT.lanzaCartaOnClick);
+		}
+		
+		console2.log('Preparado lanzamiento manual.');
+	};
+	
+	this.lanzaCartaOnClick = function(cartaATirar, callback){
+		console2.log('Tirada manual: '+cartaATirar);
+		
+		thisT.cartasEnMano.splice(thisT.cartasEnMano.indexOf(cartaATirar), 1);
+			
+		callback(thisT, cartaATirar);
+	};
+	
+	this.robaCarta = function(carta){
+		thisT.cartasEnMano = thisT.cartasEnMano.concat(carta);
+	};
+	
+	this.ganaMesa = function(cartas){
+		thisT.cartasGanadas = thisT.cartasGanadas.concat(cartas);
+	};
+	
+	this.cartasJugadasMesa = function(cartas){};
 }
 
 // La clase IABriscaMesa se encarga de 
@@ -692,7 +743,10 @@ function IABriscaMesa(){
 	
 	// Se le pasa un jugador y la mesa hace que tire. Después, usa la carta que ha tirado y guarda quién la ha tirado
 	this.peticionJugadorLanzar = function(jugador){
-		var cartaTirada = jugador.lanzaCarta();
+		var cartaTirada = jugador.lanzaCarta(thisT.peticionJugadorLanzarRecibiendoCarta);
+	};
+	
+	this.peticionJugadorLanzarRecibiendoCarta = function(jugador, cartaTirada){
 		thisT.quienATiradoQueCarta[cartaTirada] = jugador;
 		++thisT.quienATiradoQueCarta.length;
 		thisT.cartasEnMesa = thisT.cartasEnMesa.concat(cartaTirada);
