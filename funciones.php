@@ -12,6 +12,8 @@ class DB {
 
 	private $mysqli;
 	
+	private $conexionAbierta = false;
+	
 	function Abrir($host=null, $user=null, $pass=null, $bd=null){
 		if($host !== null)
 			$this->host = $host;
@@ -33,7 +35,20 @@ class DB {
 	}
 	
 	// Realizar una consulta sql. Retorna false en caso de error, además de imprimir el error en pantalla
-	private function consulta($query){
+	// Solo aquí se realiza una consulta directamente. De esta forma se puede abrir conexión en caso de ser necesaria o usar una respuesta cacheada
+	private function consulta($query, $cacheable = false){
+		if($cacheable){
+			$cacheado = $this->consultaCache($query);
+			if($cacheado !== false){
+				return $cacheado;
+			}
+		}
+		
+		if($this->conexionAbierta === false){
+			$this->Abrir();
+			$this->conexionAbierta = true;
+		}
+		
 		$resultado = $this->mysqli->query($query, MYSQLI_USE_RESULT);
 		if($resultado === false){
 			throw new Exception("Error: ".$this->mysqli->error);
@@ -42,6 +57,12 @@ class DB {
 		if($resultado === true){
 			return true;
 		}
+		
+		if($cacheable){
+			$arrayCacheado = $resultado->fetch_array(MYSQLI_ASSOC);
+			$this->cacheaResultado($query, $arrayCacheado);
+			return $arrayCacheado;
+		}
 		return $resultado->fetch_array(MYSQLI_ASSOC);
 	}
 	
@@ -49,17 +70,17 @@ class DB {
 	
 	// Consultar si existe un nick en la base de datos
 	function existeNick($nick){
-		$nick = $this->mysqli->real_escape_string($nick);
-		return $this->consulta("SELECT * FROM usuarios WHERE NICK = '".$nick."'") !== null;
+		$nick = mysql_escape_mimic($nick);
+		return $this->consulta("SELECT * FROM usuarios WHERE NICK = '".$nick."'", true) !== null;
 	}
 	
 	// Insertar un usuario en la base de datos
 	function insertaUsuario($nombre, $apellidos, $email, $nick, $password, $requiereValidacion=true){
-		$nombre = $this->mysqli->real_escape_string($nombre);
-		$apellidos = $this->mysqli->real_escape_string($apellidos);
-		$email = $this->mysqli->real_escape_string($email);
-		$nick = $this->mysqli->real_escape_string($nick);
-		$password = $this->mysqli->real_escape_string($password);
+		$nombre = mysql_escape_mimic($nombre);
+		$apellidos = mysql_escape_mimic($apellidos);
+		$email = mysql_escape_mimic($email);
+		$nick = mysql_escape_mimic($nick);
+		$password = mysql_escape_mimic($password);
 		$hoy = date('Y-m-d H:i:s');
 		return $this->consulta("INSERT INTO usuarios (NOMBRE, APELLIDO, NICK, PASSWORD, EMAIL, FECHA_REGISTRO, FECHA_ULT_LOGIN, IP_ULT_LOGIN) VALUES ".
 												"('$nombre', '$apellidos', '$nick', '$password', '$email', '$hoy', '$hoy', '{$_SERVER["REMOTE_ADDR"]}')") === true;
@@ -67,42 +88,42 @@ class DB {
 	
 	// Indicar la password temporal que se usará para la confirmación por correo electrónico
 	function setEmailPasswordValidacion($ID, $passwordT){
-		$ID = $this->mysqli->real_escape_string($ID);
-		$passwordT = $this->mysqli->real_escape_string($passwordT);
+		$ID = mysql_escape_mimic($ID);
+		$passwordT = mysql_escape_mimic($passwordT);
 		$this->consulta("UPDATE usuarios SET user_validado = '{$passwordT}' WHERE ID = '{$ID}'");
 	}
 	
 	// Retorna true si el email ahora está validado
 	function CompruebaEmailValidacion($ID, $passwordT){
-		$ID = $this->mysqli->real_escape_string($ID);
-		$passwordT = $this->mysqli->real_escape_string($passwordT);
-		return $this->consulta("SELECT * FROM usuarios WHERE user_validado = '{$passwordT}' AND ID = '{$ID}'") !== null;
+		$ID = mysql_escape_mimic($ID);
+		$passwordT = mysql_escape_mimic($passwordT);
+		return $this->consulta("SELECT * FROM usuarios WHERE user_validado = '{$passwordT}' AND ID = '{$ID}'", true) !== null;
 	}
 	
 	// Marca el usuario como usuario validado por mail
 	function ValidaEmailPorID($ID){
-		$ID = $this->mysqli->real_escape_string($ID);
+		$ID = mysql_escape_mimic($ID);
 		$this->consulta("UPDATE usuarios SET user_validado = '' WHERE ID = '{$ID}'");
 	}
 	
 	// Retorna la ID del usuario que tiene ese NICK
 	function idDesdeNick($nick){
-		$nick = $this->mysqli->real_escape_string($nick);
-		$nick = $this->consulta("SELECT ID FROM usuarios WHERE NICK = '$nick'");
+		$nick = mysql_escape_mimic($nick);
+		$nick = $this->consulta("SELECT ID FROM usuarios WHERE NICK = '$nick'", true);
 		return $nick["ID"];
 	}
 	
 	// Retorna la ID
 	function NickPasswordValidacion($nick, $password){
-		$nick = $this->mysqli->real_escape_string($nick);
-		$password = $this->mysqli->real_escape_string($password);
+		$nick = mysql_escape_mimic($nick);
+		$password = mysql_escape_mimic($password);
 		return $this->consulta("SELECT * FROM usuarios WHERE NICK = '$nick' AND PASSWORD = '$password' AND user_validado = ''") !== null;
 	}
 	
 	
 	function SetUsuarioLogueadoPorID($ID, $passwordCookie){
-		$ID = $this->mysqli->real_escape_string($ID);
-		$passwordCookie = $this->mysqli->real_escape_string($passwordCookie);
+		$ID = mysql_escape_mimic($ID);
+		$passwordCookie = mysql_escape_mimic($passwordCookie);
 		$hoy = date('Y-m-d H:i:s');
 		
 		// La cookie dura 1 mes
@@ -113,9 +134,25 @@ class DB {
 	
 	// Retorna falso si no es un usuario válido, o un array con los datos del usuario: Nombre, Apellidos, Nick
 	function validaCookieLogueado($u, $p){
-		$u = $this->mysqli->real_escape_string($u);
-		$p = $this->mysqli->real_escape_string($p);
-		return $this->consulta("SELECT NOMBRE, APELLIDO, NICK FROM usuarios WHERE ID = (SELECT ID FROM login WHERE ID_USER = '$u' AND COOKIE = '$p' AND FECHA_TOPE > NOW())") !== null;
+		$u = mysql_escape_mimic($u);
+		$p = mysql_escape_mimic($p);
+		return $this->consulta("SELECT NOMBRE, APELLIDO, NICK FROM usuarios WHERE ID = (SELECT ID FROM login WHERE ID_USER = '$u' AND COOKIE = '$p' AND FECHA_TOPE > NOW())", true) !== null;
+	}
+	
+	// --------------------------------------------------------
+	
+	//Cachear resultados. $consulta es el sql a cachear, $resultado es el array de la respuesta y $tiempoValido es la cantidad de segundos que se guardaré en cache (usando memcache)
+	function cacheaResultado($consulta, $resultado, $tiempoValido = 3600){
+		$resultado = json_encode($resultado);
+		$memcache_obj = memcache_pconnect("localhost", 11211);
+		$memcache_obj->add($consulta, $resultado, false, $tiempoValido);
+	}
+	
+	//Cachear resultados. $consulta es el sql a cachear, $resultado es el array de la respuesta y $tiempoValido es la cantidad de segundos que se guardaré en cache (usando memcache)
+	function consultaCache($consulta){
+		$memcache_obj = memcache_pconnect("localhost", 11211);
+		$resultado = $memcache_obj->get($consulta);
+		return $resultado===false?false:json_decode($resultado);
 	}
 }
 
@@ -151,4 +188,17 @@ function detectaLogueadoORedireccion(&$database, $urlRedireccion = false){
 			exit;
 		}
 	}
+}
+
+// Copia de mysql_real_escape_string para uso sin conexión abierta
+// http://es1.php.net/mysql_real_escape_string
+function mysql_escape_mimic($inp) {
+    if(is_array($inp))
+        return array_map(__METHOD__, $inp);
+
+    if(!empty($inp) && is_string($inp)) {
+        return str_replace(array('\\', "\0", "\n", "\r", "'", '"', "\x1a"), array('\\\\', '\\0', '\\n', '\\r', "\\'", '\\"', '\\Z'), $inp);
+    }
+
+    return $inp;
 }

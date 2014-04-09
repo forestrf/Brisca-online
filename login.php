@@ -39,7 +39,6 @@
 				error_reporting(-1);
 				
 				$database = new DB();
-				$database->Abrir();
 				
 				$password = hashea($_POST['password']);
 				

@@ -65,7 +65,6 @@
 				
 				// Conectamos a la base de datos
 				$database = new DB();
-				$database->Abrir();
 				
 				// Comprobamos si ya existe alguien con el mismo nick.
 				if($database->existeNick($_POST['nick'])){
