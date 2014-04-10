@@ -24,8 +24,10 @@ class DB {
 		if($bd !== null)
 			$this->bd = $bd;
 			
-		
-		$this->mysqli = new mysqli($this->host, $this->user, $this->pass, $this->bd);
+		// Conexión persistente:
+		// http://www.php.net/manual/en/mysqli.persistconns.php
+		// To open a persistent connection you must prepend p: to the hostname when connecting. 
+		$this->mysqli = new mysqli('p:'.$this->host, $this->user, $this->pass, $this->bd);
 		if ($this->mysqli->connect_errno) {
 			echo "Fallo al contectar a MySQL: (" . $this->mysqli->connect_errno . ") " . $this->mysqli->connect_error;
 			return false;
@@ -37,7 +39,7 @@ class DB {
 	// Realizar una consulta sql. Retorna false en caso de error, además de imprimir el error en pantalla
 	// Solo aquí se realiza una consulta directamente. De esta forma se puede abrir conexión en caso de ser necesaria o usar una respuesta cacheada
 	private function consulta($query, $cacheable = false){
-		if($cacheable){
+		if($cacheable && MEMCACHE){
 			$cacheado = $this->consultaCache($query);
 			if($cacheado !== false){
 				return $cacheado;
@@ -58,7 +60,7 @@ class DB {
 			return true;
 		}
 		
-		if($cacheable){
+		if($cacheable && MEMCACHE){
 			$arrayCacheado = $resultado->fetch_array(MYSQLI_ASSOC);
 			$this->cacheaResultado($query, $arrayCacheado);
 			return $arrayCacheado;
