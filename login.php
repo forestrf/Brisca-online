@@ -5,7 +5,7 @@
 	require_once('funciones.php');
 	
 	require_once('recaptcha/recaptchalib.php');
-	$publickey = "6Lf0du8SAAAAAInVTXZh6NTya42sW8_KsOSbTUEW"; // you got this from the signup page
+	$publickey = CAPTCHA_PUBLICKEY; // you got this from the signup page
 	
 	// En esta variable guardaremos los errores del formulario usando de índice el indice del elemento POST.
 	$errores = array();
@@ -24,7 +24,7 @@
 		if(count($errores)==0){
 			
 			// Comprobar captcha
-			$privatekey = "6Lf0du8SAAAAADPYrWhClrVpZleDC5OlI6zvSxW_";
+			$privatekey = CAPTCHA_PRIVATEKEY;
 			$resp = recaptcha_check_answer($privatekey,
 									$_SERVER["REMOTE_ADDR"],
 									$_POST["recaptcha_challenge_field"],
