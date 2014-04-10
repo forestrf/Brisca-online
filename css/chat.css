@@ -1,0 +1,66 @@
+#chat {
+	background-color: #222;
+	height: 100%;
+	width: 30%;
+	min-width: 250px;
+	position: absolute;
+	top: 0;
+	left: 0;
+	display: table-cell;
+}
+
+
+#historial {
+	height: 95%;
+	height: calc(100% - 40px);
+	overflow-y: scroll;
+}
+.globo {
+	background-color: #BBB;
+	display: inline-block;
+	margin: 10px 20px 5px 20px;
+	border-radius: 10px;
+	padding: 10px;
+	word-break: break-word;
+}
+.globo.mio {
+	float: right;
+	background-color: #8F8;
+}
+.globo > .nombre {
+	display: block;
+	font-weight: bold;
+}
+
+.clear {
+	clear : both;
+}
+
+
+
+
+#entradatxt, #enviar {
+	height: 5%;
+	height: calc(40px);
+}
+
+#entradatxt {
+	width: 80%;
+	width: calc(100% - 100px);
+	border: 0;
+	background-color: #444;
+	color: #FFF;
+	padding: 5px 10px;
+}
+#enviar {
+	width: 20%;
+	width: calc(100px);
+	border: 0;
+	background-color: #AAA;
+	transition: .5s background-color ease, .5s box-shadow ease;
+	cursor: pointer;
+}
+#enviar:hover {
+	background-color: #FFF;
+	box-shadow: 0 0 10px #FFF;
+}
