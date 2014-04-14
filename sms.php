@@ -13,8 +13,7 @@ $database = new DB();
 
 
 // Detectar si el usuario está logueado. Si no lo está, enviarlo a login. En caso de que está logueado, pero no se corresponda el login con la base de datos, lo mismo.
-detectaLogueadoORedireccion($database, "login.php");
-
+$datos_usuario = detectaLogueadoORedireccion($database, "login.php");
 
 
 
@@ -25,30 +24,86 @@ $ID_User = $_COOKIE['u'];
 // variable se forma a partir de: microtime + 4 letras/numeros al azar
 $sala = md5($_GET['sala']);
 
-// n del último mensaje recibido
-if(isset($_GET['ult']) && preg_match("/^[0-9]+?$/", $_GET['ult'])){
-	$n = $_GET['ult'];
-}
-
-
 
 
 $archivo = "chats/$sala";
 
 
+
 if(!file_exists($archivo)){
 	$db = new SQLite3($archivo, 0666);
-	$db->exec('CREATE TABLE mensajes (n INTEGER , usuario STRING, mensaje STRING)');
+	$db->exec('CREATE TABLE mensajes (n INTEGER PRIMARY KEY AUTOINCREMENT, usuario STRING, mensaje STRING);');
+	$result = $db->exec('PRAGMA journal_mode=WAL;');
+	var_dump($result);
+	$resultado = $result->fetchArray(SQLITE3_ASSOC);
+	print_r($resultado);
 }
 else{
 	$db = new SQLite3($archivo);
 }
+
+// De esta forma evitamos que de error por tabla bloqueada. Damos 5 segundos de tiempo para que la tabla deje de estar bloqueada.
+$db -> busyTimeout(5000);
+
 // $db->exec('CREATE TABLE mensajes (n INTEGER , usuario STRING, mensaje STRING)');
 // $db->exec('CREATE TABLE integrantes (id_user STRING)');
 // $db->exec("INSERT INTO integrantes (id_user) VALUES ('$id_user')"); // Esto por cada usuario de la sala. Solo ellos podrán escribir después
 
-$result = $db->query('SELECT n, usuario, mensaje FROM mensajes'.(isset($n)?" WHERE n > $n":''));
-var_dump($result->fetchArray());
+
+// Dependiendo de qué queremos hacer, leeremos de la db o escribiremos en ella.
+if(isset($_GET['msg'])){
+	// escribir
+	$msg = mysql_escape_mimic($_GET['msg']);
+	
+	$nick = $datos_usuario['NICK'];
+	
+	$result = $db->query("INSERT INTO mensajes (usuario, mensaje) VALUES ('{$nick}','{$msg}');");
+	if($result){
+		echo '{"resultado":true}';
+	}
+	else{
+		echo '{"resultado":false}';
+	}
+	$db->close();
+	unset($db);
+}
+elseif(isset($_GET['ult']) && preg_match("/^[0-9]+?$/", $_GET['ult'])){
+	// leer
+	// Se mantendrá la conexión abierta y 
+	
+	// n del último mensaje recibido
+	$n = $_GET['ult'];
+	
+	// Tiempo máximo de ejecución actual = 30 segundos.
+	// tiempo por vuelta aprox = 0.2 segundos.
+	// Vueltas en 30 segundos = 30 / 0.2 = 150
+	// Para evitar ajustarnos, mejor 20 segundos. 20 / 0.2 = 100
+	$vueltas = 100;
+	
+	for($i = 0; $i < $vueltas; ++$i){
+		
+		$result = $db->query("SELECT n, usuario, mensaje FROM mensajes WHERE n > {$n};");
+		$resultado = $result->fetchArray(SQLITE3_ASSOC);
+		if($resultado){
+			$resultados = Array();
+			$resultados[] = $resultado;
+			while($resultado = $result->fetchArray(SQLITE3_ASSOC)){
+				$resultados[] = $resultado;
+			}
+			echo json_encode($resultados);
+			
+			$db->close();
+			unset($db);
+			
+			exit;
+		}
+		
+		// 0.2 segundos
+		usleep(200000);
+	}
+	
+}
+
 
 
 

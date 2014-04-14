@@ -138,7 +138,7 @@ class DB {
 	function validaCookieLogueado($u, $p){
 		$u = mysql_escape_mimic($u);
 		$p = mysql_escape_mimic($p);
-		return $this->consulta("SELECT NOMBRE, APELLIDO, NICK FROM usuarios WHERE ID = (SELECT ID FROM login WHERE ID_USER = '$u' AND COOKIE = '$p' AND FECHA_TOPE > NOW())", true) !== null;
+		return $this->consulta("SELECT NOMBRE, APELLIDO, NICK FROM usuarios WHERE ID = (SELECT ID FROM login WHERE ID_USER = '$u' AND COOKIE = '$p' AND FECHA_TOPE > NOW())", true);
 	}
 	
 	// --------------------------------------------------------
@@ -175,11 +175,11 @@ function generateRandomString($length = 10) {
 
 
 
-// Esta función retorna true si está bien logueado, pero de lo contrario si no hay url redirección retorna false, si la hay redirecciona a esa url por header y termina el script
+// Esta función retorna un array con los datos del usuario si está bien logueado, pero de lo contrario si no hay url redirección retorna false, si la hay redirecciona a esa url por header y termina el script
 function detectaLogueadoORedireccion(&$database, $urlRedireccion = false){
 	// Detectar si el usuario está logueado. Si no lo está, enviarlo a login. En caso de que esté logueado, pero no se corresponda el login con la base de datos, lo mismo.
-	if(isset($_COOKIE['u']) && isset($_COOKIE['p']) && $database->validaCookieLogueado($_COOKIE['u'], $_COOKIE['p'])){
-		return true;
+	if(isset($_COOKIE['u']) && isset($_COOKIE['p']) && $datos_usuario = $database->validaCookieLogueado($_COOKIE['u'], $_COOKIE['p'])){
+		return $datos_usuario;
 	}
 	else{
 		if($urlRedireccion === false){
