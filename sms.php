@@ -1,7 +1,7 @@
 <?php
 
 // SI se llama sin la opción sala, se termina el script
-if(!isset($_GET['sala'])){
+if(!isset($_POST['sala'])){
 	exit;
 }
 
@@ -22,7 +22,7 @@ $ID_User = $_COOKIE['u'];
 // El archivo de la base de datos se forma del siguiente modo: md5(md5(variable))
 // en el get se usa: md5(variable)
 // variable se forma a partir de: microtime + 4 letras/numeros al azar
-$sala = md5($_GET['sala']);
+$sala = md5($_POST['sala']);
 
 
 
@@ -51,9 +51,9 @@ $db -> busyTimeout(5000);
 
 
 // Dependiendo de qué queremos hacer, leeremos de la db o escribiremos en ella.
-if(isset($_GET['msg'])){
+if(isset($_POST['msg'])){
 	// escribir
-	$msg = mysql_escape_mimic($_GET['msg']);
+	$msg = mysql_escape_mimic($_POST['msg']);
 	
 	$nick = $datos_usuario['NICK'];
 	
@@ -67,12 +67,12 @@ if(isset($_GET['msg'])){
 	$db->close();
 	unset($db);
 }
-elseif(isset($_GET['ult']) && preg_match("/^[0-9]+?$/", $_GET['ult'])){
+elseif(isset($_POST['ult']) && preg_match("/^[0-9]+?$/", $_POST['ult'])){
 	// leer
 	// Se mantendrá la conexión abierta y 
 	
 	// n del último mensaje recibido
-	$n = $_GET['ult'];
+	$n = $_POST['ult'];
 	
 	// Tiempo máximo de ejecución actual = 30 segundos.
 	// tiempo por vuelta aprox = 0.2 segundos.
