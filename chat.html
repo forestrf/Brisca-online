@@ -1,0 +1,118 @@
+<html>
+<head>
+	<title>Test chat con salas</title>
+</head>
+<body>
+	Es necesario estar logueado ya que sms.php consulta la cookie y la db para comprobar si se está logueado.
+	<br />
+	<br />
+	<br />
+	Sala: <input type="text" id="cambiaSala" value="sala1"/><input type="button" id="cambiaSalaBoton" value="Cambiar a esta sala" />
+	<br />
+	<br />
+	<br />
+	<textarea id="chat" cols=50 rows=10></textarea><br />
+	Mensaje: <form id="formEnviar"><input type="text" id="mensaje" /><input type="button" id="enviar" value="Enviar" /></form>
+	
+	<script>
+		(function(){
+			var t = this;
+			
+			
+			
+			// Inputs
+			
+			var IcambiaSala = document.getElementById('cambiaSala');
+			var IcambiaSalaBoton = document.getElementById('cambiaSalaBoton');
+			var Ienviar = document.getElementById('enviar');
+			var Imensaje = document.getElementById('mensaje');
+			var Ichat = document.getElementById('chat');
+			var IformEnviar = document.getElementById('formEnviar');
+			
+			
+			
+			// Funciones
+			
+			t.seteaSala = function(sala){
+				t.salaActual = sala;
+				console.log("Sala actual = "+sala);
+			}
+			
+			t.enviarMensaje = function(msg){
+				var r = new XMLHttpRequest();
+				var url = "sms.php";
+				var params = "sala=" + t.salaActual + "&msg=" + msg;
+				r.open("POST", url, true);
+				r.setRequestHeader("Content-type", "application/x-www-form-urlencoded");
+				r.setRequestHeader("Content-length", params.length);
+				r.setRequestHeader("Connection", "close");
+				r.send(params);
+			}
+			
+			t.loopRequest
+			t.loop = function(){
+				t.loopRequest = new XMLHttpRequest();
+				var url = "sms.php";
+				var params = "sala=" + t.salaActual + "&ult=" + t.ult;
+				t.loopRequest.open("POST", url, true);
+				t.loopRequest.setRequestHeader("Content-type", "application/x-www-form-urlencoded");
+				t.loopRequest.setRequestHeader("Content-length", params.length);
+				t.loopRequest.setRequestHeader("Connection", "close");
+				t.loopRequest.onreadystatechange = function(){
+					if(t.loopRequest.readyState == 4){
+						if(t.loopRequest.status == 200){
+							var resp = JSON.parse(t.loopRequest.responseText);
+							if(resp.length>0){
+								for(var i in resp){
+									Ichat.innerHTML += resp[i].usuario+": "+resp[i].mensaje+"\n";
+								}
+								t.ult = resp[resp.length-1].n;
+							}
+						}
+						setTimeout(t.loop, 0);
+					}
+				};
+				t.loopRequest.send(params);
+			};
+			
+			
+			
+			// Setear valores iniciales
+			
+			t.salaActual;
+			t.seteaSala(IcambiaSala.value);
+			
+			
+			
+			// onclicks
+			
+			IcambiaSalaBoton.onclick = function(){
+				t.seteaSala(IcambiaSala.value);
+				t.ult = 0;
+				Ichat.innerHTML = "";
+				t.loopRequest.abort();
+			}
+			
+			Ienviar.onclick = IformEnviar.onsubmit = function(){
+				t.enviarMensaje(Imensaje.value);
+				Imensaje.value = "";
+				return false;
+			}
+			
+			
+			
+			// loop recibir msg
+			
+			t.ult = 0;
+			
+			t.loop();
+			
+			
+			
+			
+		
+		
+		})();
+	</script>
+</body>
+</html>

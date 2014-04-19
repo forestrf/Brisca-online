@@ -34,9 +34,6 @@ if(!file_exists($archivo)){
 	$db = new SQLite3($archivo, 0666);
 	$db->exec('CREATE TABLE mensajes (n INTEGER PRIMARY KEY AUTOINCREMENT, usuario STRING, mensaje STRING);');
 	$result = $db->exec('PRAGMA journal_mode=WAL;');
-	var_dump($result);
-	$resultado = $result->fetchArray(SQLITE3_ASSOC);
-	print_r($resultado);
 }
 else{
 	$db = new SQLite3($archivo);
@@ -101,6 +98,8 @@ elseif(isset($_POST['ult']) && preg_match("/^[0-9]+?$/", $_POST['ult'])){
 		// 0.2 segundos
 		usleep(200000);
 	}
+	
+	echo "[]";
 	
 }
 
