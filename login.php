@@ -52,8 +52,9 @@
 					$ID = $database->idDesdeNick($_POST['nick']);
 					$database->SetUsuarioLogueadoPorID($ID, $cookie);
 					
-					setcookie("u", $ID, time()+3600);
-					setcookie("p", $cookie, time()+3600);
+					// 1 día
+					setcookie("u", $ID, time()+86400);
+					setcookie("p", $cookie, time()+86400);
 					
 					// Redireccionar al usuario a la página de logueados
 					header("Location: ".PATH."portada.php", true, 302);

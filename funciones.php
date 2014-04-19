@@ -138,7 +138,7 @@ class DB {
 	function validaCookieLogueado($u, $p){
 		$u = mysql_escape_mimic($u);
 		$p = mysql_escape_mimic($p);
-		return $this->consulta("SELECT NOMBRE, APELLIDO, NICK FROM usuarios WHERE ID = (SELECT ID FROM login WHERE ID_USER = '$u' AND COOKIE = '$p' AND FECHA_TOPE > NOW())", true);
+		return $this->consulta("SELECT NOMBRE, APELLIDO, NICK FROM usuarios WHERE ID = (SELECT ID_USER FROM login WHERE ID_USER = '$u' AND COOKIE = '$p' AND FECHA_TOPE > NOW())", true);
 	}
 	
 	// --------------------------------------------------------
