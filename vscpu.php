@@ -36,35 +36,35 @@
 				<input type="text" name="entradatxt" id="entradatxt" placeholder="Escribe un mensaje"><input type="button" value="enviar" id="enviar">
 			</div>
 			<div id="mesa">
-				<div id="jugador">
-					<div class="cartas"><img class="carta" src="" style="display:none" id="jugador_1_carta_1"><img class="carta" src="" style="display:none" id="jugador_1_carta_2"><img class="carta" src="" style="display:none" id="jugador_1_carta_3"></div>
-					<div class="puntuacion" id="puntos_jugador_1">0</div>
-					<div class="nombre"></div>
-				</div>
-				<div id="jugador2">
-					<div class="cartas"><img class="carta" src="" style="display:none" id="jugador_2_carta_1"><img class="carta" src="" style="display:none" id="jugador_2_carta_2"><img class="carta" src="" style="display:none" id="jugador_2_carta_3"></div>
-					<div class="puntuacion" id="puntos_jugador_2">0</div>
-					<div class="nombre"></div>
-				</div>
-				<div id="jugador3">
-					<div class="cartas"><img class="carta" src="" style="display:none" id="jugador_3_carta_1"><img class="carta" src="" style="display:none" id="jugador_3_carta_2"><img class="carta" src="" style="display:none" id="jugador_3_carta_3"></div>
-					<div class="puntuacion" id="puntos_jugador_3">0</div>
-					<div class="nombre"></div>
-				</div>
-				<div id="jugador4">
-					<div class="cartas"><img class="carta" src="" style="display:none" id="jugador_4_carta_1"><img class="carta" src="" style="display:none" id="jugador_4_carta_2"><img class="carta" src="" style="display:none" id="jugador_4_carta_3"></div>
-					<div class="puntuacion" id="puntos_jugador_4">0</div>
-					<div class="nombre"></div>
+				<div id="todas_las_cartas">
+					<!--llenar este div con todas las cartas desde js-->
 				</div>
 				
-				<div id="mazo">
-					<div id="palomando">
-						<img class="carta" src="" style="display:none" id="carta_palo_manda_siempre">
-					</div>
-					<img id="carta_mazo" class="carta" src="img/cartas/back2.jpg">
+				<!--Posiciones. Para poder ver donde están-->
+				<div id="posiciones">
+					<div id="P1C1">Player 1 Carta 1</div>
+					<div id="P1C2">Player 1 Carta 2</div>
+					<div id="P1C3">Player 1 Carta 3</div>
+					<div id="P2C1">Player 2 Carta 1</div>
+					<div id="P2C2">Player 2 Carta 2</div>
+					<div id="P2C3">Player 2 Carta 3</div>
+					<div id="P3C1">Player 3 Carta 1</div>
+					<div id="P3C2">Player 3 Carta 2</div>
+					<div id="P3C3">Player 3 Carta 3</div>
+					<div id="P4C1">Player 4 Carta 1</div>
+					<div id="P4C2">Player 4 Carta 2</div>
+					<div id="P4C3">Player 4 Carta 3</div>
+					
+					<div id="MC0">Palo Manda Siempre</div>
+					<div id="MC1">Mesa Carta 1</div>
+					<div id="MC2">Mesa Carta 2</div>
+					<div id="MC3">Mesa Carta 3</div>
+					<div id="MC4">Mesa Carta 4</div>
+					
+					<div id="MM">Mesa Mazo</div>
 				</div>
 				
-				<div id="cartas_mesa"><img class="carta" src="" style="display:none" id="mesa_carta_1"><img class="carta" src="" style="display:none" id="mesa_carta_2"><img class="carta" src="" style="display:none" id="mesa_carta_3"><img class="carta" src="" style="display:none" id="mesa_carta_4"></div>
+				
 			</div>
 		</div>
 		
@@ -96,7 +96,35 @@
 		
 		<script type="text/javascript">
 		
+			
+		
+			/*window.onresize=function(){
+				var height = window.innerHeight;
+				var mesa = document.getElementById('mesa');
+				var chat = document.getElementById('chat');
+				mesa.style.height = height+"px";
+				mesa.style.width = height+"px";
+				chat.style.width = (window.innerWidth - height)+"px";
+			};*/
+		
+		
+		
 			var miNombre = "forest";
+			
+			
+			
+			// Indicar el tamaño de las cartas mediante javascript editando el style
+			// Tamaño de las cartas = 201 x 279
+			// ratio = 201 / 279 = 0.72
+			// ancho = alto * 0.72
+			// alto = ancho / 0.72
+			var aspectRatio = 0.72;
+			
+			var todas_las_cartas = document.getElementById('todas_las_cartas');
+			var arrCartas = IABriscaBaseInstancia.cartasTotalArray;
+			for(var i in arrCartas){
+				todas_las_cartas.innerHTML += '<img class="carta" id="carta_'+arrCartas[i]+'" src="img/cartas/'+arrCartas[i]+'.jpg">';
+			}
 			
 			
 			

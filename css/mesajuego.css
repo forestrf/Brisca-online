@@ -9,103 +9,60 @@
 	background-color: #018B7B;
 	height: 100%;
 	width: 70%;
-	min-width: 500px;
 	position: absolute;
 	top: 0;
 	right: 0;
 	display: table-cell;
 }
 
-#jugador, #jugador2, #jugador3, #jugador4 {
-	background-color: #017063;
-}
-
-#jugador {
-	height: 25%;
-	left: 30%;
-	position: absolute;
-	top: 75%;
-	width: 40%;
-}
-#jugador2 {
-	left: 5%;
-	position: absolute;
-	top: 10%;
-	width: 25%;
-}
-#jugador3 {
-	left: 37.5%;
-	position: absolute;
-	top: 5%;
-	width: 25%;
-}
-#jugador4 {
-	left: 70%;
-	position: absolute;
-	top: 10%;
-	width: 25%;
+#todas_las_cartas {
+	display:none;
 }
 
 
 
-
-
-.cartas {
-	text-align: center;
-}
-.cartas img {
-	width: 33%;
-}
-
-#mazo {
-	left: 2%;
-	position: absolute;
-	top: 35%;
-	width: 15%;
-}
-#mazo #palomando img {
-	width: 60%;
-	left: 20%;
-	position: absolute;
-	margin-top: 35%;
-}
-#mazo img {
-	width: 100%;
-	position: absolute;
-	top: 0;
+/*Posición de los jugadores*/
+/*Hacerlo con responsive*/
+#posiciones *{
+	position:absolute;
+	width:10px;
+	height:10px;
+	background-color: #FFF;
 }
 
-#cartas_mesa {
-	left: 43%;
-	position: absolute;
-	top: 36%;
-	width: 14%;
-}
+#P1C1,#P1C2,#P1C3{top:90%}
+#P1C1{left:35%}
+#P1C2{left:50%}
+#P1C3{left:65%}
 
-#cartas_mesa > img {
-	width: 100%;
-}
+#P2C1,#P2C2,#P2C3{left:10%}
+#P2C1{top:35%}
+#P2C2{top:50%}
+#P2C3{top:65%}
 
-#mesa_carta_1 {
-	left: -40%;
-	position: relative;
-	top: -10%;
-}
-#mesa_carta_2 {
-	left: 10%;
-	position: absolute;
-	top: -40%;
-}
-#mesa_carta_3 {
-	left: 40%;
-	position: absolute;
-	top: 10%;
-}
-#mesa_carta_4 {
-	left: -10%;
-	position: absolute;
-	top: 40%;
-}
+#P3C1,#P3C2,#P3C3{top:10%}
+#P3C1{left:35%}
+#P3C2{left:50%}
+#P3C3{left:65%}
+
+#P4C1,#P4C2,#P4C3{left:90%}
+#P4C1{top:35%}
+#P4C2{top:50%}
+#P4C3{top:65%}
+
+#MC0{top:30%;left:65%}
+#MC1,#MC2,#MC3,#MC4{top:50%}
+#MC1{left:35%}
+#MC2{left:45%}
+#MC3{left:55%}
+#MC4{left:65%}
+
+#MM{top:30%;left:35%}
+
+
+
+
+
 
 .carta{
 	border-radius: 7px;
