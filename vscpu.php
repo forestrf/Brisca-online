@@ -39,6 +39,9 @@
 				<div id="todas_las_cartas">
 					<!--llenar este div con todas las cartas desde js-->
 				</div>
+				<div id="todas_las_cartas_visible">
+					<!--Mover aquí las cartas para que sean visibles-->
+				</div>
 				
 				<!--Posiciones. Para poder ver donde están-->
 				<div id="posiciones">
@@ -120,10 +123,43 @@
 			// alto = ancho / 0.72
 			var aspectRatio = 0.72;
 			
+			var maximo = Math.min(window.innerHeight,window.innerWidth);
+			var widthCarta = maximo*0.1;
+			var heightCarta = widthCarta/aspectRatio;
+			var widthCarta2 = widthCarta/2;
+			var heightCarta2 = heightCarta/2;
+			
 			var todas_las_cartas = document.getElementById('todas_las_cartas');
 			var arrCartas = IABriscaBaseInstancia.cartasTotalArray;
 			for(var i in arrCartas){
-				todas_las_cartas.innerHTML += '<img class="carta" id="carta_'+arrCartas[i]+'" src="img/cartas/'+arrCartas[i]+'.jpg">';
+				todas_las_cartas.innerHTML += '<img class="carta" style="width:'+widthCarta+'px;height:'+heightCarta+'px" id="carta_'+arrCartas[i]+'" src="img/cartas/'+arrCartas[i]+'.jpg">';
+			}
+			
+			var mazo_cartas = document.getElementById('MM');
+			mazo_cartas.innerHTML = '<img class="carta" style="width:'+widthCarta+'px;height:'+heightCarta+'px" src="img/cartas/back2.jpg">';
+			
+			
+			// Mover la carta a dónde
+			function moverCartaA(carta, hasta){
+				var cartaObj = document.getElementById('carta_'+carta);
+				var hastaObj = document.getElementById(hasta);
+				if(cartaObj.parentElement.id != 'todas_las_cartas_visible'){document.getElementById('todas_las_cartas_visible').appendChild(cartaObj);}
+				
+				cartaObj.style.top = hastaObj.offsetTop -heightCarta2+"px";
+				cartaObj.style.left = hastaObj.offsetLeft -widthCarta2+"px";
+			}
+			
+			// Mover la carta a dónde
+			function moverCartaDeA(carta, desde, hasta){
+				var cartaObj = document.getElementById('carta_'+carta);
+				var desdeObj = document.getElementById(desde);
+				if(cartaObj.parentElement.id != 'todas_las_cartas_visible'){document.getElementById('todas_las_cartas_visible').appendChild(cartaObj);}
+				
+				cartaObj.style.top = desdeObj.offsetTop -heightCarta2+"px";
+				cartaObj.style.left = desdeObj.offsetLeft -widthCarta2+"px";
+				setTimeout(function(){
+					moverCartaA(carta, hasta);
+				},0);
 			}
 			
 			

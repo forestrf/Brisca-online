@@ -67,6 +67,8 @@
 .carta{
 	border-radius: 7px;
 	box-shadow: 0 0 10px #000000;
+	position: absolute;
+	transition: 1s all ease;
 }
 
 .puntuacion{
