@@ -575,15 +575,17 @@ function HumanoBriscaJugador(){
 	// Para el jugador, esta función guarda el callback y genera los onclick en las cartas del jugador, los caules procovan la jugada.
 	this.lanzaCarta = function(callback){
 		for(var i in thisT.cartasEnMano){
-			var id = 'jugador_'+thisT.jugadorID+'_carta_'+(parseInt(i)+1);
-			document.getElementById(id).onclick = (function(carta, callback, lanzaCartaOnClick){
+			var id = 'carta_'+thisT.cartasEnMano[i];
+			document.getElementById(id).style.cursor = 'pointer';
+			document.getElementById(id).onclick = (function(i, callback, thisT){
 				return function(){
-					for(var i in thisT.cartasEnMano){
-						document.getElementById('jugador_'+thisT.jugadorID+'_carta_'+(parseInt(i)+1)).onclick = undefined;
+					for(var z in thisT.cartasEnMano){
+						document.getElementById('carta_'+thisT.cartasEnMano[z]).style.cursor = 'default';
+						document.getElementById('carta_'+thisT.cartasEnMano[z]).onclick = undefined;
 					}
-					lanzaCartaOnClick(carta, callback);
+					thisT.lanzaCartaOnClick(thisT.cartasEnMano[i], callback);
 				};
-			})(thisT.cartasEnMano[i], callback, thisT.lanzaCartaOnClick);
+			})(i, callback, thisT);
 		}
 		
 		console2.log('Preparado lanzamiento manual.');
@@ -657,7 +659,7 @@ function IABriscaMesa(){
 		thisT.cartaPaloQueMandaSiempre = thisT.mazoCartas.splice(Math.floor(Math.random()*thisT.mazoCartas.length),1)[0];
 		thisT.paloQueMandaSiempre = IABriscaBaseInstancia.paloCarta(thisT.cartaPaloQueMandaSiempre);
 		console2.log('palo que manda siempre: '+thisT.paloQueMandaSiempre);
-		seteaImagen('carta_palo_manda_siempre', thisT.cartaPaloQueMandaSiempre);
+		seteaImagen('MC0', thisT.cartaPaloQueMandaSiempre);
 	};
 	
 	// inserta a los jugadores en la mesa
@@ -703,7 +705,6 @@ function IABriscaMesa(){
 		thisT.paloQueMandaEnMesa = '';
 		thisT.cartasEnMesa = [];
 		//this.quienATiradoQueCarta = {};
-		cargaImagenesCartasMesa(thisT.cartasEnMesa);
 		if(thisT.quienGanoUltimaPartida !== -1){
 			thisT.quienLanzaPrimero = thisT.quienGanoUltimaPartida;
 		}
@@ -728,7 +729,6 @@ function IABriscaMesa(){
 			console2.log('cartaGanadora: '+cartaGanadora);
 			thisT.peticionJugadorGanarMesa(thisT.quienATiradoQueCarta[cartaGanadora]);
 			thisT.quienGanoUltimaPartida = thisT.jugadoresArray.indexOf(thisT.quienATiradoQueCarta[cartaGanadora]);
-			cargaImagenesCartasMesa(thisT.cartasEnMesa);
 			
 			for(var i in thisT.jugadoresArray){
 				thisT.peticionJugadorRobar(thisT.jugadoresArray[i]);
@@ -754,8 +754,10 @@ function IABriscaMesa(){
 		if(thisT.paloQueMandaEnMesa == ""){
 			thisT.paloQueMandaEnMesa = IABriscaBaseInstancia.paloCarta(cartaTirada);
 		}
-		cargaImagenesCartasJugador(jugador);
-		cargaImagenesCartasMesa(thisT.cartasEnMesa);
+		/*var huecoLibre = huecoLibreJugador(jugador.jugadorID);
+		moverCartaA(cartaTirada, 'P'+jugador.jugadorID+'C'+huecoLibre);*/
+		var huecoLibre = huecoLibreMesa();
+		moverCartaA(cartaTirada, 'MC'+huecoLibre);
 		setTimeout(thisT.lanzaRonda, thisT.tiempoPensandoIAms);
 	};
 	
@@ -772,17 +774,21 @@ function IABriscaMesa(){
 				var cartaARobar = this.cartaPaloQueMandaSiempre;
 				thisT.cartaPaloQueMandaSiempre = '';
 				thisT.quedanCartasPorRobar = false;
-				seteaImagen('carta_palo_manda_siempre', 'blanco');
+				seteaImagen('MC0', '');
 			}
 			jugador.robaCarta(cartaARobar);
-			cargaImagenesCartasJugador(jugador);
+			var huecoLibre = huecoLibreJugador(jugador.jugadorID);
+			moverCartaA(cartaARobar, 'P'+jugador.jugadorID+'C'+huecoLibre);
 			if(thisT.mazoCartas.length === 0){
-				seteaImagen('carta_mazo', 'blanco');
+				seteaImagen('MM', '');
 			}
 		}
 	};
 	
 	this.peticionJugadorGanarMesa = function(jugador){
+		for(var i = 0; i < thisT.jugadoresArray.length; ++i){
+			moverCartaA(thisT.cartasEnMesa[i], 'P'+jugador.jugadorID+'C0');
+		}
 		jugador.ganaMesa(thisT.cartasEnMesa);
 		for(var i in thisT.jugadoresArray){
 			thisT.jugadoresArray[i].cartasJugadasMesa(thisT.cartasEnMesa);
@@ -792,41 +798,12 @@ function IABriscaMesa(){
 	};
 }
 
-function cargaImagenesCartasJugador(jugador){
-	for(var i=0; i<3; i++){
-		if(jugador.cartasEnMano[i]){
-			seteaImagen('jugador_'+jugador.jugadorID+'_carta_'+(i+1), jugador.cartasEnMano[i]);
-		}
-		else{
-			seteaImagen('jugador_'+jugador.jugadorID+'_carta_'+(i+1), 'blanco');
-		}
-	}
-}
-
-function cargaImagenesCartasMesa(cartasMesa){
-	for(var i=0; i<4; i++){
-		if(cartasMesa[i]){
-			seteaImagen('mesa_carta_'+(i+1), cartasMesa[i]);
-		}
-		else{
-			seteaImagen('mesa_carta_'+(i+1), 'blanco');
-		}
-	}
-}
-
 function seteaImagen(id, carta){
-	if(carta === 'blanco'){
-		document.getElementById(id).src = "";
-		document.getElementById(id).style.display = "none";
-	}
-	else{
-		document.getElementById(id).src = "img/cartas/"+carta+".jpg";
-		document.getElementById(id).style.display = "";
-	}
+	moverCartaA(carta, id);
 }
 
 function seteaPuntos(id, puntos){
-	document.getElementById(id).innerHTML = puntos;
+	//document.getElementById(id).innerHTML = puntos;
 }
 
 function ClampCircular(numero, minimo, maximo){

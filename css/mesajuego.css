@@ -25,9 +25,9 @@
 /*Hacerlo con responsive*/
 #posiciones *{
 	position:absolute;
-	width:10px;
+	/*width:10px;
 	height:10px;
-	background-color: #FFF;
+	background-color: #FFF;*/
 }
 
 #P1C1,#P1C2,#P1C3{top:90%}

@@ -45,26 +45,37 @@
 				
 				<!--Posiciones. Para poder ver donde están-->
 				<div id="posiciones">
-					<div id="P1C1">Player 1 Carta 1</div>
-					<div id="P1C2">Player 1 Carta 2</div>
-					<div id="P1C3">Player 1 Carta 3</div>
-					<div id="P2C1">Player 2 Carta 1</div>
-					<div id="P2C2">Player 2 Carta 2</div>
-					<div id="P2C3">Player 2 Carta 3</div>
-					<div id="P3C1">Player 3 Carta 1</div>
-					<div id="P3C2">Player 3 Carta 2</div>
-					<div id="P3C3">Player 3 Carta 3</div>
-					<div id="P4C1">Player 4 Carta 1</div>
-					<div id="P4C2">Player 4 Carta 2</div>
-					<div id="P4C3">Player 4 Carta 3</div>
+					<!--cartas en mano-->
+					<div id="P1C1"></div>
+					<div id="P1C2"></div>
+					<div id="P1C3"></div>
+					<div id="P2C1"></div>
+					<div id="P2C2"></div>
+					<div id="P2C3"></div>
+					<div id="P3C1"></div>
+					<div id="P3C2"></div>
+					<div id="P3C3"></div>
+					<div id="P4C1"></div>
+					<div id="P4C2"></div>
+					<div id="P4C3"></div>
 					
-					<div id="MC0">Palo Manda Siempre</div>
-					<div id="MC1">Mesa Carta 1</div>
-					<div id="MC2">Mesa Carta 2</div>
-					<div id="MC3">Mesa Carta 3</div>
-					<div id="MC4">Mesa Carta 4</div>
+					<!--cartas ganadas-->
+					<div id="P1C0"></div>
+					<div id="P2C0"></div>
+					<div id="P3C0"></div>
+					<div id="P4C0"></div>
 					
-					<div id="MM">Mesa Mazo</div>
+					<!--cartas palo que manda-->
+					<div id="MC0"></div>
+					
+					<!--cartas en mesa-->
+					<div id="MC1"></div>
+					<div id="MC2"></div>
+					<div id="MC3"></div>
+					<div id="MC4"></div>
+					
+					<!--carta mazo-->
+					<div id="MM"></div>
 				</div>
 				
 				
@@ -114,6 +125,8 @@
 		
 			var miNombre = "forest";
 			
+			var arrPosiciones = document.getElementById('posiciones').children;
+			
 			
 			
 			// Indicar el tamaño de las cartas mediante javascript editando el style
@@ -136,17 +149,28 @@
 			}
 			
 			var mazo_cartas = document.getElementById('MM');
-			mazo_cartas.innerHTML = '<img class="carta" style="width:'+widthCarta+'px;height:'+heightCarta+'px" src="img/cartas/back2.jpg">';
+			mazo_cartas.innerHTML = '<img class="carta" style="position:absolute;width:'+widthCarta+'px;height:'+heightCarta+'px;top:-'+heightCarta2+'px;left:-'+widthCarta2+'px;" src="img/cartas/back2.jpg">';
 			
 			
 			// Mover la carta a dónde
 			function moverCartaA(carta, hasta){
 				var cartaObj = document.getElementById('carta_'+carta);
 				var hastaObj = document.getElementById(hasta);
-				if(cartaObj.parentElement.id != 'todas_las_cartas_visible'){document.getElementById('todas_las_cartas_visible').appendChild(cartaObj);}
+				if(cartaObj.parentElement.id != 'todas_las_cartas_visible'){
+					document.getElementById('todas_las_cartas_visible').appendChild(cartaObj);
+					setTimeout(function(){
+						moverCartaA(carta, hasta);
+					},0);
+				}
 				
 				cartaObj.style.top = hastaObj.offsetTop -heightCarta2+"px";
 				cartaObj.style.left = hastaObj.offsetLeft -widthCarta2+"px";
+				for(var i = 0; i < arrPosiciones.length; ++i){
+					if(arrPosiciones[i].innerHTML.indexOf('{{'+carta+'}}') != -1){
+						arrPosiciones[i].innerHTML = arrPosiciones[i].innerHTML.split('{{'+carta+'}}').join('');
+					}
+				}
+				hastaObj.innerHTML += '{{'+carta+'}}';
 			}
 			
 			// Mover la carta a dónde
@@ -162,6 +186,23 @@
 				},0);
 			}
 			
+			// Retorna el número, del 1 al 3, donde poner la carta a un jugador
+			function huecoLibreJugador(jugadorID){
+				for(var i = 1; i <= 3; ++i){
+					if(document.getElementById('P'+jugadorID+'C'+i).innerHTML === ''){
+						return i;
+					}
+				}
+			}
+			
+			// Retorna el número, del 1 al 4, donde poner la carta en la mesa
+			function huecoLibreMesa(){
+				for(var i = 1; i <= 4; ++i){
+					if(document.getElementById('MC'+i).innerHTML === ''){
+						return i;
+					}
+				}
+			}
 			
 			
 			
