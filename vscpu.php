@@ -120,6 +120,13 @@
 				mesa.style.width = height+"px";
 				chat.style.width = (window.innerWidth - height)+"px";
 			};*/
+			
+			
+			
+			// Iniciar el script de la brisca
+			IABriscaInstancia = new IABrisca();
+			IABriscaInstancia.console2.on = true;
+			
 		
 		
 		
@@ -143,7 +150,7 @@
 			var heightCarta2 = heightCarta/2;
 			
 			var todas_las_cartas = document.getElementById('todas_las_cartas');
-			var arrCartas = IABriscaBaseInstancia.cartasTotalArray;
+			var arrCartas = IABriscaInstancia.IABriscaBaseInstancia.cartasTotalArray;
 			for(var i in arrCartas){
 				todas_las_cartas.innerHTML += '<img class="carta" style="width:'+widthCarta+'px;height:'+heightCarta+'px" id="carta_'+arrCartas[i]+'" src="img/cartas/'+arrCartas[i]+'.jpg">';
 			}
@@ -187,7 +194,7 @@
 					return function(){
 						moverCartaA(carta, hasta);
 					}
-				})(carta, hasta),0);
+				})(carta, hasta), 0);
 			}
 			
 			// Retorna el número, del 1 al 3, donde poner la carta a un jugador
@@ -271,31 +278,29 @@
 			
 			
 			
-			console2.on = true;
-			
-			IABriscaMesaInstancia.iniciarMesa();
-			IABriscaMesaInstancia.tiempoPensandoIAms = 1500;
-			IABriscaMesaInstancia.tiempoEntreRondas = 1000;
+			IABriscaInstancia.IABriscaMesaInstancia.iniciarMesa();
+			IABriscaInstancia.IABriscaMesaInstancia.tiempoPensandoIAms = 1500;
+			IABriscaInstancia.IABriscaMesaInstancia.tiempoEntreRondas = 1000;
 			
 			
 			//IABriscaMesaInstancia.tiempoPensandoIAms = 0;
 			//IABriscaMesaInstancia.tiempoEntreRondas = 0;
 			
 			
-			var jugador1 = new HumanoBriscaJugador();
+			var jugador1 = new IABriscaInstancia.HumanoBriscaJugador();
 			jugador1.iniciarJugador(1);
-			var jugador2 = new IABriscaJugador();
+			var jugador2 = new IABriscaInstancia.IABriscaJugador();
 			jugador2.iniciarJugador(2);
-			var jugador3 = new IABriscaJugador();
+			var jugador3 = new IABriscaInstancia.IABriscaJugador();
 			jugador3.iniciarJugador(3);
-			var jugador4 = new IABriscaJugador();
+			var jugador4 = new IABriscaInstancia.IABriscaJugador();
 			jugador4.iniciarJugador(4);
 			
-			IABriscaMesaInstancia.insertaJugadoresEnMesa([jugador1,jugador2,jugador3,jugador4]);
+			IABriscaInstancia.IABriscaMesaInstancia.insertaJugadoresEnMesa([jugador1,jugador2,jugador3,jugador4]);
 
 			
 			// GO
-			IABriscaMesaInstancia.comienzaPartida();
+			IABriscaInstancia.IABriscaMesaInstancia.comienzaPartida();
 
 			
 
