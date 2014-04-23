@@ -156,34 +156,38 @@
 			function moverCartaA(carta, hasta){
 				var cartaObj = document.getElementById('carta_'+carta);
 				var hastaObj = document.getElementById(hasta);
-				if(cartaObj.parentElement.id != 'todas_las_cartas_visible'){
-					document.getElementById('todas_las_cartas_visible').appendChild(cartaObj);
-					setTimeout(function(){
-						moverCartaA(carta, hasta);
-					},0);
-				}
 				
-				cartaObj.style.top = hastaObj.offsetTop -heightCarta2+"px";
-				cartaObj.style.left = hastaObj.offsetLeft -widthCarta2+"px";
 				for(var i = 0; i < arrPosiciones.length; ++i){
 					if(arrPosiciones[i].innerHTML.indexOf('{{'+carta+'}}') != -1){
 						arrPosiciones[i].innerHTML = arrPosiciones[i].innerHTML.split('{{'+carta+'}}').join('');
 					}
 				}
 				hastaObj.innerHTML += '{{'+carta+'}}';
+				
+				if(cartaObj.parentElement.id != 'todas_las_cartas_visible'){
+					moverCartaDeA(carta, 'MM', hasta);
+					return;
+				}
+				
+				cartaObj.style.top = hastaObj.offsetTop -heightCarta2+"px";
+				cartaObj.style.left = hastaObj.offsetLeft -widthCarta2+"px";
 			}
 			
 			// Mover la carta a dónde
 			function moverCartaDeA(carta, desde, hasta){
 				var cartaObj = document.getElementById('carta_'+carta);
 				var desdeObj = document.getElementById(desde);
-				if(cartaObj.parentElement.id != 'todas_las_cartas_visible'){document.getElementById('todas_las_cartas_visible').appendChild(cartaObj);}
+				if(cartaObj.parentElement.id != 'todas_las_cartas_visible'){
+					document.getElementById('todas_las_cartas_visible').appendChild(cartaObj);
+				}
 				
 				cartaObj.style.top = desdeObj.offsetTop -heightCarta2+"px";
 				cartaObj.style.left = desdeObj.offsetLeft -widthCarta2+"px";
-				setTimeout(function(){
-					moverCartaA(carta, hasta);
-				},0);
+				setTimeout((function(carta, hasta){
+					return function(){
+						moverCartaA(carta, hasta);
+					}
+				})(carta, hasta),0);
 			}
 			
 			// Retorna el número, del 1 al 3, donde poner la carta a un jugador

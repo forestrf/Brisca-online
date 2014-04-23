@@ -659,7 +659,7 @@ function IABriscaMesa(){
 		thisT.cartaPaloQueMandaSiempre = thisT.mazoCartas.splice(Math.floor(Math.random()*thisT.mazoCartas.length),1)[0];
 		thisT.paloQueMandaSiempre = IABriscaBaseInstancia.paloCarta(thisT.cartaPaloQueMandaSiempre);
 		console2.log('palo que manda siempre: '+thisT.paloQueMandaSiempre);
-		seteaImagen('MC0', thisT.cartaPaloQueMandaSiempre);
+		moverCartaA(thisT.cartaPaloQueMandaSiempre, 'MC0');
 	};
 	
 	// inserta a los jugadores en la mesa
@@ -774,13 +774,13 @@ function IABriscaMesa(){
 				var cartaARobar = this.cartaPaloQueMandaSiempre;
 				thisT.cartaPaloQueMandaSiempre = '';
 				thisT.quedanCartasPorRobar = false;
-				seteaImagen('MC0', '');
 			}
 			jugador.robaCarta(cartaARobar);
 			var huecoLibre = huecoLibreJugador(jugador.jugadorID);
 			moverCartaA(cartaARobar, 'P'+jugador.jugadorID+'C'+huecoLibre);
 			if(thisT.mazoCartas.length === 0){
-				seteaImagen('MM', '');
+				// QUITAR EL MAZO
+				//seteaImagen('MM', '');
 			}
 		}
 	};
@@ -796,10 +796,6 @@ function IABriscaMesa(){
 		seteaPuntos('puntos_jugador_'+(thisT.jugadoresArray.indexOf(jugador)+1), IABriscaBaseInstancia.totalPuntosEnCartas(jugador.cartasGanadas));
 		thisT.cartasEnMesa = [];
 	};
-}
-
-function seteaImagen(id, carta){
-	moverCartaA(carta, id);
 }
 
 function seteaPuntos(id, puntos){
