@@ -39,9 +39,6 @@
 				<div id="todas_las_cartas">
 					<!--llenar este div con todas las cartas desde js-->
 				</div>
-				<div id="todas_las_cartas_visible">
-					<!--Mover aquí las cartas para que sean visibles-->
-				</div>
 				
 				<!--Posiciones. Para poder ver donde están-->
 				<div id="posiciones">
@@ -125,6 +122,17 @@
 			
 			// Iniciar el script de la brisca
 			IABriscaInstancia = new IABrisca();
+			IABriscaInstancia.moverCarta = function(carta, donde){
+				if(donde.indexOf("P1")!=-1 || donde.indexOf("MC")!=-1 || donde.indexOf("C0")!=-1){
+					moverCartaA(carta, donde);
+					document.getElementById('carta_'+carta).src="/img/cartas/"+carta+".jpg";
+				}
+				else{
+					moverCartaA(carta, donde);
+					document.getElementById('carta_'+carta).src="/img/cartas/back2.jpg";
+				}
+			}
+			
 			IABriscaInstancia.console2.on = true;
 			
 		
@@ -144,19 +152,21 @@
 			var aspectRatio = 0.72;
 			
 			var maximo = Math.min(window.innerHeight,window.innerWidth);
-			var widthCarta = maximo*0.1;
+			var widthCarta = maximo*0.13;
 			var heightCarta = widthCarta/aspectRatio;
 			var widthCarta2 = widthCarta/2;
 			var heightCarta2 = heightCarta/2;
+			var maximoAzarDesfaseWidth = widthCarta * 0.02;
+			var maximoAzarDesfaseHeight = heightCarta * 0.02;
+			var maximoAzarDesgaseGrados = 2;
 			
 			var todas_las_cartas = document.getElementById('todas_las_cartas');
+			var mazo_cartas = document.getElementById('MM');
 			var arrCartas = IABriscaInstancia.IABriscaBaseInstancia.cartasTotalArray;
 			for(var i in arrCartas){
-				todas_las_cartas.innerHTML += '<img class="carta" style="width:'+widthCarta+'px;height:'+heightCarta+'px" id="carta_'+arrCartas[i]+'" src="img/cartas/'+arrCartas[i]+'.jpg">';
+				todas_las_cartas.innerHTML += '<img class="carta" style="position:absolute;width:'+widthCarta+'px;height:'+heightCarta+'px;top:'+(mazo_cartas.offsetTop -heightCarta2)+'px;left:'+(mazo_cartas.offsetLeft -widthCarta2)+'px;" id="carta_'+arrCartas[i]+'" src="img/cartas/back2.jpg">';
 			}
 			
-			var mazo_cartas = document.getElementById('MM');
-			mazo_cartas.innerHTML = '<img class="carta" style="position:absolute;width:'+widthCarta+'px;height:'+heightCarta+'px;top:-'+heightCarta2+'px;left:-'+widthCarta2+'px;" src="img/cartas/back2.jpg">';
 			
 			
 			// Mover la carta a dónde
@@ -171,22 +181,28 @@
 				}
 				hastaObj.innerHTML += '{{'+carta+'}}';
 				
-				if(cartaObj.parentElement.id != 'todas_las_cartas_visible'){
+				/*if(cartaObj.parentElement.id != 'todas_las_cartas_visible'){
 					moverCartaDeA(carta, 'MM', hasta);
 					return;
-				}
+				}*/
 				
-				cartaObj.style.top = hastaObj.offsetTop -heightCarta2+"px";
-				cartaObj.style.left = hastaObj.offsetLeft -widthCarta2+"px";
+				cartaObj.style.top = (hastaObj.offsetTop -heightCarta2 +((Math.random()*2) -1) *maximoAzarDesfaseWidth) +"px";
+				cartaObj.style.left = (hastaObj.offsetLeft -widthCarta2 +((Math.random()*2) -1) *maximoAzarDesfaseHeight) +"px";
+				if(hasta.indexOf("P2") != -1 || hasta.indexOf("P4") != -1){
+					cartaObj.style.transform = 'rotate('+(90 +((Math.random()*2) -1) *maximoAzarDesgaseGrados)+'deg)';
+				}
+				else{
+					cartaObj.style.transform = 'rotate('+(((Math.random()*2) -1) *maximoAzarDesgaseGrados)+'deg)';
+				}
 			}
 			
 			// Mover la carta a dónde
 			function moverCartaDeA(carta, desde, hasta){
 				var cartaObj = document.getElementById('carta_'+carta);
 				var desdeObj = document.getElementById(desde);
-				if(cartaObj.parentElement.id != 'todas_las_cartas_visible'){
+				/*if(cartaObj.parentElement.id != 'todas_las_cartas_visible'){
 					document.getElementById('todas_las_cartas_visible').appendChild(cartaObj);
-				}
+				}*/
 				
 				cartaObj.style.top = desdeObj.offsetTop -heightCarta2+"px";
 				cartaObj.style.left = desdeObj.offsetLeft -widthCarta2+"px";
@@ -296,11 +312,8 @@
 			var jugador4 = new IABriscaInstancia.IABriscaJugador();
 			jugador4.iniciarJugador(4);
 			
-			IABriscaInstancia.IABriscaMesaInstancia.insertaJugadoresEnMesa([jugador1,jugador2,jugador3,jugador4]);
-
-			
-			// GO
-			IABriscaInstancia.IABriscaMesaInstancia.comienzaPartida();
+			// Inserta jugadores y comienza
+			IABriscaInstancia.IABriscaMesaInstancia.comienzaPartida([jugador1,jugador2,jugador3,jugador4]);
 
 			
 

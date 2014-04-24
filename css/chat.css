@@ -21,7 +21,7 @@
 	margin: 10px 20px 5px 20px;
 	border-radius: 10px;
 	padding: 10px;
-	word-break: break-word;
+	word-wrap: break-word;
 }
 .globo.mio {
 	float: right;

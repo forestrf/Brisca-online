@@ -14,7 +14,7 @@ jugador4.iniciarJugador("d");
 
 IABriscaMesaInstancia.iniciarMesa();
 
-IABriscaMesaInstancia.insertaJugadoresEnMesa([jugador1,jugador2,jugador3,jugador4]);
+IABriscaMesaInstancia.comienzaPartida([jugador1,jugador2,jugador3,jugador4]);
 
 
 
@@ -476,9 +476,14 @@ function IABrisca(){
 	// La clase IABriscaJugador contiene la memoria de un jugador: Historial de cartas jugadas y cartas en la mano.
 	// Además, se encarga de mirar en la mesa las cartas que hay. El repartidor le reparte las cartas (no las pide)
 	this.IABriscaJugador = function(){
+	
+		var thisT = this;
 		
 		// el jugador tiene un ID. Será un número para poder identificar al jugador después
 		this.jugadorID = 0;
+		
+		// Tiempos, en milisegundos
+		this.tiempoPensandoIA = 1000;
 		
 		// Cada jugador mantiene un recuento de las cartas usadas. Esto podría realizarse únicamente en la mesa
 		// Pero de esta forma puede cambiarse la IA del jugador más fácilmente, pudiendo poner olvido aleatorio de cartas jugadas para aumentar la jugabilidad
@@ -533,8 +538,12 @@ function IABrisca(){
 			}
 			
 			this.cartasEnMano.splice(this.cartasEnMano.indexOf(cartaATirar), 1);
-				
-			callback(this, cartaATirar);
+			
+			setTimeout((function(t, cartaATirar){
+				return function(){
+					callback(t, cartaATirar);
+				}
+			})(this, cartaATirar), thisT.tiempoPensandoIA);
 		};
 		
 		this.robaCarta = function(carta){
@@ -613,6 +622,63 @@ function IABrisca(){
 		
 		this.cartasJugadasMesa = function(cartas){};
 	};
+	
+	// Para el online. Solo necesita recibir ordenes (la representación de los movimientos de los jugadores online)
+	// En modo online se usará este script editado en php para hacer las jugadas, repartir etc. por json se enviará al js lo que tiene que hacer una vez dedicido por el server
+	this.CallbackBriscaJugador = function(){
+		
+		var thisT = this;
+		
+		// el jugador tiene un ID. Será un número para poder identificar al jugador después
+		this.jugadorID = 0;
+		
+		// Cada jugador mantiene un recuento de las cartas usadas. Esto podría realizarse únicamente en la mesa
+		// Pero de esta forma puede cambiarse la IA del jugador más fácilmente, pudiendo poner olvido aleatorio de cartas jugadas para aumentar la jugabilidad
+		
+		this.cartasGanadas = [];
+		
+		this.cartasEnMano = [];
+		
+		
+		
+		
+		// Se inicia al jugador dándole un id y si queremos, azar
+		this.iniciarJugador = function(jugadorID){
+			thisT.jugadorID = jugadorID;
+		};
+		
+		
+		// Para el jugador, esta función guarda el callback y genera los onclick en las cartas del jugador, los caules procovan la jugada.
+		this.lanzaCarta = function(callback){
+			thisT.lanzaCartaCallback = function(cartaATirar){
+				T.console2.log('Tirada callback: '+cartaATirar);
+				
+				thisT.cartasEnMano.splice(thisT.cartasEnMano.indexOf(cartaATirar), 1);
+					
+				callback(thisT, cartaATirar);
+			};
+			
+			T.console2.log('Preparado lanzamiento callback.');
+		};
+		
+		this.lanzaCartaCallback = function(cartaATirar){
+			T.console2.log('Tirada callback: '+cartaATirar);
+			
+			thisT.cartasEnMano.splice(thisT.cartasEnMano.indexOf(cartaATirar), 1);
+				
+			callback(thisT, cartaATirar);
+		};
+		
+		this.robaCarta = function(carta){
+			thisT.cartasEnMano = thisT.cartasEnMano.concat(carta);
+		};
+		
+		this.ganaMesa = function(cartas){
+			thisT.cartasGanadas = thisT.cartasGanadas.concat(cartas);
+		};
+		
+		this.cartasJugadasMesa = function(cartas){};
+	};
 
 	// La clase IABriscaMesa se encarga de 
 	this.IABriscaMesa = function(){
@@ -646,15 +712,15 @@ function IABrisca(){
 		this.jugadoresPorTirar = 0;
 		
 		this.quienLanzaPrimero = 0;
-		this.quienGanoUltimaPartida = -1;
+		this.quienGanoUltimaPartidaN = -1;
 		
 		
 		// Tiempos, en milisegundos
-		this.tiempoPensandoIAms = 500;
-		this.tiempoEntreRondas = 1000;
+		this.tiempoEntreRondas = 2000;
+		this.tiempoRepartiendoCarta = 250;
 		
 		
-		// Esta función debe llamarse cuando se inicia la partida. Después debe llamarse a insertaJugadoresEnMesa
+		// Esta función debe llamarse cuando se inicia la partida. Después debe llamarse a comienzaPartida
 		this.iniciarMesa = function(){
 			// Sacar la carta para paloQueMandaSiempre;
 			thisT.mazoCartas = T.IABriscaBaseInstancia.cartasTotalArray.slice(0); // Copia del array ya que después tocaremos la variable esta.
@@ -663,21 +729,29 @@ function IABrisca(){
 			thisT.cartaPaloQueMandaSiempre = thisT.mazoCartas.splice(Math.floor(Math.random()*thisT.mazoCartas.length),1)[0];
 			thisT.paloQueMandaSiempre = T.IABriscaBaseInstancia.paloCarta(thisT.cartaPaloQueMandaSiempre);
 			T.console2.log('palo que manda siempre: '+thisT.paloQueMandaSiempre);
-			moverCartaA(thisT.cartaPaloQueMandaSiempre, 'MC0');
+			T.moverCarta(thisT.cartaPaloQueMandaSiempre, 'MC0');
 		};
 		
 		// inserta a los jugadores en la mesa
-		this.insertaJugadoresEnMesa = function(jugadores){
+		this.comienzaPartida = function(jugadores){
 			thisT.jugadoresArray = jugadores;
 			
 			// Repartirles las cartas
-			for(var i in jugadores){
-				for(var n = 0; n < 3; n++){
-					thisT.peticionJugadorRobar(jugadores[i]);
+			var cuenta = 0;
+			for(var n = 0; n < 3; ++n){
+				for(var i in jugadores){
+					setTimeout((function(i, jugador){
+						return function(){
+							thisT.peticionJugadorRobar(jugador);
+						}
+					})(i, jugadores[i]),thisT.tiempoRepartiendoCarta * ++cuenta);
 				}
 			}
 			
-			thisT.quienLanzaPrimero = Math.floor(Math.random() * thisT.jugadoresArray.length);
+			setTimeout(function(){
+				thisT.quienLanzaPrimero = Math.floor(Math.random() * thisT.jugadoresArray.length);
+				thisT.GO();
+			},thisT.tiempoRepartiendoCarta * ++cuenta);
 		};
 		
 		this.faltanRondasPorJugar = function(){
@@ -689,7 +763,7 @@ function IABrisca(){
 		
 		
 		// Iniciar la partida y es llamada por cada ronda para evaluar si debe o no hacerse y operar según la situación.
-		this.comienzaPartida = function(){
+		this.GO = function(){
 			if(thisT.faltanRondasPorJugar()){
 				T.IABriscaMesaInstancia.ResetRonda();
 				//T.IABriscaMesaInstancia.informaEstado();
@@ -709,8 +783,8 @@ function IABrisca(){
 			thisT.paloQueMandaEnMesa = '';
 			thisT.cartasEnMesa = [];
 			//this.quienATiradoQueCarta = {};
-			if(thisT.quienGanoUltimaPartida !== -1){
-				thisT.quienLanzaPrimero = thisT.quienGanoUltimaPartida;
+			if(thisT.quienGanoUltimaPartidaN !== -1){
+				thisT.quienLanzaPrimero = thisT.quienGanoUltimaPartidaN;
 			}
 		};
 		
@@ -728,17 +802,28 @@ function IABrisca(){
 				}, 0);
 			}
 			else if(thisT.jugadoresPorTirar === 0){
-				// Elejir ganador, dar las cartas (quitándolas de la mesa).
-				var cartaGanadora = T.IABriscaBaseInstancia.ordenCartasPorValor(thisT.cartasEnMesa, thisT.paloQueMandaSiempre, thisT.paloQueMandaEnMesa)[0];
-				T.console2.log('cartaGanadora: '+cartaGanadora);
-				thisT.peticionJugadorGanarMesa(thisT.quienATiradoQueCarta[cartaGanadora]);
-				thisT.quienGanoUltimaPartida = thisT.jugadoresArray.indexOf(thisT.quienATiradoQueCarta[cartaGanadora]);
-				
-				for(var i in thisT.jugadoresArray){
-					thisT.peticionJugadorRobar(thisT.jugadoresArray[i]);
-				}
-				
-				setTimeout(thisT.comienzaPartida, thisT.tiempoEntreRondas);
+				setTimeout(function(){
+					// Elejir ganador, dar las cartas (quitándolas de la mesa).
+					var cartaGanadora = T.IABriscaBaseInstancia.ordenCartasPorValor(thisT.cartasEnMesa, thisT.paloQueMandaSiempre, thisT.paloQueMandaEnMesa)[0];
+					T.console2.log('cartaGanadora: '+cartaGanadora);
+					thisT.peticionJugadorGanarMesa(thisT.quienATiradoQueCarta[cartaGanadora]);
+					thisT.quienGanoUltimaPartidaN = thisT.jugadoresArray.indexOf(thisT.quienATiradoQueCarta[cartaGanadora]);
+					
+					if(thisT.mazoCartas.length !== 0){
+						for(var i = 0; i < thisT.jugadoresArray.length; ++i){
+							setTimeout((function(i){
+								return function(){
+									thisT.peticionJugadorRobar(thisT.jugadoresArray[(T.ClampCircular(i+thisT.quienGanoUltimaPartidaN, 0, thisT.jugadoresArray.length -1))]);
+								}
+							})(i), thisT.tiempoRepartiendoCarta *(i +1));
+						}
+						setTimeout(thisT.GO, thisT.tiempoRepartiendoCarta *(i +2));
+					}
+					else{
+						setTimeout(thisT.GO, thisT.tiempoRepartiendoCarta);
+					}
+					
+				}, thisT.tiempoEntreRondas);
 			}
 		};
 		
@@ -759,10 +844,10 @@ function IABrisca(){
 				thisT.paloQueMandaEnMesa = T.IABriscaBaseInstancia.paloCarta(cartaTirada);
 			}
 			/*var huecoLibre = huecoLibreJugador(jugador.jugadorID);
-			moverCartaA(cartaTirada, 'P'+jugador.jugadorID+'C'+huecoLibre);*/
+			T.moverCarta(cartaTirada, 'P'+jugador.jugadorID+'C'+huecoLibre);*/
 			var huecoLibre = huecoLibreMesa();
-			moverCartaA(cartaTirada, 'MC'+huecoLibre);
-			setTimeout(thisT.lanzaRonda, thisT.tiempoPensandoIAms);
+			T.moverCarta(cartaTirada, 'MC'+huecoLibre);
+			setTimeout(thisT.lanzaRonda, 0);
 		};
 		
 		
@@ -781,7 +866,7 @@ function IABrisca(){
 				}
 				jugador.robaCarta(cartaARobar);
 				var huecoLibre = huecoLibreJugador(jugador.jugadorID);
-				moverCartaA(cartaARobar, 'P'+jugador.jugadorID+'C'+huecoLibre);
+				T.moverCarta(cartaARobar, 'P'+jugador.jugadorID+'C'+huecoLibre);
 				if(thisT.mazoCartas.length === 0){
 					// QUITAR EL MAZO
 					//seteaImagen('MM', '');
@@ -791,7 +876,7 @@ function IABrisca(){
 		
 		this.peticionJugadorGanarMesa = function(jugador){
 			for(var i = 0; i < thisT.jugadoresArray.length; ++i){
-				moverCartaA(thisT.cartasEnMesa[i], 'P'+jugador.jugadorID+'C0');
+				T.moverCarta(thisT.cartasEnMesa[i], 'P'+jugador.jugadorID+'C0');
 			}
 			jugador.ganaMesa(thisT.cartasEnMesa);
 			for(var i in thisT.jugadoresArray){
@@ -826,7 +911,9 @@ function IABrisca(){
 	};
 
 
-
+	this.moverCarta = function(carta, jugador){
+		//callback
+	}
 
 
 

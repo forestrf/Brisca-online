@@ -13,10 +13,7 @@
 	top: 0;
 	right: 0;
 	display: table-cell;
-}
-
-#todas_las_cartas {
-	display:none;
+	overflow: hidden;
 }
 
 
@@ -28,36 +25,42 @@
 	/*width:10px;
 	height:10px;
 	background-color: #FFF;*/
+	color: transparent;
+	font-size: 0px;
 }
 
 #P1C1,#P1C2,#P1C3{top:90%}
 #P1C1{left:35%}
 #P1C2{left:50%}
 #P1C3{left:65%}
+#P1C0{top:120%;left:50%}
 
 #P2C1,#P2C2,#P2C3{left:10%}
 #P2C1{top:35%}
 #P2C2{top:50%}
 #P2C3{top:65%}
+#P2C0{top:50%;left:-20%}
 
 #P3C1,#P3C2,#P3C3{top:10%}
 #P3C1{left:35%}
 #P3C2{left:50%}
 #P3C3{left:65%}
+#P3C0{top:-20%;left:50%}
 
 #P4C1,#P4C2,#P4C3{left:90%}
 #P4C1{top:35%}
 #P4C2{top:50%}
 #P4C3{top:65%}
+#P4C0{top:50%;left:120%}
 
-#MC0{top:30%;left:65%}
+#MC0{top:30%;left:70%}
 #MC1,#MC2,#MC3,#MC4{top:50%}
-#MC1{left:35%}
-#MC2{left:45%}
-#MC3{left:55%}
-#MC4{left:65%}
+#MC1{left:30%}
+#MC2{left:43.5%}
+#MC3{left:56.5%}
+#MC4{left:70%}
 
-#MM{top:30%;left:35%}
+#MM{top:30%;left:30%}
 
 
 
@@ -66,7 +69,7 @@
 
 .carta{
 	border-radius: 7px;
-	box-shadow: 0 0 10px #000000;
+	box-shadow: 0 0 5px #000000;
 	position: absolute;
 	transition: 1s all ease;
 }
