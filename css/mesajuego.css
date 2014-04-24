@@ -71,7 +71,11 @@
 	border-radius: 7px;
 	box-shadow: 0 0 5px #000000;
 	position: absolute;
-	transition: 1s all ease;
+	-webkit-transition: all 1s ease;
+	-moz-transition: all 1s ease;
+	-ms-transition: all 1s ease;
+	-o-transition: all 1s ease;
+	transition: all 1s ease;
 }
 
 .puntuacion{

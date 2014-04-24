@@ -116,10 +116,10 @@ function IABrisca(){
 		
 		// Retorna el palo de una carta
 		this.paloCarta = function(carta){
-			return carta[0];
+			return carta.substr(0,1);
 		};
 		
-		// Retorna el n�mero carta
+		// Retorna el número carta
 		this.numeroCarta = function(carta){
 			return carta.substr(1);
 		};
@@ -211,7 +211,7 @@ function IABrisca(){
 			}
 			var M=this.palosCartas.slice(0);
 			for(var w2 in W){
-				M.splice(M.indexOf(W[w2]), 1);
+				M.splice(T.ArrayIndexOf(M, W[w2]), 1);
 			}
 			// T.console2.log(ordenPalosCartas);
 			
@@ -239,7 +239,7 @@ function IABrisca(){
 				// T.console2.log(ordenPalosCartas[i][palo]);
 				for(var carta2 in cartas){
 					var palo2 = this.paloCarta(cartas[carta2]);
-					if((M.indexOf(palo2)>=0) && this.cartasTotalArrayNumero[carta] == this.numeroCarta(cartas[carta2])){
+					if((T.ArrayIndexOf(M, palo2)>=0) && this.cartasTotalArrayNumero[carta] == this.numeroCarta(cartas[carta2])){
 						// T.console2.log(palo+"=="+palo2);
 						// T.console2.log(ordenPalosCartas[i][palo][carta]+"=="+this.numeroCarta(cartas[carta2]));
 						// T.console2.log("---------");
@@ -310,7 +310,7 @@ function IABrisca(){
 					//Esta variable tiene la carta más alta de la mesa y las cartas de la mano ordenadas por valor
 					var cartasEnManoMayorMesa = thisT.ordenCartasPorValor(cartasEnManoConPuntos.concat(mayorCartaMesa), paloQueMandaSiempre, paloQueMandaEnMesa);
 					var siguenteSeTira = false;
-					var indiceCartaATirar = cartasEnManoMayorMesa.indexOf(mayorCartaMesa)-1;
+					var indiceCartaATirar = T.ArrayIndexOf(cartasEnManoMayorMesa, mayorCartaMesa)-1;
 					if(indiceCartaATirar == -1){
 						return cartaMenorValorManoConPuntos();
 					}
@@ -385,7 +385,7 @@ function IABrisca(){
 			function cartaSinTirarPaloMandaSinContarEnMiMano(){
 				var cartasDondeMirar = cartasJugadas.slice(0).concat(cartasEnMano);
 				for(var i in thisT.cartasTotalArrayNumero){
-					if(cartasDondeMirar.indexOf(paloQueMandaSiempre+thisT.cartasTotalArrayNumero[i]) === -1){
+					if(T.ArrayIndexOf(cartasDondeMirar, paloQueMandaSiempre+thisT.cartasTotalArrayNumero[i]) === -1){
 						// Todavía queda en juego (no en mi mano) alguna carta del palo que manda
 						return masDeXPuntosEnLaMesa(8);
 					}
@@ -442,7 +442,7 @@ function IABrisca(){
 					//Esta variable tiene la carta más alta de la mesa y las cartas de la mano ordenadas por valor
 					var cartasEnManoMayorMesa = thisT.ordenCartasPorValor(cartasEnMano.slice(0).concat(mayorCartaMesa), paloQueMandaSiempre, paloQueMandaEnMesa);
 					var siguenteSeTira = false;
-					var indiceCartaATirar = cartasEnManoMayorMesa.indexOf(mayorCartaMesa)-1;
+					var indiceCartaATirar = T.ArrayIndexOf(cartasEnManoMayorMesa, mayorCartaMesa)-1;
 					if(indiceCartaATirar == -1){
 						return FIN_tiraCartaMenorValor();
 					}
@@ -532,12 +532,12 @@ function IABrisca(){
 					cartaATirar = cartaATirarT[0];
 				}
 				
-				this.cartasEnMano.splice(this.cartasEnMano.indexOf(cartaATirar), 1);
+				this.cartasEnMano.splice(T.ArrayIndexOf(this.cartasEnMano, cartaATirar), 1);
 				
 				return cartaATirar;
 			}
 			
-			this.cartasEnMano.splice(this.cartasEnMano.indexOf(cartaATirar), 1);
+			this.cartasEnMano.splice(T.ArrayIndexOf(this.cartasEnMano, cartaATirar), 1);
 			
 			setTimeout((function(t, cartaATirar){
 				return function(){
@@ -594,7 +594,7 @@ function IABrisca(){
 					return function(){
 						for(var z in thisT.cartasEnMano){
 							document.getElementById('carta_'+thisT.cartasEnMano[z]).style.cursor = 'default';
-							document.getElementById('carta_'+thisT.cartasEnMano[z]).onclick = undefined;
+							document.getElementById('carta_'+thisT.cartasEnMano[z]).onclick = function(){};
 						}
 						thisT.lanzaCartaOnClick(thisT.cartasEnMano[i], callback);
 					};
@@ -607,7 +607,7 @@ function IABrisca(){
 		this.lanzaCartaOnClick = function(cartaATirar, callback){
 			T.console2.log('Tirada manual: '+cartaATirar);
 			
-			thisT.cartasEnMano.splice(thisT.cartasEnMano.indexOf(cartaATirar), 1);
+			thisT.cartasEnMano.splice(T.ArrayIndexOf(thisT.cartasEnMano, cartaATirar), 1);
 				
 			callback(thisT, cartaATirar);
 		};
@@ -653,7 +653,7 @@ function IABrisca(){
 			thisT.lanzaCartaCallback = function(cartaATirar){
 				T.console2.log('Tirada callback: '+cartaATirar);
 				
-				thisT.cartasEnMano.splice(thisT.cartasEnMano.indexOf(cartaATirar), 1);
+				thisT.cartasEnMano.splice(T.ArrayIndexOf(thisT.cartasEnMano, cartaATirar), 1);
 					
 				callback(thisT, cartaATirar);
 			};
@@ -664,7 +664,7 @@ function IABrisca(){
 		this.lanzaCartaCallback = function(cartaATirar){
 			T.console2.log('Tirada callback: '+cartaATirar);
 			
-			thisT.cartasEnMano.splice(thisT.cartasEnMano.indexOf(cartaATirar), 1);
+			thisT.cartasEnMano.splice(T.ArrayIndexOf(thisT.cartasEnMano, cartaATirar), 1);
 				
 			callback(thisT, cartaATirar);
 		};
@@ -716,7 +716,7 @@ function IABrisca(){
 		
 		
 		// Tiempos, en milisegundos
-		this.tiempoEntreRondas = 2000;
+		this.tiempoEntreRondas = 1000;
 		this.tiempoRepartiendoCarta = 250;
 		
 		
@@ -807,7 +807,7 @@ function IABrisca(){
 					var cartaGanadora = T.IABriscaBaseInstancia.ordenCartasPorValor(thisT.cartasEnMesa, thisT.paloQueMandaSiempre, thisT.paloQueMandaEnMesa)[0];
 					T.console2.log('cartaGanadora: '+cartaGanadora);
 					thisT.peticionJugadorGanarMesa(thisT.quienATiradoQueCarta[cartaGanadora]);
-					thisT.quienGanoUltimaPartidaN = thisT.jugadoresArray.indexOf(thisT.quienATiradoQueCarta[cartaGanadora]);
+					thisT.quienGanoUltimaPartidaN = T.ArrayIndexOf(thisT.jugadoresArray, thisT.quienATiradoQueCarta[cartaGanadora]);
 					
 					if(thisT.mazoCartas.length !== 0){
 						for(var i = 0; i < thisT.jugadoresArray.length; ++i){
@@ -882,12 +882,12 @@ function IABrisca(){
 			for(var i in thisT.jugadoresArray){
 				thisT.jugadoresArray[i].cartasJugadasMesa(thisT.cartasEnMesa);
 			}
-			T.SeteaPuntos('puntos_jugador_'+(thisT.jugadoresArray.indexOf(jugador)+1), T.IABriscaBaseInstancia.totalPuntosEnCartas(jugador.cartasGanadas));
+			T.seteaPuntos('puntos_jugador_'+(T.ArrayIndexOf(thisT.jugadoresArray, jugador)+1), T.IABriscaBaseInstancia.totalPuntosEnCartas(jugador.cartasGanadas));
 			thisT.cartasEnMesa = [];
 		};
 	};
 
-	this.SeteaPuntos = function(id, puntos){
+	this.seteaPuntos = function(id, puntos){
 		//document.getElementById(id).innerHTML = puntos;
 	};
 
@@ -914,6 +914,24 @@ function IABrisca(){
 	this.moverCarta = function(carta, jugador){
 		//callback
 	}
+	
+	// http://stackoverflow.com/questions/3629183/why-doesnt-indexof-work-on-an-array-ie8
+	this.ArrayIndexOf = function(arr, elt /*, from*/){
+		var len = arr.length >>> 0;
+
+		var from = Number(arguments[1]) || 0;
+		from = (from < 0) ? Math.ceil(from) : Math.floor(from);
+		if(from < 0){
+			from += len;
+		}
+
+		for(; from < len; from++){
+			if (from in arr && arr[from] === elt){
+				return from;
+			}
+		}
+		return -1;
+	};
 
 
 

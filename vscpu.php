@@ -1,3 +1,4 @@
+<!DOCTYPE html>
 <html>
 	<head>
 		<meta http-equiv="Content-Type" content="text/html; charset=UTF-8"/>
@@ -151,7 +152,9 @@
 			// alto = ancho / 0.72
 			var aspectRatio = 0.72;
 			
-			var maximo = Math.min(window.innerHeight,window.innerWidth);
+			var windowInnerWH = viewport();
+			
+			var maximo = Math.min(windowInnerWH.height,windowInnerWH.width);
 			var widthCarta = maximo*0.13;
 			var heightCarta = widthCarta/aspectRatio;
 			var widthCarta2 = widthCarta/2;
@@ -194,6 +197,7 @@
 				else{
 					cartaObj.style.transform = 'rotate('+(((Math.random()*2) -1) *maximoAzarDesgaseGrados)+'deg)';
 				}
+				++cartaObj.style.zIndex;
 			}
 			
 			// Mover la carta a dónde
@@ -282,6 +286,17 @@
 			
 			
 			
+			// http://andylangton.co.uk/blog/development/get-viewport-size-width-and-height-javascript
+			function viewport(){
+				var e = window
+				, a = 'inner';
+				if ( !( 'innerWidth' in window ) )
+				{
+				a = 'client';
+				e = document.documentElement || document.body;
+				}
+				return { width : e[ a+'Width' ] , height : e[ a+'Height' ] }
+			}
 			
 			
 			
@@ -295,11 +310,9 @@
 			
 			
 			IABriscaInstancia.IABriscaMesaInstancia.iniciarMesa();
-			IABriscaInstancia.IABriscaMesaInstancia.tiempoPensandoIAms = 1500;
-			IABriscaInstancia.IABriscaMesaInstancia.tiempoEntreRondas = 1000;
 			
 			
-			//IABriscaMesaInstancia.tiempoPensandoIAms = 0;
+			//IABriscaMesaInstancia.tiempoPensandoIA = 0;
 			//IABriscaMesaInstancia.tiempoEntreRondas = 0;
 			
 			
