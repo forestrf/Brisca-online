@@ -30,27 +30,27 @@
 }
 
 #P1C1,#P1C2,#P1C3{top:90%}
-#P1C1{left:35%}
+#P1C1{left:30%}
 #P1C2{left:50%}
-#P1C3{left:65%}
+#P1C3{left:70%}
 #P1C0{top:120%;left:50%}
 
 #P2C1,#P2C2,#P2C3{left:10%}
-#P2C1{top:35%}
+#P2C1{top:30%}
 #P2C2{top:50%}
-#P2C3{top:65%}
+#P2C3{top:70%}
 #P2C0{top:50%;left:-20%}
 
 #P3C1,#P3C2,#P3C3{top:10%}
-#P3C1{left:35%}
+#P3C1{left:30%}
 #P3C2{left:50%}
-#P3C3{left:65%}
+#P3C3{left:70%}
 #P3C0{top:-20%;left:50%}
 
 #P4C1,#P4C2,#P4C3{left:90%}
-#P4C1{top:35%}
+#P4C1{top:30%}
 #P4C2{top:50%}
-#P4C3{top:65%}
+#P4C3{top:70%}
 #P4C0{top:50%;left:120%}
 
 #MC0{top:30%;left:70%}
@@ -71,11 +71,11 @@
 	border-radius: 7px;
 	box-shadow: 0 0 5px #000000;
 	position: absolute;
-	-webkit-transition: all 1s ease;
-	-moz-transition: all 1s ease;
-	-ms-transition: all 1s ease;
-	-o-transition: all 1s ease;
-	transition: all 1s ease;
+	-webkit-transition: top 1s ease, left 1s ease, transform 1s ease;
+	-moz-transition: top 1s ease, left 1s ease, transform 1s ease;
+	-ms-transition: top 1s ease, left 1s ease, transform 1s ease;
+	-o-transition: top 1s ease, left 1s ease, transform 1s ease;
+	transition: top 1s ease, left 1s ease, transform 1s ease;
 }
 
 .puntuacion{

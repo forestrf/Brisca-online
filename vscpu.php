@@ -155,7 +155,7 @@
 			var windowInnerWH = viewport();
 			
 			var maximo = Math.min(windowInnerWH.height,windowInnerWH.width);
-			var widthCarta = maximo*0.13;
+			var widthCarta = maximo*0.16;
 			var heightCarta = widthCarta/aspectRatio;
 			var widthCarta2 = widthCarta/2;
 			var heightCarta2 = heightCarta/2;
@@ -171,7 +171,7 @@
 			}
 			
 			
-			
+			var zIndexTemp = 1;
 			// Mover la carta a dónde
 			function moverCartaA(carta, hasta){
 				var cartaObj = document.getElementById('carta_'+carta);
@@ -197,7 +197,7 @@
 				else{
 					cartaObj.style.transform = 'rotate('+(((Math.random()*2) -1) *maximoAzarDesgaseGrados)+'deg)';
 				}
-				++cartaObj.style.zIndex;
+				cartaObj.style.zIndex = ++zIndexTemp;
 			}
 			
 			// Mover la carta a dónde
@@ -312,18 +312,18 @@
 			IABriscaInstancia.IABriscaMesaInstancia.iniciarMesa();
 			
 			
-			//IABriscaMesaInstancia.tiempoPensandoIA = 0;
-			//IABriscaMesaInstancia.tiempoEntreRondas = 0;
+			//IABriscaInstancia.IABriscaMesaInstancia.tiempoEntreRondas = 0;
+			//IABriscaInstancia.IABriscaMesaInstancia.tiempoRepartiendoCarta = 0;
 			
 			
 			var jugador1 = new IABriscaInstancia.HumanoBriscaJugador();
-			jugador1.iniciarJugador(1);
+			jugador1.iniciarJugador(1);//jugador1.tiempoPensandoIA = 0;
 			var jugador2 = new IABriscaInstancia.IABriscaJugador();
-			jugador2.iniciarJugador(2);
+			jugador2.iniciarJugador(2);//jugador2.tiempoPensandoIA = 0;
 			var jugador3 = new IABriscaInstancia.IABriscaJugador();
-			jugador3.iniciarJugador(3);
+			jugador3.iniciarJugador(3);//jugador3.tiempoPensandoIA = 0;
 			var jugador4 = new IABriscaInstancia.IABriscaJugador();
-			jugador4.iniciarJugador(4);
+			jugador4.iniciarJugador(4);//jugador4.tiempoPensandoIA = 0;
 			
 			// Inserta jugadores y comienza
 			IABriscaInstancia.IABriscaMesaInstancia.comienzaPartida([jugador1,jugador2,jugador3,jugador4]);
