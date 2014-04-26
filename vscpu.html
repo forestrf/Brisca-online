@@ -103,78 +103,153 @@
 			
 			
 			// Iniciar el script de la brisca
-			IABriscaInstancia = new IABrisca();
-			IABriscaInstancia.moverCarta = function(carta, donde){
-				if(donde.indexOf("P1")!=-1 || donde.indexOf("MC")!=-1 || donde.indexOf("C0")!=-1){
-					moverCartaA(carta, donde);
-					document.getElementById('carta_'+carta).src = "/img/cartas/"+carta+".jpg";
+			function iniciarPartidaBrisca_VSCPU(cantidadJugadores){
+				if(typeof cantidadJugadores === "undefined" || cantidadJugadores < 2 || cantidadJugadores > 4)
+					return;
+			
+				IABriscaInstancia = new IABrisca();
+				IABriscaInstancia.moverCarta = function(carta, donde){
+					if(donde.indexOf("P1")!=-1 || donde.indexOf("MC")!=-1 || donde.indexOf("C0")!=-1){
+						document.getElementById('carta_'+carta).src = "/img/cartas/"+carta+".jpg";
+					}
+					else{
+						document.getElementById('carta_'+carta).src = "/img/cartas/back2.jpg";
+					}
+					if(donde.indexOf("P")!=-1 || donde.indexOf("MC")!=-1 || donde.indexOf("C0")!=-1){
+						if(donde.indexOf("MC")!=-1 && donde.indexOf("0",2)==-1){
+							var huecoLibre = huecoLibreMesa();
+							moverCartaA(carta, donde+huecoLibre);
+						}
+						else if(donde.indexOf("P")!=-1 && donde.indexOf("0",2)==-1){
+							var huecoLibre = huecoLibreJugador(donde.substr(1, donde.length -1));
+							moverCartaA(carta, donde+'C'+huecoLibre);
+						}
+						else{
+							moverCartaA(carta, donde);
+						}
+					}
+					else{
+						moverCartaA(carta, donde);
+					}
+				};
+				
+				IABriscaInstancia.seteaPuntos = function(id, puntos){
+					document.getElementById(id+'N').innerHTML = "Puntos: "+puntos;
+				};
+				
+				IABriscaInstancia.pideCartaHumano = function(id, posiblesCartas, callback){
+					for(var i in posiblesCartas){
+						var id = 'carta_'+posiblesCartas[i];
+						document.getElementById(id).style.cursor = 'pointer';
+						document.getElementById(id).onclick = (function(i, callback, thisT){
+							return function(){
+								for(var z in posiblesCartas){
+									document.getElementById('carta_'+posiblesCartas[z]).style.cursor = 'default';
+									document.getElementById('carta_'+posiblesCartas[z]).onclick = function(){};
+								}
+								callback(posiblesCartas[i]);
+							};
+						})(i, callback);
+					}
+				};
+				
+				//IABriscaInstancia.console2.on = true;
+			
+		
+		
+		
+				arrPosiciones = document.getElementById('posiciones').children;
+				
+				
+				
+				// Indicar el tamaño de las cartas mediante javascript editando el style
+				// Tamaño de las cartas = 201 x 279
+				// ratio = 201 / 279 = 0.72
+				// ancho = alto * 0.72
+				// alto = ancho / 0.72
+				aspectRatio = 0.72;
+				
+				windowInnerWH = viewport();
+				
+				maximo = Math.min(windowInnerWH.height,windowInnerWH.width);
+				if(maximo == windowInnerWH.height){
+					widthCarta = maximo*0.17;
 				}
 				else{
-					moverCartaA(carta, donde);
-					document.getElementById('carta_'+carta).src = "/img/cartas/back2.jpg";
+					widthCarta = maximo*0.17*aspectRatio;
 				}
-			};
-			
-			IABriscaInstancia.seteaPuntos = function(id, puntos){
-				document.getElementById(id+'N').innerHTML = "Puntos: "+puntos;
-			};
-			
-			IABriscaInstancia.pideCartaHumano = function(id, posiblesCartas, callback){
-				for(var i in posiblesCartas){
-					var id = 'carta_'+posiblesCartas[i];
-					document.getElementById(id).style.cursor = 'pointer';
-					document.getElementById(id).onclick = (function(i, callback, thisT){
-						return function(){
-							for(var z in posiblesCartas){
-								document.getElementById('carta_'+posiblesCartas[z]).style.cursor = 'default';
-								document.getElementById('carta_'+posiblesCartas[z]).onclick = function(){};
-							}
-							callback(posiblesCartas[i]);
-						};
-					})(i, callback);
+				heightCarta = widthCarta/aspectRatio;
+				widthCarta2 = widthCarta/2;
+				heightCarta2 = heightCarta/2;
+				maximoAzarDesfaseWidth = widthCarta * 0.02;
+				maximoAzarDesfaseHeight = heightCarta * 0.02;
+				maximoAzarDesgaseGrados = 2;
+				
+				todas_las_cartas = document.getElementById('todas_las_cartas');
+				mazo_cartas = document.getElementById('MM');
+				arrCartas = IABriscaInstancia.IABriscaBaseInstancia.cartasTotalArray;
+				for(var i in arrCartas){
+					todas_las_cartas.innerHTML += '<img class="carta" style="position:absolute;width:'+widthCarta+'px;height:'+heightCarta+'px;top:'+(mazo_cartas.offsetTop -heightCarta2)+'px;left:'+(mazo_cartas.offsetLeft -widthCarta2)+'px;" id="carta_'+arrCartas[i]+'" src="img/cartas/back2.jpg">';
 				}
-			};
-			
-			IABriscaInstancia.console2.on = true;
-			
-		
-		
-		
-			var miNombre = "forest";
-			
-			var arrPosiciones = document.getElementById('posiciones').children;
-			
-			
-			
-			// Indicar el tamaño de las cartas mediante javascript editando el style
-			// Tamaño de las cartas = 201 x 279
-			// ratio = 201 / 279 = 0.72
-			// ancho = alto * 0.72
-			// alto = ancho / 0.72
-			var aspectRatio = 0.72;
-			
-			var windowInnerWH = viewport();
-			
-			var maximo = Math.min(windowInnerWH.height,windowInnerWH.width);
-			if(maximo == windowInnerWH.height){
-				var widthCarta = maximo*0.17;
+				
+				IABriscaInstancia.IABriscaMesaInstancia.iniciarMesa();
+				
+				
+				//IABriscaInstancia.IABriscaMesaInstancia.tiempoEntreRondas = 0;
+				//IABriscaInstancia.IABriscaMesaInstancia.tiempoRepartiendoCarta = 0;
+				
+				jugadores = [];
+				
+				if(cantidadJugadores === 2){
+					jugadores[0] = new IABriscaInstancia.HumanoBriscaJugador();
+					jugadores[0].iniciarJugador(1);
+					jugadores[1] = new IABriscaInstancia.IABriscaJugador();
+					jugadores[1].iniciarJugador(3);
+				}
+				else if(cantidadJugadores === 3){
+					jugadores[0] = new IABriscaInstancia.HumanoBriscaJugador();
+					jugadores[0].iniciarJugador(1);
+					jugadores[1] = new IABriscaInstancia.IABriscaJugador();
+					jugadores[1].iniciarJugador(2);
+					jugadores[2] = new IABriscaInstancia.IABriscaJugador();
+					jugadores[2].iniciarJugador(3);
+				}
+				else if(cantidadJugadores === 4){
+					jugadores[0] = new IABriscaInstancia.HumanoBriscaJugador();
+					jugadores[0].iniciarJugador(1);
+					jugadores[1] = new IABriscaInstancia.IABriscaJugador();
+					jugadores[1].iniciarJugador(2);
+					jugadores[2] = new IABriscaInstancia.HumanoBriscaJugador();
+					jugadores[2].iniciarJugador(3);
+					jugadores[3] = new IABriscaInstancia.IABriscaJugador();
+					jugadores[3].iniciarJugador(4);
+				}
+				else return;
+				
+				// Inserta jugadores y comienza
+				IABriscaInstancia.IABriscaMesaInstancia.comienzaPartida(jugadores);
+				
+				
 			}
-			else{
-				var widthCarta = maximo*0.17*aspectRatio;
-			}
-			var heightCarta = widthCarta/aspectRatio;
-			var widthCarta2 = widthCarta/2;
-			var heightCarta2 = heightCarta/2;
-			var maximoAzarDesfaseWidth = widthCarta * 0.02;
-			var maximoAzarDesfaseHeight = heightCarta * 0.02;
-			var maximoAzarDesgaseGrados = 2;
 			
-			var todas_las_cartas = document.getElementById('todas_las_cartas');
-			var mazo_cartas = document.getElementById('MM');
-			var arrCartas = IABriscaInstancia.IABriscaBaseInstancia.cartasTotalArray;
-			for(var i in arrCartas){
-				todas_las_cartas.innerHTML += '<img class="carta" style="position:absolute;width:'+widthCarta+'px;height:'+heightCarta+'px;top:'+(mazo_cartas.offsetTop -heightCarta2)+'px;left:'+(mazo_cartas.offsetLeft -widthCarta2)+'px;" id="carta_'+arrCartas[i]+'" src="img/cartas/back2.jpg">';
-			}
+			
+			
+			
+			
+			
+			
+			
+			
+			
+			
+			
+			
+			///////////////////////////////////////////////////
+			//
+			// FUNCIONES
+			//
+			///////////////////////////////////////////////////
+			
 			
 			
 			var zIndexTemp = 1;
@@ -223,6 +298,8 @@
 				})(carta, hasta), 0);
 			}
 			
+			
+			
 			// Retorna el número, del 1 al 3, donde poner la carta a un jugador
 			function huecoLibreJugador(jugadorID){
 				for(var i = 1; i <= 3; ++i){
@@ -245,53 +322,6 @@
 			
 			
 			
-			//<input type="text" name="entradatxt" id="entradatxt" placeholder="Escribe un mensaje"><input type="submit" value="enviar" id="enviar">
-			
-			$('#enviar').click(enviaMensajeChat);
-			$('#entradatxt').keydown(function(e){
-				var code = e.which; // recommended to use e.which, it's normalized across browsers
-				if(code==13)e.preventDefault();
-				if(code==13||code==188||code==186){
-					enviaMensajeChat();
-				}
-			});
-			
-			
-			
-		
-			function enviaMensajeChat(){
-				if($('#entradatxt').val().split(" ").join("") != ""){
-					insertarChatComentario(miNombre, $('#entradatxt').val(), true, true);
-				}
-				$('#entradatxt').val("");
-				//enviar mensaje por ajax. El mensaje se enviará y la conexión se quedará abierta. Cuando la conexión se cierre reabrir en un loop para recibir del chat
-				
-			}
-		
-			function insertarChatComentario(de, que, mio, forzarScroll){
-				var hacerScroll = false;
-				// Este if detecta si tenemos el scroll abajo del todo
-				if($('#historial').scrollTop() + $('#historial').innerHeight() >= $('#historial')[0].scrollHeight){
-					var hacerScroll = true;
-				}
-				// Agregar nuevo mensaje al chat html
-				$('#historial').append('<div class="globo '+(mio?'mio':'')+'">'+
-					'<span class="nombre">'+de+'</span>'+que+
-					'</div><div class="clear"></div>');
-				if(hacerScroll || forzarScroll){
-					$('#historial').scrollTop(10000000);
-				}
-			}
-			
-			
-			
-			
-			
-			
-			
-			
-			
-			
 			// http://andylangton.co.uk/blog/development/get-viewport-size-width-and-height-javascript
 			function viewport(){
 				var e = window
@@ -303,36 +333,6 @@
 				}
 				return { width : e[ a+'Width' ] , height : e[ a+'Height' ] }
 			}
-			
-			
-			
-			
-			
-			
-			
-			
-			
-			
-			
-			
-			IABriscaInstancia.IABriscaMesaInstancia.iniciarMesa();
-			
-			
-			//IABriscaInstancia.IABriscaMesaInstancia.tiempoEntreRondas = 0;
-			//IABriscaInstancia.IABriscaMesaInstancia.tiempoRepartiendoCarta = 0;
-			
-			
-			var jugador1 = new IABriscaInstancia.HumanoBriscaJugador();
-			jugador1.iniciarJugador(1);//jugador1.tiempoPensandoIA = 0;
-			var jugador2 = new IABriscaInstancia.IABriscaJugador();
-			jugador2.iniciarJugador(2);//jugador2.tiempoPensandoIA = 0;
-			var jugador3 = new IABriscaInstancia.IABriscaJugador();
-			jugador3.iniciarJugador(3);//jugador3.tiempoPensandoIA = 0;
-			var jugador4 = new IABriscaInstancia.IABriscaJugador();
-			jugador4.iniciarJugador(4);//jugador4.tiempoPensandoIA = 0;
-			
-			// Inserta jugadores y comienza
-			IABriscaInstancia.IABriscaMesaInstancia.comienzaPartida([jugador1,jugador2,jugador3,jugador4]);
 
 			
 

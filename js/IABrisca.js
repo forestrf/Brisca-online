@@ -833,10 +833,7 @@ function IABrisca(){
 			if(thisT.paloQueMandaEnMesa == ""){
 				thisT.paloQueMandaEnMesa = T.IABriscaBaseInstancia.paloCarta(cartaTirada);
 			}
-			/*var huecoLibre = huecoLibreJugador(jugador.jugadorID);
-			T.moverCarta(cartaTirada, 'P'+jugador.jugadorID+'C'+huecoLibre);*/
-			var huecoLibre = huecoLibreMesa();
-			T.moverCarta(cartaTirada, 'MC'+huecoLibre);
+			T.moverCarta(cartaTirada, 'MC');
 			setTimeout(thisT.lanzaRonda, 0);
 		};
 		
@@ -855,8 +852,7 @@ function IABrisca(){
 					thisT.quedanCartasPorRobar = false;
 				}
 				jugador.robaCarta(cartaARobar);
-				var huecoLibre = huecoLibreJugador(jugador.jugadorID);
-				T.moverCarta(cartaARobar, 'P'+jugador.jugadorID+'C'+huecoLibre);
+				T.moverCarta(cartaARobar, 'P'+jugador.jugadorID.toString());
 				if(thisT.mazoCartas.length === 0){
 					// QUITAR EL MAZO
 					//seteaImagen('MM', '');
@@ -872,7 +868,7 @@ function IABrisca(){
 			for(var i in thisT.jugadoresArray){
 				thisT.jugadoresArray[i].cartasJugadasMesa(thisT.cartasEnMesa);
 			}
-			T.seteaPuntos('P'+(T.ArrayIndexOf(thisT.jugadoresArray, jugador)+1), T.IABriscaBaseInstancia.totalPuntosEnCartas(jugador.cartasGanadas));
+			T.seteaPuntos('P'+jugador.jugadorID, T.IABriscaBaseInstancia.totalPuntosEnCartas(jugador.cartasGanadas));
 			thisT.cartasEnMesa = [];
 		};
 	};
