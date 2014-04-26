@@ -5,13 +5,13 @@
 		<title>Jugar contra la máquina</title>
 		<link type="text/css" rel="stylesheet" href="css/reset.css">
 		<link type="text/css" rel="stylesheet" href="css/mesajuego.css">
-		<link type="text/css" rel="stylesheet" href="css/chat.css">
+		<link type="text/css" rel="stylesheet" href="css/vscpu.css">
 		<script type="text/javascript" src="//ajax.googleapis.com/ajax/libs/jquery/1.11.0/jquery.min.js"></script>
 		<script type="text/javascript" src="js/IABrisca.js"></script>
 	</head>
 	<body>
 		<div id="contenedor">
-			<div id="mesa" style="width:100%">
+			<div id="mesa" style="width:100%;display:none;">
 				<div id="todas_las_cartas">
 					<!--llenar este div con todas las cartas desde js-->
 				</div>
@@ -57,8 +57,17 @@
 					<div id="P4N"></div>
 				</div>
 				
+				<div id="mensaje_fin" class="off">
+					HABDALA HABDALA
+				</div>
 				
 			</div>
+		</div>
+		<div id="mensajeInicio">
+			Elije el número de oponentes:<br>
+			<div class="ico" onclick="iniciarPartidaBrisca_VSCPU(2)"><img src="/img/iconos/1.png"></div>
+			<div class="ico" onclick="iniciarPartidaBrisca_VSCPU(3)"><img src="/img/iconos/2.png"></div>
+			<div class="ico" onclick="iniciarPartidaBrisca_VSCPU(4)"><img src="/img/iconos/3.png"></div>
 		</div>
 		
 		
@@ -106,13 +115,16 @@
 			function iniciarPartidaBrisca_VSCPU(cantidadJugadores){
 				if(typeof cantidadJugadores === "undefined" || cantidadJugadores < 2 || cantidadJugadores > 4)
 					return;
+				
+				document.getElementById("mensajeInicio").style.display = "none";
+				document.getElementById("mesa").style.display = "";
 			
 				IABriscaInstancia = new IABrisca();
+				
 				IABriscaInstancia.moverCarta = moverCarta;
-				
 				IABriscaInstancia.seteaPuntos = seteaPuntos;
-				
 				IABriscaInstancia.pideCartaHumano = pideCartaHumano;
+				IABriscaInstancia.fin = fin;
 				
 				//IABriscaInstancia.console2.on = true;
 			
@@ -124,9 +136,7 @@
 					arrPosiciones[i].innerHTML = "";
 				}
 				
-				for(var i=1; i <= 4; ++i){
-					seteaPuntos('P'+i, 0);
-				}
+				
 				
 				
 				
@@ -169,29 +179,65 @@
 				
 				jugadores = [];
 				
+				switch(cantidadJugadores){
+					case 2:
+						jugadores[0] = new IABriscaInstancia.HumanoBriscaJugador();
+						jugadores[0].iniciarJugador(1);
+						jugadores[1] = new IABriscaInstancia.IABriscaJugador();
+						jugadores[1].iniciarJugador(3);
+						seteaPuntos('P1', 0);
+						seteaPuntos('P3', 0);
+						document.getElementById("P1N").style.display = "inherit";
+						document.getElementById("P2N").style.display = "none";
+						document.getElementById("P3N").style.display = "inherit";
+						document.getElementById("P4N").style.display = "none";
+					break;
+					case 3:
+						jugadores[0] = new IABriscaInstancia.HumanoBriscaJugador();
+						jugadores[0].iniciarJugador(1);
+						jugadores[1] = new IABriscaInstancia.IABriscaJugador();
+						jugadores[1].iniciarJugador(2);
+						jugadores[2] = new IABriscaInstancia.IABriscaJugador();
+						jugadores[2].iniciarJugador(3);
+						seteaPuntos('P1', 0);
+						seteaPuntos('P2', 0);
+						seteaPuntos('P3', 0);
+						document.getElementById("P1N").style.display = "inherit";
+						document.getElementById("P2N").style.display = "inherit";
+						document.getElementById("P3N").style.display = "inherit";
+						document.getElementById("P4N").style.display = "none";
+					break;
+					case 4:
+						jugadores[0] = new IABriscaInstancia.HumanoBriscaJugador();
+						jugadores[0].iniciarJugador(1);
+						jugadores[1] = new IABriscaInstancia.IABriscaJugador();
+						jugadores[1].iniciarJugador(2);
+						jugadores[2] = new IABriscaInstancia.IABriscaJugador();
+						jugadores[2].iniciarJugador(3);
+						jugadores[3] = new IABriscaInstancia.IABriscaJugador();
+						jugadores[3].iniciarJugador(4);
+						seteaPuntos('P1', 0);
+						seteaPuntos('P2', 0);
+						seteaPuntos('P3', 0);
+						seteaPuntos('P4', 0);
+						document.getElementById("P1N").style.display = "inherit";
+						document.getElementById("P2N").style.display = "inherit";
+						document.getElementById("P3N").style.display = "inherit";
+						document.getElementById("P4N").style.display = "inherit";
+					break;
+					default:
+						return;
+					break;
+				}
+				
 				if(cantidadJugadores === 2){
-					jugadores[0] = new IABriscaInstancia.HumanoBriscaJugador();
-					jugadores[0].iniciarJugador(1);
-					jugadores[1] = new IABriscaInstancia.IABriscaJugador();
-					jugadores[1].iniciarJugador(3);
+					
 				}
 				else if(cantidadJugadores === 3){
-					jugadores[0] = new IABriscaInstancia.HumanoBriscaJugador();
-					jugadores[0].iniciarJugador(1);
-					jugadores[1] = new IABriscaInstancia.IABriscaJugador();
-					jugadores[1].iniciarJugador(2);
-					jugadores[2] = new IABriscaInstancia.IABriscaJugador();
-					jugadores[2].iniciarJugador(3);
+					
 				}
 				else if(cantidadJugadores === 4){
-					jugadores[0] = new IABriscaInstancia.HumanoBriscaJugador();
-					jugadores[0].iniciarJugador(1);
-					jugadores[1] = new IABriscaInstancia.IABriscaJugador();
-					jugadores[1].iniciarJugador(2);
-					jugadores[2] = new IABriscaInstancia.IABriscaJugador();
-					jugadores[2].iniciarJugador(3);
-					jugadores[3] = new IABriscaInstancia.IABriscaJugador();
-					jugadores[3].iniciarJugador(4);
+					
 				}
 				else return;
 				
@@ -310,7 +356,7 @@
 				else{
 					moverCartaA(carta, donde);
 				}
-			};
+			}
 			
 			function pideCartaHumano(id, posiblesCartas, callback){
 				for(var i in posiblesCartas){
@@ -326,13 +372,41 @@
 						};
 					})(i, callback);
 				}
-			};
+			}
+			
+			function fin(resultados){
+				console.log(resultados);
+				mensaje_fin = document.getElementById("mensaje_fin");
+				mensaje_fin.className = "";
+				
+				var mensaje = "HAS GANADO";
+				
+				var misPuntos = resultados["1"];
+				for(var i in resultados){
+					if(i != "1"){
+						if(resultados[i] > misPuntos){
+							mensaje = "HAS PERDIDO";
+							continue;
+						}
+						else if(resultados[i] ==  misPuntos){
+							mensaje = "NO HAY GANADOR";
+						}
+					}
+				}
+				
+				mensaje_fin.innerHTML = mensaje + "<br><br>Tu puntuación es " + misPuntos + " puntos<br><br><br><br><div class='boton' onclick='resetBrisca()'>Volver a jugar</div><br>"+
+				"<a class='boton' href='/'>Ir al home</a><br>";
+			}
 				
 			function seteaPuntos(id, puntos){
 				document.getElementById(id+'N').innerHTML = "Puntos: "+puntos;
-			};
+			}
 			
-			
+			function resetBrisca(){
+				document.getElementById("mensajeInicio").style.display = "";
+				document.getElementById("mesa").style.display = "none";
+				document.getElementById("mensaje_fin").className = "off";
+			}
 			
 			
 			// http://andylangton.co.uk/blog/development/get-viewport-size-width-and-height-javascript

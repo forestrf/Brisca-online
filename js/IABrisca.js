@@ -761,6 +761,11 @@ function IABrisca(){
 			}
 			else{
 				T.console2.log('sacabo');
+				var puntosJugadores = {};
+				for(var i = 0; i<thisT.jugadoresArray.length; ++i){
+					puntosJugadores[thisT.jugadoresArray[i].jugadorID] = T.IABriscaBaseInstancia.totalPuntosEnCartas(thisT.jugadoresArray[i].cartasGanadas);ganador = i;
+				}
+				T.fin(puntosJugadores);
 			}
 		};
 		
@@ -920,6 +925,10 @@ function IABrisca(){
 	};
 	
 	this.pideCartaHumano = function(id, posiblesCartas, callback){
+		//document.getElementById(id).innerHTML = puntos;
+	};
+	
+	this.fin = function(resultados){
 		//document.getElementById(id).innerHTML = puntos;
 	};
 

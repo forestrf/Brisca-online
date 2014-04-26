@@ -6,7 +6,8 @@
 }
 
 #mesa {
-	background-color: #018B7B;
+	background-image: url("/img/fondos/2.jpg");
+	background-size: cover;
 	height: 100%;
 	width: 70%;
 	position: absolute;
@@ -14,6 +15,7 @@
 	right: 0;
 	display: table-cell;
 	overflow: hidden;
+	box-shadow: 0 0 500px rgba(0, 0, 0, 0.5) inset;
 }
 
 
@@ -57,7 +59,7 @@
 #MC4{left:70%}
 
 
-#P1N,#P2N,#P3N,#P4N{color:#EEE;background-color:#000;border-radius:7px;font-size:16px;padding:2%;}
+#P1N,#P2N,#P3N,#P4N{color:#EEE;background-color:#000;border-radius:7px;font-size:16px;padding:2%;display:none;}
 #P1N{
 	border-radius:7px 7px 0 0;
 	height:5%;
@@ -66,22 +68,22 @@
 }
 #P2N{
 	border-radius:0 7px 7px 0;
-    left:0;
-    width:10%;
-    bottom:5%;
+	left:0;
+	width:10%;
+	bottom:5%;
 	text-align:right;
 }
 #P3N{
-    border-radius:0 0 7px 7px;
+	border-radius:0 0 7px 7px;
 	height:5%;
 	left:5%;
 	top:0;
 }
 #P4N{
 	border-radius:7px 0 0 7px;
-    right:0;
-    width:10%;
-    top:5%;
+	right:0;
+	width:10%;
+	top:5%;
 }
 
 
@@ -109,4 +111,42 @@
 	position: absolute;
 	right: 0;
 	top: -30px;
+}
+
+
+#mensaje_fin{
+	background-color: rgba(0, 0, 0, 0.69);
+	border: 10px solid #EEEEEE;
+	border-radius: 40px;
+	box-shadow: 0 0 50px #000000;
+	color: #FFFFFF;
+	font-family: helvetica;
+	height: 30%;
+	margin: auto;
+	padding: 20px 50px;
+	position: relative;
+	text-align: center;
+	top: 30%;
+	width: 40%;
+	z-index: 500;
+	transition: all 1s ease;
+}
+#mensaje_fin.off{
+	height: 0;
+	width: 0;
+	opacity: 0;
+}
+
+#mensaje_fin .boton{
+	background-color: #FFFFFF;
+	color: #000000;
+	display: inline-block;
+	padding: 5px 15px;
+	cursor: pointer;
+	transition:all .5s ease;
+	margin: 5px;
+	text-decoration: none;
+}
+#mensaje_fin .boton:hover{
+	box-shadow: 0 0 10px #FFFFFF;
 }
