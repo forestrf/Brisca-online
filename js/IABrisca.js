@@ -586,30 +586,20 @@ function IABrisca(){
 		
 		
 		// Para el jugador, esta función guarda el callback y genera los onclick en las cartas del jugador, los caules procovan la jugada.
+		var cb = function(){};
 		this.lanzaCarta = function(callback){
-			for(var i in thisT.cartasEnMano){
-				var id = 'carta_'+thisT.cartasEnMano[i];
-				document.getElementById(id).style.cursor = 'pointer';
-				document.getElementById(id).onclick = (function(i, callback, thisT){
-					return function(){
-						for(var z in thisT.cartasEnMano){
-							document.getElementById('carta_'+thisT.cartasEnMano[z]).style.cursor = 'default';
-							document.getElementById('carta_'+thisT.cartasEnMano[z]).onclick = function(){};
-						}
-						thisT.lanzaCartaOnClick(thisT.cartasEnMano[i], callback);
-					};
-				})(i, callback, thisT);
-			}
+			cb = callback;
+			T.pideCartaHumano(thisT.jugadorID, thisT.cartasEnMano.slice(0), thisT.lanzaCartaOnClick);
 			
 			T.console2.log('Preparado lanzamiento manual.');
 		};
 		
-		this.lanzaCartaOnClick = function(cartaATirar, callback){
+		this.lanzaCartaOnClick = function(cartaATirar){
 			T.console2.log('Tirada manual: '+cartaATirar);
 			
 			thisT.cartasEnMano.splice(T.ArrayIndexOf(thisT.cartasEnMano, cartaATirar), 1);
 				
-			callback(thisT, cartaATirar);
+			cb(thisT, cartaATirar);
 		};
 		
 		this.robaCarta = function(carta){
@@ -930,6 +920,10 @@ function IABrisca(){
 	}
 	
 	this.seteaPuntos = function(id, puntos){
+		//document.getElementById(id).innerHTML = puntos;
+	};
+	
+	this.pideCartaHumano = function(id, posiblesCartas, callback){
 		//document.getElementById(id).innerHTML = puntos;
 	};
 

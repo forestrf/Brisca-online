@@ -113,11 +113,27 @@
 					moverCartaA(carta, donde);
 					document.getElementById('carta_'+carta).src = "/img/cartas/back2.jpg";
 				}
-			}
+			};
 			
 			IABriscaInstancia.seteaPuntos = function(id, puntos){
 				document.getElementById(id+'N').innerHTML = "Puntos: "+puntos;
-			}
+			};
+			
+			IABriscaInstancia.pideCartaHumano = function(id, posiblesCartas, callback){
+				for(var i in posiblesCartas){
+					var id = 'carta_'+posiblesCartas[i];
+					document.getElementById(id).style.cursor = 'pointer';
+					document.getElementById(id).onclick = (function(i, callback, thisT){
+						return function(){
+							for(var z in posiblesCartas){
+								document.getElementById('carta_'+posiblesCartas[z]).style.cursor = 'default';
+								document.getElementById('carta_'+posiblesCartas[z]).onclick = function(){};
+							}
+							callback(posiblesCartas[i]);
+						};
+					})(i, callback);
+				}
+			};
 			
 			IABriscaInstancia.console2.on = true;
 			
