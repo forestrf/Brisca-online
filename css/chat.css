@@ -45,16 +45,14 @@
 }
 
 #entradatxt {
-	width: 80%;
-	width: calc(100% - 100px);
+	width: 70%;
 	border: 0;
 	background-color: #444;
 	color: #FFF;
-	padding: 5px 10px;
+	padding: 0 5%;
 }
 #enviar {
 	width: 20%;
-	width: calc(100px);
 	border: 0;
 	background-color: #AAA;
 	transition: .5s background-color ease, .5s box-shadow ease;

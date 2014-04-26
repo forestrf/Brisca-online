@@ -154,8 +154,13 @@
 			
 			var windowInnerWH = viewport();
 			
-			var maximo = Math.min(windowInnerWH.height,windowInnerWH.width);
-			var widthCarta = maximo*0.16;
+			var maximo = Math.min(windowInnerWH.height,windowInnerWH.width*0.7);
+			if(maximo == windowInnerWH.height){
+				var widthCarta = maximo*0.17;
+			}
+			else{
+				var widthCarta = maximo*0.17*aspectRatio;
+			}
 			var heightCarta = widthCarta/aspectRatio;
 			var widthCarta2 = widthCarta/2;
 			var heightCarta2 = heightCarta/2;

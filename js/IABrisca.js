@@ -882,13 +882,9 @@ function IABrisca(){
 			for(var i in thisT.jugadoresArray){
 				thisT.jugadoresArray[i].cartasJugadasMesa(thisT.cartasEnMesa);
 			}
-			T.seteaPuntos('puntos_jugador_'+(T.ArrayIndexOf(thisT.jugadoresArray, jugador)+1), T.IABriscaBaseInstancia.totalPuntosEnCartas(jugador.cartasGanadas));
+			T.seteaPuntos('P'+(T.ArrayIndexOf(thisT.jugadoresArray, jugador)+1), T.IABriscaBaseInstancia.totalPuntosEnCartas(jugador.cartasGanadas));
 			thisT.cartasEnMesa = [];
 		};
-	};
-
-	this.seteaPuntos = function(id, puntos){
-		//document.getElementById(id).innerHTML = puntos;
 	};
 
 	this.ClampCircular = function(numero, minimo, maximo){
@@ -909,11 +905,6 @@ function IABrisca(){
 			}
 		}
 	};
-
-
-	this.moverCarta = function(carta, jugador){
-		//callback
-	}
 	
 	// http://stackoverflow.com/questions/3629183/why-doesnt-indexof-work-on-an-array-ie8
 	this.ArrayIndexOf = function(arr, elt /*, from*/){
@@ -933,6 +924,14 @@ function IABrisca(){
 		return -1;
 	};
 
+	
+	this.moverCarta = function(carta, jugador){
+		//callback
+	}
+	
+	this.seteaPuntos = function(id, puntos){
+		//document.getElementById(id).innerHTML = puntos;
+	};
 
 
 	this.IABriscaBaseInstancia = new this.IABriscaBase();
