@@ -51,10 +51,10 @@
 					<div id="MM"></div>
 					
 					<!--Marcador de puntos-->
-					<div id="P1N">Puntos: 0</div>
-					<div id="P2N">Puntos: 0</div>
-					<div id="P3N">Puntos: 0</div>
-					<div id="P4N">Puntos: 0</div>
+					<div id="P1N"></div>
+					<div id="P2N"></div>
+					<div id="P3N"></div>
+					<div id="P4N"></div>
 				</div>
 				
 				
@@ -108,50 +108,11 @@
 					return;
 			
 				IABriscaInstancia = new IABrisca();
-				IABriscaInstancia.moverCarta = function(carta, donde){
-					if(donde.indexOf("P1")!=-1 || donde.indexOf("MC")!=-1 || donde.indexOf("C0")!=-1){
-						document.getElementById('carta_'+carta).src = "/img/cartas/"+carta+".jpg";
-					}
-					else{
-						document.getElementById('carta_'+carta).src = "/img/cartas/back2.jpg";
-					}
-					if(donde.indexOf("P")!=-1 || donde.indexOf("MC")!=-1 || donde.indexOf("C0")!=-1){
-						if(donde.indexOf("MC")!=-1 && donde.indexOf("0",2)==-1){
-							var huecoLibre = huecoLibreMesa();
-							moverCartaA(carta, donde+huecoLibre);
-						}
-						else if(donde.indexOf("P")!=-1 && donde.indexOf("0",2)==-1){
-							var huecoLibre = huecoLibreJugador(donde.substr(1, donde.length -1));
-							moverCartaA(carta, donde+'C'+huecoLibre);
-						}
-						else{
-							moverCartaA(carta, donde);
-						}
-					}
-					else{
-						moverCartaA(carta, donde);
-					}
-				};
+				IABriscaInstancia.moverCarta = moverCarta;
 				
-				IABriscaInstancia.seteaPuntos = function(id, puntos){
-					document.getElementById(id+'N').innerHTML = "Puntos: "+puntos;
-				};
+				IABriscaInstancia.seteaPuntos = seteaPuntos;
 				
-				IABriscaInstancia.pideCartaHumano = function(id, posiblesCartas, callback){
-					for(var i in posiblesCartas){
-						var id = 'carta_'+posiblesCartas[i];
-						document.getElementById(id).style.cursor = 'pointer';
-						document.getElementById(id).onclick = (function(i, callback, thisT){
-							return function(){
-								for(var z in posiblesCartas){
-									document.getElementById('carta_'+posiblesCartas[z]).style.cursor = 'default';
-									document.getElementById('carta_'+posiblesCartas[z]).onclick = function(){};
-								}
-								callback(posiblesCartas[i]);
-							};
-						})(i, callback);
-					}
-				};
+				IABriscaInstancia.pideCartaHumano = pideCartaHumano;
 				
 				//IABriscaInstancia.console2.on = true;
 			
@@ -159,6 +120,13 @@
 		
 		
 				arrPosiciones = document.getElementById('posiciones').children;
+				for(var i=0; i < arrPosiciones.length; ++i){
+					arrPosiciones[i].innerHTML = "";
+				}
+				
+				for(var i=1; i <= 4; ++i){
+					seteaPuntos('P'+i, 0);
+				}
 				
 				
 				
@@ -186,6 +154,7 @@
 				maximoAzarDesgaseGrados = 2;
 				
 				todas_las_cartas = document.getElementById('todas_las_cartas');
+				todas_las_cartas.innerHTML = "";
 				mazo_cartas = document.getElementById('MM');
 				arrCartas = IABriscaInstancia.IABriscaBaseInstancia.cartasTotalArray;
 				for(var i in arrCartas){
@@ -219,7 +188,7 @@
 					jugadores[0].iniciarJugador(1);
 					jugadores[1] = new IABriscaInstancia.IABriscaJugador();
 					jugadores[1].iniciarJugador(2);
-					jugadores[2] = new IABriscaInstancia.HumanoBriscaJugador();
+					jugadores[2] = new IABriscaInstancia.IABriscaJugador();
 					jugadores[2].iniciarJugador(3);
 					jugadores[3] = new IABriscaInstancia.IABriscaJugador();
 					jugadores[3].iniciarJugador(4);
@@ -318,6 +287,50 @@
 				}
 			}
 			
+			function moverCarta(carta, donde){
+				if(donde.indexOf("P1")!=-1 || donde.indexOf("MC")!=-1 || donde.indexOf("C0")!=-1){
+					document.getElementById('carta_'+carta).src = "/img/cartas/"+carta+".jpg";
+				}
+				else{
+					document.getElementById('carta_'+carta).src = "/img/cartas/back2.jpg";
+				}
+				if(donde.indexOf("P")!=-1 || donde.indexOf("MC")!=-1 || donde.indexOf("C0")!=-1){
+					if(donde.indexOf("MC")!=-1 && donde.indexOf("0",2)==-1){
+						var huecoLibre = huecoLibreMesa();
+						moverCartaA(carta, donde+huecoLibre);
+					}
+					else if(donde.indexOf("P")!=-1 && donde.indexOf("0",2)==-1){
+						var huecoLibre = huecoLibreJugador(donde.substr(1, donde.length -1));
+						moverCartaA(carta, donde+'C'+huecoLibre);
+					}
+					else{
+						moverCartaA(carta, donde);
+					}
+				}
+				else{
+					moverCartaA(carta, donde);
+				}
+			};
+			
+			function pideCartaHumano(id, posiblesCartas, callback){
+				for(var i in posiblesCartas){
+					var id = 'carta_'+posiblesCartas[i];
+					document.getElementById(id).style.cursor = 'pointer';
+					document.getElementById(id).onclick = (function(i, callback, thisT){
+						return function(){
+							for(var z in posiblesCartas){
+								document.getElementById('carta_'+posiblesCartas[z]).style.cursor = 'default';
+								document.getElementById('carta_'+posiblesCartas[z]).onclick = function(){};
+							}
+							callback(posiblesCartas[i]);
+						};
+					})(i, callback);
+				}
+			};
+				
+			function seteaPuntos(id, puntos){
+				document.getElementById(id+'N').innerHTML = "Puntos: "+puntos;
+			};
 			
 			
 			
