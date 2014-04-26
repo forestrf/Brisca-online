@@ -10,8 +10,16 @@
 		<script type="text/javascript" src="js/IABrisca.js"></script>
 	</head>
 	<body>
-		<div id="contenedor">
-			<div id="mesa" style="width:100%;display:none;">
+		<div id="contenedor_vscpu">
+			<div id="mensajeInicio">
+				Elije el número de oponentes:<br>
+				<div class="ico" onclick="iniciarPartidaBrisca_VSCPU(2)"><img src="/img/iconos/1.png"></div>
+				<div class="ico" onclick="iniciarPartidaBrisca_VSCPU(3)"><img src="/img/iconos/2.png"></div>
+				<div class="ico" onclick="iniciarPartidaBrisca_VSCPU(4)"><img src="/img/iconos/3.png"></div>
+			</div>
+		</div>
+		<div id="contenedor" style="display:none;">
+			<div id="mesa" style="width:100%;">
 				<div id="todas_las_cartas">
 					<!--llenar este div con todas las cartas desde js-->
 				</div>
@@ -63,14 +71,7 @@
 				
 			</div>
 		</div>
-		<div id="contenedor_vscpu">
-			<div id="mensajeInicio">
-				Elije el número de oponentes:<br>
-				<div class="ico" onclick="iniciarPartidaBrisca_VSCPU(2)"><img src="/img/iconos/1.png"></div>
-				<div class="ico" onclick="iniciarPartidaBrisca_VSCPU(3)"><img src="/img/iconos/2.png"></div>
-				<div class="ico" onclick="iniciarPartidaBrisca_VSCPU(4)"><img src="/img/iconos/3.png"></div>
-			</div>
-		</div>
+		
 		
 		
 		
@@ -118,8 +119,8 @@
 				if(typeof cantidadJugadores === "undefined" || cantidadJugadores < 2 || cantidadJugadores > 4)
 					return;
 				
-				document.getElementById("mensajeInicio").style.display = "none";
-				document.getElementById("mesa").style.display = "";
+				document.getElementById("contenedor_vscpu").style.display = "none";
+				document.getElementById("contenedor").style.display = "";
 			
 				IABriscaInstancia = new IABrisca();
 				
@@ -290,9 +291,17 @@
 				cartaObj.style.top = (hastaObj.offsetTop -heightCarta2 +((Math.random()*2) -1) *maximoAzarDesfaseWidth) +"px";
 				cartaObj.style.left = (hastaObj.offsetLeft -widthCarta2 +((Math.random()*2) -1) *maximoAzarDesfaseHeight) +"px";
 				if(hasta.indexOf("P2") != -1 || hasta.indexOf("P4") != -1){
+					cartaObj.style.webkitTransform =
+					cartaObj.style.mozTransform =
+					cartaObj.style.msTransform =
+					cartaObj.style.oTransform =
 					cartaObj.style.transform = 'rotate('+(90 +((Math.random()*2) -1) *maximoAzarDesgaseGrados)+'deg)';
 				}
 				else{
+					cartaObj.style.webkitTransform =
+					cartaObj.style.mozTransform =
+					cartaObj.style.msTransform =
+					cartaObj.style.oTransform =
 					cartaObj.style.transform = 'rotate('+(((Math.random()*2) -1) *maximoAzarDesgaseGrados)+'deg)';
 				}
 				cartaObj.style.zIndex = ++zIndexTemp;
@@ -405,8 +414,8 @@
 			}
 			
 			function resetBrisca(){
-				document.getElementById("mensajeInicio").style.display = "";
-				document.getElementById("mesa").style.display = "none";
+				document.getElementById("contenedor_vscpu").style.display = "";
+				document.getElementById("contenedor").style.display = "none";
 				document.getElementById("mensaje_fin").className = "off";
 			}
 			

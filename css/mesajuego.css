@@ -7,7 +7,7 @@
 
 #mesa {
 	background-image: url("/img/fondos/2.jpg");
-	background-size: cover;
+	background-repeat: repeat;
 	height: 100%;
 	width: 70%;
 	position: absolute;
@@ -15,7 +15,6 @@
 	right: 0;
 	display: table-cell;
 	overflow: hidden;
-	box-shadow: 0 0 500px rgba(0, 0, 0, 0.5) inset;
 }
 
 
@@ -94,11 +93,12 @@
 .carta{
 	border-radius: 7px;
 	box-shadow: 0 0 5px #000000;
+	-webkit-box-shadow: none;
 	position: absolute;
-	-webkit-transition: top 1s ease, left 1s ease, transform 1s ease;
-	-moz-transition: top 1s ease, left 1s ease, transform 1s ease;
-	-ms-transition: top 1s ease, left 1s ease, transform 1s ease;
-	-o-transition: top 1s ease, left 1s ease, transform 1s ease;
+	-webkit-transition: top 1s ease, left 1s ease, -webkit-transform 1s ease;
+	-moz-transition: top 1s ease, left 1s ease, -moz-transform 1s ease;
+	-ms-transition: top 1s ease, left 1s ease, -ms-transform 1s ease;
+	-o-transition: top 1s ease, left 1s ease, -o-transform 1s ease;
 	transition: top 1s ease, left 1s ease, transform 1s ease;
 }
 
@@ -129,6 +129,10 @@
 	top: 30%;
 	width: 40%;
 	z-index: 500;
+	-webkit-transition: all 1s ease;
+	-moz-transition: all 1s ease;
+	-ms-transition: all 1s ease;
+	-o-transition: all 1s ease;
 	transition: all 1s ease;
 }
 #mensaje_fin.off{
@@ -143,7 +147,11 @@
 	display: inline-block;
 	padding: 5px 15px;
 	cursor: pointer;
-	transition:all .5s ease;
+	-webkit-transition: all .5s ease;
+	-moz-transition: all .5s ease;
+	-ms-transition: all .5s ease;
+	-o-transition: all .5s ease;
+	transition: all .5s ease;
 	margin: 5px;
 	text-decoration: none;
 }
