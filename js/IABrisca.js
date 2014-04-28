@@ -87,7 +87,7 @@ function IABrisca(){
 		// array con la correspondencia de los puntos con las cartas.
 		this.palosCartas = ["O","E","B","C"];
 		
-		// En el siguiente array se guardar�n las cartas gastadas para cada jugada.
+		// En el siguiente array se guardarán las cartas gastadas para cada jugada.
 		this.cartasUsadas = {
 			"O":[],
 			"E":[],
@@ -127,17 +127,17 @@ function IABrisca(){
 		// Retorna el total de puntos en la carta dada a partir del array puntosCartas
 		this.totalPuntosEnCarta = function(carta){
 			// var palo = cartas[i][0]
-			var n = parseInt(this.numeroCarta(carta));
+			var n = parseInt(this.numeroCarta(carta), 10);
 			return this.puntosCartas[n];
 		};
 		
 		// Retorna el total de puntos en el grupo de cartas dado a partir del array puntosCartas
 		this.totalPuntosEnCartas = function(cartas){
-			if(cartas.length === 0 || cartas == undefined){
+			if(cartas.length === 0 || typeof cartas === 'undefined'){
 				return 0;
 			}
 			var suma = 0;
-			for(var i in cartas){
+			for(var i=0; i<cartas.length; ++i){
 				suma += this.totalPuntosEnCarta(cartas[i]);
 			}
 			return suma;
@@ -147,11 +147,11 @@ function IABrisca(){
 		
 		// Retorna true o false en caso de que 
 		this.paloPresenteEnCartas = function(palo, cartas){
-			if(cartas.length == 0 || cartas == undefined){
+			if(cartas.length === 0 || typeof cartas === 'undefined'){
 				return false;
 			}
 			if(typeof palo == "string"){
-				for(var i in cartas){
+				for(var i=0; i<cartas.length; ++i){
 					var paloT = this.paloCarta(cartas[i]);
 					if(palo == paloT){
 						return true;
@@ -159,7 +159,7 @@ function IABrisca(){
 				}
 			}
 			else{
-				for(var i in cartas){
+				for(var i=0; i<cartas.length; ++i){
 					var paloT = this.paloCarta(cartas[i]);
 					for(var j in palo){
 						if(palo[j] == paloT){
@@ -178,11 +178,11 @@ function IABrisca(){
 		
 		
 		// Valor del palo: 0 = sin valor, 1 = palo de la mesa, 2 = palo que manda
-		// Valor m�nimo es el valor en puntos m�nimo de la carta
+		// Valor mínimo es el valor en puntos mínimo de la carta
 		// Retorna la carta del array cartas que cumple con los requisitos fijados, o false si ninguna carta cumple
 		this.cartaMenorValor = function(cartas, paloQueMandaSiempre, paloQueMandaEnMesa){
 			
-			if(cartas.length == 1){
+			if(cartas.length === 1){
 				return cartas[0];
 			}
 			
@@ -198,15 +198,15 @@ function IABrisca(){
 		this.ordenCartasPorValor = function(cartas, paloQueMandaSiempre, paloQueMandaEnMesa){
 			// Clonar un objeto
 			// http://stackoverflow.com/questions/122102/most-efficient-way-to-clone-an-object
-			// Aqu� se guardar�n los palos y cartas ordenados
+			// Aquí se guardarán los palos y cartas ordenados
 			var ordenPalosCartas2 = [];
 			
 			// Este bucle ordena this.cartasTotal de forma que this.cartasTotal[0] = paloQueMandaSiempre y 1 = paloQueMandaEnMesa. 2 y 3 son "aleatorios"
 			var W=[];
-			if(paloQueMandaSiempre != undefined && paloQueMandaSiempre !== ''){
+			if(typeof paloQueMandaSiempre !== 'undefined' && paloQueMandaSiempre !== ''){
 				W.push(paloQueMandaSiempre);
 			}
-			if(paloQueMandaEnMesa != undefined && paloQueMandaEnMesa !== '' && paloQueMandaSiempre !== paloQueMandaEnMesa){
+			if(typeof paloQueMandaEnMesa !== 'undefined' && paloQueMandaEnMesa !== '' && paloQueMandaSiempre !== paloQueMandaEnMesa){
 				W.push(paloQueMandaEnMesa);
 			}
 			var M=this.palosCartas.slice(0);
@@ -264,18 +264,17 @@ function IABrisca(){
 		this.calculaJugada = function(cartasEnMesa, cartasEnMano, paloQueMandaSiempre, paloQueMandaEnMesa, ultimoEnTirar, cartasJugadas){
 			
 			
-			// Al final se retornar� una carta, la que se debe tirar
+			// Al final se retornará una carta, la que se debe tirar
 			var thisT = this;
 			
 			function totalPuntosCartasEnManoMayorQue0(){
-				return hayPuntosEnMesa();
-				if(thisT.totalPuntosEnCartas(cartasEnMano) > 0){
+				if(thisT.totalPuntosEnCartas(cartasEnMano) === 0){
 					return cartaManoDelPaloManda();
 				}
 				else{
 					return hayPuntosEnMesa();
 				}
-			};
+			}
 			
 			function cartaManoDelPaloManda(){
 				if(thisT.paloPresenteEnCartas(paloQueMandaSiempre, cartasEnMano)){
@@ -309,7 +308,6 @@ function IABrisca(){
 					var mayorCartaMesa = thisT.ordenCartasPorValor(cartasEnMesa, paloQueMandaSiempre, paloQueMandaEnMesa)[0];
 					//Esta variable tiene la carta más alta de la mesa y las cartas de la mano ordenadas por valor
 					var cartasEnManoMayorMesa = thisT.ordenCartasPorValor(cartasEnManoConPuntos.concat(mayorCartaMesa), paloQueMandaSiempre, paloQueMandaEnMesa);
-					var siguenteSeTira = false;
 					var indiceCartaATirar = T.ArrayIndexOf(cartasEnManoMayorMesa, mayorCartaMesa)-1;
 					if(indiceCartaATirar == -1){
 						return cartaMenorValorManoConPuntos();
@@ -441,7 +439,6 @@ function IABrisca(){
 					var mayorCartaMesa = thisT.ordenCartasPorValor(cartasEnMesa, paloQueMandaSiempre, paloQueMandaEnMesa)[0];
 					//Esta variable tiene la carta más alta de la mesa y las cartas de la mano ordenadas por valor
 					var cartasEnManoMayorMesa = thisT.ordenCartasPorValor(cartasEnMano.slice(0).concat(mayorCartaMesa), paloQueMandaSiempre, paloQueMandaEnMesa);
-					var siguenteSeTira = false;
 					var indiceCartaATirar = T.ArrayIndexOf(cartasEnManoMayorMesa, mayorCartaMesa)-1;
 					if(indiceCartaATirar == -1){
 						return FIN_tiraCartaMenorValor();
@@ -501,7 +498,7 @@ function IABrisca(){
 		// Se inicia al jugador dándole un id y si queremos, azar
 		this.iniciarJugador = function(jugadorID, azar){
 			this.jugadorID = jugadorID;
-			if(azar != undefined){
+			if(typeof azar !== 'undefined'){
 				this.azar = azar;
 			}
 		};
@@ -542,7 +539,7 @@ function IABrisca(){
 			setTimeout((function(t, cartaATirar){
 				return function(){
 					callback(t, cartaATirar);
-				}
+				};
 			})(this, cartaATirar), thisT.tiempoPensandoIA);
 		};
 		
@@ -639,14 +636,9 @@ function IABrisca(){
 		
 		
 		// Para el jugador, esta función guarda el callback y genera los onclick en las cartas del jugador, los caules procovan la jugada.
+		var cb = function(){};
 		this.lanzaCarta = function(callback){
-			thisT.lanzaCartaCallback = function(cartaATirar){
-				T.console2.log('Tirada callback: '+cartaATirar);
-				
-				thisT.cartasEnMano.splice(T.ArrayIndexOf(thisT.cartasEnMano, cartaATirar), 1);
-					
-				callback(thisT, cartaATirar);
-			};
+			cb = callback;
 			
 			T.console2.log('Preparado lanzamiento callback.');
 		};
@@ -656,7 +648,7 @@ function IABrisca(){
 			
 			thisT.cartasEnMano.splice(T.ArrayIndexOf(thisT.cartasEnMano, cartaATirar), 1);
 				
-			callback(thisT, cartaATirar);
+			cb(thisT, cartaATirar);
 		};
 		
 		this.robaCarta = function(carta){
@@ -729,12 +721,12 @@ function IABrisca(){
 			// Repartirles las cartas
 			var cuenta = 0;
 			for(var n = 0; n < 3; ++n){
-				for(var i in jugadores){
-					setTimeout((function(i, jugador){
+				for(var i=0; i<jugadores.length; ++i){
+					setTimeout((function(jugador){
 						return function(){
 							thisT.peticionJugadorRobar(jugador);
-						}
-					})(i, jugadores[i]),thisT.tiempoRepartiendoCarta * ++cuenta);
+						};
+					})(jugadores[i]),thisT.tiempoRepartiendoCarta * ++cuenta);
 				}
 			}
 			
@@ -763,7 +755,7 @@ function IABrisca(){
 				T.console2.log('sacabo');
 				var puntosJugadores = {};
 				for(var i = 0; i<thisT.jugadoresArray.length; ++i){
-					puntosJugadores[thisT.jugadoresArray[i].jugadorID] = T.IABriscaBaseInstancia.totalPuntosEnCartas(thisT.jugadoresArray[i].cartasGanadas);ganador = i;
+					puntosJugadores[thisT.jugadoresArray[i].jugadorID] = T.IABriscaBaseInstancia.totalPuntosEnCartas(thisT.jugadoresArray[i].cartasGanadas);
 				}
 				T.fin(puntosJugadores);
 			}
@@ -809,7 +801,7 @@ function IABrisca(){
 							setTimeout((function(i){
 								return function(){
 									thisT.peticionJugadorRobar(thisT.jugadoresArray[(T.ClampCircular(i+thisT.quienGanoUltimaPartidaN, 0, thisT.jugadoresArray.length -1))]);
-								}
+								};
 							})(i), thisT.tiempoRepartiendoCarta *(i +1));
 						}
 						setTimeout(thisT.GO, thisT.tiempoRepartiendoCarta *(i +2));
@@ -827,7 +819,8 @@ function IABrisca(){
 		
 		// Se le pasa un jugador y la mesa hace que tire. Después, usa la carta que ha tirado y guarda quién la ha tirado
 		this.peticionJugadorLanzar = function(jugador){
-			var cartaTirada = jugador.lanzaCarta(thisT.peticionJugadorLanzarRecibiendoCarta);
+			//var cartaTirada = jugador.lanzaCarta(thisT.peticionJugadorLanzarRecibiendoCarta);
+			jugador.lanzaCarta(thisT.peticionJugadorLanzarRecibiendoCarta);
 		};
 		
 		this.peticionJugadorLanzarRecibiendoCarta = function(jugador, cartaTirada){
@@ -847,32 +840,31 @@ function IABrisca(){
 		this.quedanCartasPorRobar = true;
 		this.peticionJugadorRobar = function(jugador){
 			if(thisT.quedanCartasPorRobar){
+				var cartaARobar = "";
 				if(thisT.mazoCartas.length > 0){
-					var cartaARobar = thisT.mazoCartas.splice(
+					cartaARobar = thisT.mazoCartas.splice(
 						Math.floor(Math.random()*thisT.mazoCartas.length),1)[0];
 				}
 				else{
-					var cartaARobar = this.cartaPaloQueMandaSiempre;
+					cartaARobar = this.cartaPaloQueMandaSiempre;
 					thisT.cartaPaloQueMandaSiempre = '';
 					thisT.quedanCartasPorRobar = false;
 				}
 				jugador.robaCarta(cartaARobar);
 				T.moverCarta(cartaARobar, 'P'+jugador.jugadorID.toString());
-				if(thisT.mazoCartas.length === 0){
+				/*if(thisT.mazoCartas.length === 0){
 					// QUITAR EL MAZO
 					//seteaImagen('MM', '');
-				}
+				}*/
 			}
 		};
 		
 		this.peticionJugadorGanarMesa = function(jugador){
 			for(var i = 0; i < thisT.jugadoresArray.length; ++i){
 				T.moverCarta(thisT.cartasEnMesa[i], 'P'+jugador.jugadorID+'C0');
-			}
-			jugador.ganaMesa(thisT.cartasEnMesa);
-			for(var i in thisT.jugadoresArray){
 				thisT.jugadoresArray[i].cartasJugadasMesa(thisT.cartasEnMesa);
 			}
+			jugador.ganaMesa(thisT.cartasEnMesa);
 			T.seteaPuntos('P'+jugador.jugadorID, T.IABriscaBaseInstancia.totalPuntosEnCartas(jugador.cartasGanadas));
 			thisT.cartasEnMesa = [];
 		};
@@ -918,7 +910,7 @@ function IABrisca(){
 	
 	this.moverCarta = function(carta, jugador){
 		//callback
-	}
+	};
 	
 	this.seteaPuntos = function(id, puntos){
 		//document.getElementById(id).innerHTML = puntos;
