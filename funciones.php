@@ -65,7 +65,9 @@ class DB {
 			$this->cacheaResultado($query, $arrayCacheado);
 			return $arrayCacheado;
 		}
-		return $resultado->fetch_array(MYSQLI_ASSOC);
+		$resultadoArray = array();
+		while($rt = $resultado->fetch_array(MYSQLI_ASSOC)){$resultadoArray[] = $rt;};
+		return $resultadoArray;
 	}
 	
 	// FUNCIONES QUE SE USAN EN LA APLICACIÓN
@@ -111,7 +113,7 @@ class DB {
 	// Retorna la ID del usuario que tiene ese NICK
 	function idDesdeNick($nick){
 		$nick = mysql_escape_mimic($nick);
-		$nick = $this->consulta("SELECT ID FROM usuarios WHERE NICK = '$nick'", true);
+		$nick = $this->consulta("SELECT ID FROM usuarios WHERE NICK = '$nick'", true)[0];
 		return $nick["ID"];
 	}
 	
@@ -138,7 +140,18 @@ class DB {
 	function validaCookieLogueado($u, $p){
 		$u = mysql_escape_mimic($u);
 		$p = mysql_escape_mimic($p);
-		return $this->consulta("SELECT NOMBRE, APELLIDO, NICK FROM usuarios WHERE ID = (SELECT ID_USER FROM login WHERE ID_USER = '$u' AND COOKIE = '$p' AND FECHA_TOPE > NOW())", true);
+		return $this->consulta("SELECT NOMBRE, APELLIDO, NICK FROM usuarios WHERE ID = (SELECT ID_USER FROM login WHERE ID_USER = '$u' AND COOKIE = '$p' AND FECHA_TOPE > NOW())", true)[0];
+	}
+	
+	// Consultar salas en curso dado un filtro (array con indices y valores)
+	function consultarSalasEnCurso(&$filtro){
+		$filtro['players'] = mysql_escape_mimic($filtro['players']);
+		$filtro['llenas'] = mysql_escape_mimic($filtro['llenas']);
+		$players_filtro = $filtro['players']===false?'':' AND jugadores_max = '.$filtro['players'].' ';
+		$llenas_filtro = $filtro['llenas']===true?'':' AND p_total < jugadores_max ';
+		$parejas_filtro = $filtro['parejas']===true?' AND parejas = true ':' AND parejas = false ';
+		return $this->consulta("SELECT salas.ID, salas.nombre, salas.jugadores_max, salas.iniciada, salas.id_creador, usuarios.nick, salas.p2_id, salas.p3_id, salas.p4_id, salas.p_total, salas.parejas FROM salas LEFT JOIN usuarios ON salas.id_creador = usuarios.ID WHERE iniciada = 0 ".$players_filtro.$llenas_filtro.$parejas_filtro);
+	
 	}
 	
 	// --------------------------------------------------------

@@ -120,7 +120,6 @@
 	border-radius: 40px;
 	box-shadow: 0 0 50px #000000;
 	color: #FFFFFF;
-	font-family: helvetica;
 	height: 30%;
 	margin: auto;
 	padding: 20px 50px;
@@ -129,6 +128,7 @@
 	top: 30%;
 	width: 40%;
 	z-index: 500;
+	overflow: hidden;
 	-webkit-transition: all 1s ease;
 	-moz-transition: all 1s ease;
 	-ms-transition: all 1s ease;

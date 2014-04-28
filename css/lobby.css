@@ -1,0 +1,96 @@
+#contenedor {
+	background-color: #AAAAAA;
+	height: 100%;
+	position: absolute;
+	width: 100%;
+}
+
+.boton_sala {
+	background-color: #EEE;
+	cursor: pointer;
+	display: inline-block;
+	font-size: 20px;
+	margin: 20px;
+	padding: 10px;
+	transition: all .5s ease;
+	color: #666;
+}
+.boton_sala:hover {
+	background-color: #FFF;
+	box-shadow: 0 0 10px #FFF;
+	color: #444;
+}
+
+.boton_sala.home {
+	
+}
+
+.boton_sala.crear {
+	position: absolute;
+	right: 0;
+}
+
+.salas_abiertas {
+    background-color: #FFFFFF;
+    margin: 0 20px;
+    padding: 20px;
+    position: relative;
+}
+.filtro_salas {
+    display: inline-block;
+}
+.boton_en_listado {
+    border: 1px solid #CCCCCC;
+    display: inline-block;
+    font-size: 14px;
+    height: 20px;
+    line-height: 20px;
+    padding: 5px;
+    vertical-align: middle;
+	margin-left: 5px;
+}
+
+.filtro_salas .boton_en_listado:first-child {
+    margin-left: 20px;
+}
+.boton_en_listado.pointer {
+	cursor: pointer;
+}
+
+.filtro_salas .boton_en_listado select {
+	border: 0 none;
+	font-size: 14px;
+	height: 20px;
+	margin: 0;
+	padding: 2px;
+}
+.boton_en_listado input {
+    vertical-align: top;
+}
+
+.salas_listado {
+	border: 1px solid #CCCCCC;
+	margin-top: 20px;
+	text-align: left;
+	width: 100%;
+}
+
+.salas_listado tr > * {
+    padding: 5px 15px;
+    font-size: 13px;
+}
+
+.salas_listado > thead > tr > th {
+    color: #222222;
+    font-weight: bold;
+	width: 20%;
+}
+
+.salas_listado > tbody > tr > td {
+    color: #222222;
+}
+
+
+.salas_listado > tbody > tr:nth-child(2n+1) > td {
+    background-color: #EEE;
+}
