@@ -81,7 +81,7 @@ class DB {
 	// Consultar si existe un nick en la base de datos
 	function existeNick($nick){
 		$nick = mysql_escape_mimic($nick);
-		return $this->consulta("SELECT * FROM usuarios WHERE NICK = '".$nick."'", true) !== null;
+		return count($this->consulta("SELECT * FROM usuarios WHERE NICK = '".$nick."'", true)) > 0;
 	}
 	
 	// Insertar un usuario en la base de datos
@@ -107,7 +107,7 @@ class DB {
 	function CompruebaEmailValidacion($ID, $passwordT){
 		$ID = mysql_escape_mimic($ID);
 		$passwordT = mysql_escape_mimic($passwordT);
-		return $this->consulta("SELECT * FROM usuarios WHERE user_validado = '{$passwordT}' AND ID = '{$ID}'", true) !== null;
+		return count($this->consulta("SELECT * FROM usuarios WHERE user_validado = '{$passwordT}' AND ID = '{$ID}'", true)) > 0;
 	}
 	
 	// Marca el usuario como usuario validado por mail
@@ -127,7 +127,7 @@ class DB {
 	function NickPasswordValidacion($nick, $password){
 		$nick = mysql_escape_mimic($nick);
 		$password = mysql_escape_mimic($password);
-		return $this->consulta("SELECT * FROM usuarios WHERE NICK = '$nick' AND PASSWORD = '$password' AND user_validado = ''") !== null;
+		return count($this->consulta("SELECT * FROM usuarios WHERE NICK = '$nick' AND PASSWORD = '$password' AND user_validado = ''")) > 0;
 	}
 	
 	
