@@ -497,9 +497,9 @@ function IABrisca(){
 		
 		// Se inicia al jugador dándole un id y si queremos, azar
 		this.iniciarJugador = function(jugadorID, azar){
-			this.jugadorID = jugadorID;
+			thisT.jugadorID = jugadorID;
 			if(typeof azar !== 'undefined'){
-				this.azar = azar;
+				thisT.azar = azar;
 			}
 		};
 		
@@ -511,48 +511,41 @@ function IABrisca(){
 			var paloQueMandaEnMesa = T.IABriscaMesaInstancia.paloQueMandaEnMesa;
 			var ultimoEnTirar = T.IABriscaMesaInstancia.jugadoresPorTirar == 1;
 			
-			var cartaATirar = T.IABriscaBaseInstancia.calculaJugada(cartasEnMesa, this.cartasEnMano, paloQueMandaSiempre, paloQueMandaEnMesa, ultimoEnTirar, this.cartasJugadas);
-			
-			T.console2.log('IABriscaBaseInstancia.calculaJugada('+JSON.stringify(cartasEnMesa)+', '+JSON.stringify(this.cartasEnMano)+', "'+paloQueMandaSiempre+'", "'+paloQueMandaEnMesa+'", '+(ultimoEnTirar?'true':'false')+', '+JSON.stringify(this.cartasJugadas)+') = '+cartaATirar);
-			
-			if(this.azar !== 0 && Math.random() < this.azar && this.cartasEnMano.length > 1){
-				var cartaATirarT = [];
-				for(var i in this.cartasEnMano){
-					if(this.cartasEnMano[i] != cartaATirar){
-						cartaATirarT = cartaATirarT.concat(this.cartasEnMano[i]);
-					}
-				}
-				if(cartaATirarT.length > 1){
-					cartaATirar = cartaATirarT[Math.floor(Math.random()*cartaATirarT.length)];
+			var cartaATirar = "";
+			if(thisT.azar !== 0 && Math.random() < thisT.azar && thisT.cartasEnMano.length > 1){
+				if(thisT.cartasEnMano.length > 1){
+					cartaATirar = thisT.cartasEnMano[Math.floor(Math.random()*thisT.cartasEnMano.length)];
 				}
 				else{
-					cartaATirar = cartaATirarT[0];
+					cartaATirar = thisT.cartasEnMano[0];
 				}
+				T.console2.log('Se lanzará al azar: '+cartaATirar);
+			}
+			else{
+				cartaATirar = T.IABriscaBaseInstancia.calculaJugada(cartasEnMesa, thisT.cartasEnMano, paloQueMandaSiempre, paloQueMandaEnMesa, ultimoEnTirar, thisT.cartasJugadas);
 				
-				this.cartasEnMano.splice(T.ArrayIndexOf(this.cartasEnMano, cartaATirar), 1);
-				
-				return cartaATirar;
+				T.console2.log('IABriscaBaseInstancia.calculaJugada('+JSON.stringify(cartasEnMesa)+', '+JSON.stringify(thisT.cartasEnMano)+', "'+paloQueMandaSiempre+'", "'+paloQueMandaEnMesa+'", '+(ultimoEnTirar?'true':'false')+', '+JSON.stringify(thisT.cartasJugadas)+') = '+cartaATirar);
 			}
 			
-			this.cartasEnMano.splice(T.ArrayIndexOf(this.cartasEnMano, cartaATirar), 1);
+			thisT.cartasEnMano.splice(T.ArrayIndexOf(thisT.cartasEnMano, cartaATirar), 1);
 			
 			setTimeout((function(t, cartaATirar){
 				return function(){
 					callback(t, cartaATirar);
 				};
-			})(this, cartaATirar), thisT.tiempoPensandoIA);
+			})(thisT, cartaATirar), thisT.tiempoPensandoIA);
 		};
 		
 		this.robaCarta = function(carta){
-			this.cartasEnMano = this.cartasEnMano.concat(carta);
+			thisT.cartasEnMano = thisT.cartasEnMano.concat(carta);
 		};
 		
 		this.ganaMesa = function(cartas){
-			this.cartasGanadas = this.cartasGanadas.concat(cartas);
+			thisT.cartasGanadas = thisT.cartasGanadas.concat(cartas);
 		};
 		
 		this.cartasJugadasMesa = function(cartas){
-			this.cartasJugadas = this.cartasJugadas.concat(cartas);
+			thisT.cartasJugadas = thisT.cartasJugadas.concat(cartas);
 		};
 		
 		

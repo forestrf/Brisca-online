@@ -11,11 +11,13 @@
 	</head>
 	<body>
 		<div id="contenedor_vscpu">
-			<div id="mensajeInicio">
+			<div id="mensajeInicio" class="mensajeInicio">
 				Elije el número de oponentes:<br>
-				<div class="ico" onclick="iniciarPartidaBrisca_VSCPU(2)"><img src="/img/iconos/1.png"></div>
-				<div class="ico" onclick="iniciarPartidaBrisca_VSCPU(3)"><img src="/img/iconos/2.png"></div>
-				<div class="ico" onclick="iniciarPartidaBrisca_VSCPU(4)"><img src="/img/iconos/3.png"></div>
+				<div class="ico" onclick="mostrarDificultad(2);"><img src="/img/iconos/1.png"></div>
+				<div class="ico" onclick="mostrarDificultad(3);"><img src="/img/iconos/2.png"></div>
+				<div class="ico" onclick="mostrarDificultad(4);"><img src="/img/iconos/3.png"></div>
+			</div>
+			<div id="mensajeInicio2" class="mensajeInicio" style="display:none">
 			</div>
 		</div>
 		<div id="contenedor" style="display:none;">
@@ -115,9 +117,13 @@
 			
 			
 			// Iniciar el script de la brisca
-			function iniciarPartidaBrisca_VSCPU(cantidadJugadores){
+			function iniciarPartidaBrisca_VSCPU(cantidadJugadores, azar){
 				if(typeof cantidadJugadores === "undefined" || cantidadJugadores < 2 || cantidadJugadores > 4)
 					return;
+				
+				if(typeof azar === "undefined"){
+					azar = 0;
+				}
 				
 				document.getElementById("contenedor_vscpu").style.display = "none";
 				document.getElementById("contenedor").style.display = "";
@@ -185,9 +191,9 @@
 				switch(cantidadJugadores){
 					case 2:
 						jugadores[0] = new IABriscaInstancia.HumanoBriscaJugador();
-						jugadores[0].iniciarJugador(1);
+						jugadores[0].iniciarJugador(1, azar/100);
 						jugadores[1] = new IABriscaInstancia.IABriscaJugador();
-						jugadores[1].iniciarJugador(3);
+						jugadores[1].iniciarJugador(3, azar/100);
 						seteaPuntos('P1', 0);
 						seteaPuntos('P3', 0);
 						document.getElementById("P1N").style.display = "inherit";
@@ -197,11 +203,11 @@
 					break;
 					case 3:
 						jugadores[0] = new IABriscaInstancia.HumanoBriscaJugador();
-						jugadores[0].iniciarJugador(1);
+						jugadores[0].iniciarJugador(1, azar/100);
 						jugadores[1] = new IABriscaInstancia.IABriscaJugador();
-						jugadores[1].iniciarJugador(2);
+						jugadores[1].iniciarJugador(2, azar/100);
 						jugadores[2] = new IABriscaInstancia.IABriscaJugador();
-						jugadores[2].iniciarJugador(3);
+						jugadores[2].iniciarJugador(3, azar/100);
 						seteaPuntos('P1', 0);
 						seteaPuntos('P2', 0);
 						seteaPuntos('P3', 0);
@@ -212,13 +218,13 @@
 					break;
 					case 4:
 						jugadores[0] = new IABriscaInstancia.HumanoBriscaJugador();
-						jugadores[0].iniciarJugador(1);
+						jugadores[0].iniciarJugador(1, azar/100);
 						jugadores[1] = new IABriscaInstancia.IABriscaJugador();
-						jugadores[1].iniciarJugador(2);
+						jugadores[1].iniciarJugador(2, azar/100);
 						jugadores[2] = new IABriscaInstancia.IABriscaJugador();
-						jugadores[2].iniciarJugador(3);
+						jugadores[2].iniciarJugador(3, azar/100);
 						jugadores[3] = new IABriscaInstancia.IABriscaJugador();
-						jugadores[3].iniciarJugador(4);
+						jugadores[3].iniciarJugador(4, azar/100);
 						seteaPuntos('P1', 0);
 						seteaPuntos('P2', 0);
 						seteaPuntos('P3', 0);
@@ -386,7 +392,7 @@
 			}
 			
 			function fin(resultados){
-				console.log(resultados);
+				//console.log(resultados);
 				mensaje_fin = document.getElementById("mensaje_fin");
 				mensaje_fin.className = "";
 				
@@ -414,6 +420,8 @@
 			}
 			
 			function resetBrisca(){
+				document.getElementById('mensajeInicio').style.display = '';
+				document.getElementById('mensajeInicio2').style.display = 'none';
 				document.getElementById("contenedor_vscpu").style.display = "";
 				document.getElementById("contenedor").style.display = "none";
 				document.getElementById("mensaje_fin").className = "off";
@@ -432,7 +440,14 @@
 				return { width : e[ a+'Width' ] , height : e[ a+'Height' ] }
 			}
 
-			
+			function mostrarDificultad(nOponentes){
+				document.getElementById('mensajeInicio').style.display = 'none';
+				document.getElementById('mensajeInicio2').style.display = '';
+				document.getElementById('mensajeInicio2').innerHTML = 'Elije la dificultad:<br>'+
+				'<div class="ico" onclick="iniciarPartidaBrisca_VSCPU('+nOponentes+',50)"><img src="/img/iconos/'+(nOponentes-1)+'v.png">fácil</div> '+
+				'<div class="ico" onclick="iniciarPartidaBrisca_VSCPU('+nOponentes+',20)"><img src="/img/iconos/'+(nOponentes-1)+'a.png">medio</div> '+
+				'<div class="ico" onclick="iniciarPartidaBrisca_VSCPU('+nOponentes+',0)"><img src="/img/iconos/'+(nOponentes-1)+'r.png">difícil</div> ';
+			}
 
 		</script>
 	</body>
