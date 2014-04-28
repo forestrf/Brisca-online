@@ -8,8 +8,8 @@
 	</head>
 	<body>
 		<div id="contenedor">
-			<div class="boton_sala home">Ir al home</div>
-			<div class="boton_sala crear">Crear sala</div>
+			<a class="boton_sala home" href="/">Ir al home</a>
+			<a class="boton_sala crear" href="/vsplayercreasala.php">Crear sala</a>
 			<div class="salas_abiertas">
 				<div class="filtro_salas">
 					Filtrar salas: 

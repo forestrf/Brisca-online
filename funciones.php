@@ -51,13 +51,19 @@ class DB {
 			$this->conexionAbierta = true;
 		}
 		
-		$resultado = $this->mysqli->query($query, MYSQLI_USE_RESULT);
-		if($resultado === false){
-			throw new Exception("Error: ".$this->mysqli->error);
-			return false;
+		try{
+			$resultado = $this->mysqli->query($query, MYSQLI_USE_RESULT);
+			if($resultado === false){
+				throw new Exception("Error: ".$this->mysqli->error);
+				return false;
+			}
+			if($resultado === true){
+				$GLOBALS["LAST_MYSQL_ID"] = $this->mysqli->insert_id;
+				return true;
+			}
 		}
-		if($resultado === true){
-			return true;
+		catch(Exception $e){
+			return false;
 		}
 		
 		if($cacheable && MEMCACHE){
@@ -140,7 +146,7 @@ class DB {
 	function validaCookieLogueado($u, $p){
 		$u = mysql_escape_mimic($u);
 		$p = mysql_escape_mimic($p);
-		return $this->consulta("SELECT NOMBRE, APELLIDO, NICK FROM usuarios WHERE ID = (SELECT ID_USER FROM login WHERE ID_USER = '$u' AND COOKIE = '$p' AND FECHA_TOPE > NOW())", true)[0];
+		return $this->consulta("SELECT ID, NOMBRE, APELLIDO, NICK FROM usuarios WHERE ID = (SELECT ID_USER FROM login WHERE ID_USER = '$u' AND COOKIE = '$p' AND FECHA_TOPE > NOW())", true)[0];
 	}
 	
 	// Consultar salas en curso dado un filtro (array con indices y valores)
@@ -151,7 +157,17 @@ class DB {
 		$llenas_filtro = $filtro['llenas']===true?'':' AND p_total < jugadores_max ';
 		$parejas_filtro = $filtro['parejas']===true?' AND parejas = true ':' AND parejas = false ';
 		return $this->consulta("SELECT salas.ID, salas.nombre, salas.jugadores_max, salas.iniciada, salas.id_creador, usuarios.nick, salas.p2_id, salas.p3_id, salas.p4_id, salas.p_total, salas.parejas FROM salas LEFT JOIN usuarios ON salas.id_creador = usuarios.ID WHERE iniciada = 0 ".$players_filtro.$llenas_filtro.$parejas_filtro);
+	}
 	
+	// Crear una sala. La consulta que lo mete en la db
+	function creaSala(&$filtro, $ID_creador){
+		$filtro['nombre'] = mysql_escape_mimic($filtro['nombre']);
+		$filtro['jugadores'] = mysql_escape_mimic($filtro['jugadores']);
+		$filtro['por_parejas'] = mysql_escape_mimic($filtro['por_parejas']);
+		
+		//id_creador en única. Ya que una persona solo puede crear una sala a la vez, en caso de que intente crear otra no se le deja. En su lugar, se le indicará que ya se encuentra en una sala y se le ofrecerá la opción de terminar la partida en curso.
+		return $this->consulta("INSERT INTO salas (id_creador, nombre, jugadores_max, parejas) VALUES ".
+									"('{$ID_creador}', '{$filtro['nombre']}', '{$filtro['jugadores']}', '{$filtro['por_parejas']}')");
 	}
 	
 	// --------------------------------------------------------
