@@ -12,14 +12,14 @@
 			<a class="boton_sala crear" href="/vsplayerlobby.php">Listado de salas</a>
 			<div class="salas_abiertas">
 				Crear una nueva sala
-				<form method="POST" action="/vsplayerlobbyconsultas.php">
+				<form method="POST" action="/vsplayerlobbyconsultas.php" onsubmit="if(!validaNombre(this.elements['nombre'])){alert('Nombre de sala incorrecto');return false;}">
 					<table class="form_crear_sala">
 						<tr>
 							<td>
 								Nombre de la sala
 							</td>
 							<td>
-								<input type="text" name="nombre" class="boton_en_listado ancho" placeholder="nombre de la sala...">
+								<input type="text" name="nombre" onkeyup="validaNombre(this)" class="boton_en_listado ancho <?php if(isset($_GET['nombre']))echo 'error'?>" placeholder="nombre de la sala..." value="<?php if(isset($_GET['nombre'])) echo $_GET['nombre'].'.';?>">
 							</td>
 						</tr>
 						<tr>
@@ -59,7 +59,21 @@
 			</div>
 		</div>
 		<script>
-			
+			var nombreRegex = /^[a-z_áéíóúàèìòù -]+$/;
+			function validaNombre(input){
+				if(nombreRegex.test(input.value)){
+					if(input.className.indexOf("error")>=0){
+						input.className = input.className.split("error").join("");
+					}
+					return true;
+				}
+				else{
+					if(input.className.indexOf("error")===-1){
+						input.className += " error";
+					}
+					return false;
+				}
+			}
 		</script>
 	</body>
 </html>

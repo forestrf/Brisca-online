@@ -66,9 +66,7 @@
 					<div id="P4N"></div>
 				</div>
 				
-				<div id="mensaje_fin" class="off">
-					HABDALA HABDALA
-				</div>
+				<div id="mensaje_fin" class="off"></div>
 				
 			</div>
 		</div>
@@ -190,7 +188,7 @@
 				switch(cantidadJugadores){
 					case 2:
 						jugadores[0] = new IABriscaInstancia.HumanoBriscaJugador();
-						jugadores[0].iniciarJugador(1, azar/100);
+						jugadores[0].iniciarJugador(1);
 						jugadores[1] = new IABriscaInstancia.IABriscaJugador();
 						jugadores[1].iniciarJugador(3, azar/100);
 						seteaPuntos('P1', 0);
@@ -202,7 +200,7 @@
 					break;
 					case 3:
 						jugadores[0] = new IABriscaInstancia.HumanoBriscaJugador();
-						jugadores[0].iniciarJugador(1, azar/100);
+						jugadores[0].iniciarJugador(1);
 						jugadores[1] = new IABriscaInstancia.IABriscaJugador();
 						jugadores[1].iniciarJugador(2, azar/100);
 						jugadores[2] = new IABriscaInstancia.IABriscaJugador();
@@ -217,7 +215,7 @@
 					break;
 					case 4:
 						jugadores[0] = new IABriscaInstancia.HumanoBriscaJugador();
-						jugadores[0].iniciarJugador(1, azar/100);
+						jugadores[0].iniciarJugador(1);
 						jugadores[1] = new IABriscaInstancia.IABriscaJugador();
 						jugadores[1].iniciarJugador(2, azar/100);
 						jugadores[2] = new IABriscaInstancia.IABriscaJugador();

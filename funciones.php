@@ -14,6 +14,8 @@ class DB {
 	
 	private $conexionAbierta = false;
 	
+	var $LAST_MYSQL_ID = '';
+	
 	function Abrir($host=null, $user=null, $pass=null, $bd=null){
 		if($host !== null)
 			$this->host = $host;
@@ -53,12 +55,14 @@ class DB {
 		
 		try{
 			$resultado = $this->mysqli->query($query, MYSQLI_USE_RESULT);
+			if(strpos($query, 'INSERT')!==false){
+				$this->LAST_MYSQL_ID = $this->mysqli->insert_id;
+			}
 			if($resultado === false){
-				throw new Exception("Error: ".$this->mysqli->error);
+				throw new Exception('Error: '.$this->mysqli->error);
 				return false;
 			}
-			if($resultado === true){
-				$GLOBALS["LAST_MYSQL_ID"] = $this->mysqli->insert_id;
+			elseif($resultado === true){
 				return true;
 			}
 		}
@@ -81,7 +85,7 @@ class DB {
 	// Consultar si existe un nick en la base de datos
 	function existeNick($nick){
 		$nick = mysql_escape_mimic($nick);
-		return count($this->consulta("SELECT * FROM usuarios WHERE NICK = '".$nick."'", true)) > 0;
+		return count($this->consulta("SELECT * FROM usuarios WHERE NICK = '{$nick}'", true)) > 0;
 	}
 	
 	// Insertar un usuario en la base de datos
@@ -119,7 +123,7 @@ class DB {
 	// Retorna la ID del usuario que tiene ese NICK
 	function idDesdeNick($nick){
 		$nick = mysql_escape_mimic($nick);
-		$nick = $this->consulta("SELECT ID FROM usuarios WHERE NICK = '$nick'", true)[0];
+		$nick = $this->consulta("SELECT ID FROM usuarios WHERE NICK = '{$nick}'", true)[0];
 		return $nick["ID"];
 	}
 	
@@ -127,7 +131,7 @@ class DB {
 	function NickPasswordValidacion($nick, $password){
 		$nick = mysql_escape_mimic($nick);
 		$password = mysql_escape_mimic($password);
-		return count($this->consulta("SELECT * FROM usuarios WHERE NICK = '$nick' AND PASSWORD = '$password' AND user_validado = ''")) > 0;
+		return count($this->consulta("SELECT * FROM usuarios WHERE NICK = '{$nick}' AND PASSWORD = '{$password}' AND user_validado = ''")) > 0;
 	}
 	
 	
@@ -138,15 +142,16 @@ class DB {
 		
 		// La cookie dura 1 mes
 		$fechaTope = date('Y-m-d H:i:s', mktime(0, 0, 0, date("m")+1  , date("d"), date("Y")));
-		$this->consulta("UPDATE usuarios SET FECHA_ULT_LOGIN = '".$hoy."' WHERE ID = '$ID'");
-		$this->consulta("INSERT INTO login (ID_USER, COOKIE, FECHA_TOPE) VALUES ('$ID', '$passwordCookie', '$fechaTope') ON DUPLICATE KEY UPDATE COOKIE = '$passwordCookie', FECHA_TOPE = '$fechaTope'");
+		$this->consulta("UPDATE usuarios SET FECHA_ULT_LOGIN = '{$hoy}' WHERE ID = '{$ID}'");
+		$this->consulta("INSERT INTO login (ID_USER, COOKIE, FECHA_TOPE) VALUES ('{$ID}', '{$passwordCookie}', '{$fechaTope}') ON DUPLICATE KEY UPDATE COOKIE = '{$passwordCookie}', FECHA_TOPE = '{$fechaTope}'");
 	}
 	
 	// Retorna falso si no es un usuario válido, o un array con los datos del usuario: Nombre, Apellidos, Nick
+	// No se puede cachear ya que retornamos sala
 	function validaCookieLogueado($u, $p){
 		$u = mysql_escape_mimic($u);
 		$p = mysql_escape_mimic($p);
-		return $this->consulta("SELECT ID, NOMBRE, APELLIDO, NICK FROM usuarios WHERE ID = (SELECT ID_USER FROM login WHERE ID_USER = '$u' AND COOKIE = '$p' AND FECHA_TOPE > NOW())", true)[0];
+		return $this->consulta("SELECT ID, NOMBRE, APELLIDO, NICK, sala FROM usuarios WHERE ID = (SELECT ID_USER FROM login WHERE ID_USER = '{$u}' AND COOKIE = '{$p}' AND FECHA_TOPE > NOW())")[0];
 	}
 	
 	// Consultar salas en curso dado un filtro (array con indices y valores)
@@ -156,7 +161,7 @@ class DB {
 		$players_filtro = $filtro['players']===false?'':' AND jugadores_max = '.$filtro['players'].' ';
 		$llenas_filtro = $filtro['llenas']===true?'':' AND p_total < jugadores_max ';
 		$parejas_filtro = $filtro['parejas']===true?' AND parejas = true ':' AND parejas = false ';
-		return $this->consulta("SELECT salas.ID, salas.nombre, salas.jugadores_max, salas.iniciada, salas.id_creador, usuarios.nick, salas.p2_id, salas.p3_id, salas.p4_id, salas.p_total, salas.parejas FROM salas LEFT JOIN usuarios ON salas.id_creador = usuarios.ID WHERE iniciada = 0 ".$players_filtro.$llenas_filtro.$parejas_filtro);
+		return $this->consulta("SELECT salas.ID, salas.nombre, salas.jugadores_max, salas.iniciada, salas.`1`, usuarios.nick, salas.`2`, salas.`3`, salas.`4`, salas.p_total, salas.parejas FROM salas LEFT JOIN usuarios ON salas.`1` = usuarios.ID WHERE iniciada = 0 ".$players_filtro.$llenas_filtro.$parejas_filtro);
 	}
 	
 	// Crear una sala. La consulta que lo mete en la db
@@ -164,10 +169,48 @@ class DB {
 		$filtro['nombre'] = mysql_escape_mimic($filtro['nombre']);
 		$filtro['jugadores'] = mysql_escape_mimic($filtro['jugadores']);
 		$filtro['por_parejas'] = mysql_escape_mimic($filtro['por_parejas']);
+		$ID_creador = mysql_escape_mimic($ID_creador);
 		
 		//id_creador en única. Ya que una persona solo puede crear una sala a la vez, en caso de que intente crear otra no se le deja. En su lugar, se le indicará que ya se encuentra en una sala y se le ofrecerá la opción de terminar la partida en curso.
-		return $this->consulta("INSERT INTO salas (id_creador, nombre, jugadores_max, parejas) VALUES ".
+		$t = $this->consulta("INSERT INTO salas (`1`, nombre, jugadores_max, parejas) VALUES ".
 									"('{$ID_creador}', '{$filtro['nombre']}', '{$filtro['jugadores']}', '{$filtro['por_parejas']}')");
+		$this->consulta("UPDATE usuarios SET sala={$this->LAST_MYSQL_ID} WHERE ID={$ID_creador}");
+		return $t;
+	}
+	
+	// Un usuario se mete en la db en dos lugares cuando se entra en una sala. Una, en salas, la otra, en usuarios (en una columna indicando la sala actual)
+	// Esta función debe llamarse en caso de poder meterse el usuario y conociendo el hueco de la sala donde meterlo, la sala y la id del usuario
+	function salaMeterUsuario($ID, $sala, $p234){
+		$ID = mysql_escape_mimic($ID);
+		$sala = mysql_escape_mimic($sala);
+		$p234 = mysql_escape_mimic($p234);
+		
+		$this->consulta("UPDATE salas SET `{$p234}`={$ID}, p_total = p_total + 1 WHERE ID={$sala}");
+		$this->consulta("UPDATE usuarios SET sala={$sala} WHERE ID={$ID}");
+	}
+	
+	// Quitar a un usuario de una sala
+	function salaQuitarUsuario($ID, $sala, $p234){
+		$ID = mysql_escape_mimic($ID);
+		$sala = mysql_escape_mimic($sala);
+		$p234 = mysql_escape_mimic($p234);
+		
+		if($p234 != '1'){
+			$this->consulta("UPDATE usuarios SET sala=-1 WHERE ID={$ID}");
+			$this->consulta("UPDATE salas SET {$p234}=-1, p_total = p_total - 1 WHERE ID={$sala}");
+		}
+		else{
+			$this->consulta("UPDATE usuarios SET sala=-1 WHERE sala={$sala}");
+			$this->consulta("DELETE FROM salas WHERE ID={$sala}");
+		}
+	}
+	
+	// Un usuario se mete en la db en dos lugares cuando se entra en una sala. Una, en salas, la otra, en usuarios (en una columna indicando la sala actual)
+	// Esta función debe llamarse en caso de poder meterse el usuario y conociendo el hueco de la sala donde meterlo, la sala y la id del usuario
+	function salaInfo($sala){
+		$sala = mysql_escape_mimic($sala);
+		
+		return $this->consulta("SELECT * FROM salas WHERE ID={$sala}")[0];
 	}
 	
 	// --------------------------------------------------------

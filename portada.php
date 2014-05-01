@@ -14,8 +14,8 @@ detectaLogueadoORedireccion($database, "login.php");
 
 ?>
 Estás logueado<p>
-<a href="vscpu.php">Jugar contra la máquina (No puntua)</a><br>
-<a href="vshumanroom.php">Jugar contra otros jugadores (Ir a la sala de espera)</a><br>
+<a href="vscpu.php">Jugar contra la máquina</a><br>
+<a href="vsplayerlobby.php">Jugar contra otros jugadores (Ir a la sala de espera)</a><br>
 <br>
 Partidas ganadas: xx<br>
 Partidas perdidas: xx<br>

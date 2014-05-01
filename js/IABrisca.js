@@ -696,21 +696,44 @@ function IABrisca(){
 		
 		
 		// Esta función debe llamarse cuando se inicia la partida. Después debe llamarse a comienzaPartida
-		this.iniciarMesa = function(){
+		this.iniciarMesa = function(parametros){
 			// Sacar la carta para paloQueMandaSiempre;
 			thisT.mazoCartas = T.IABriscaBaseInstancia.cartasTotalArray.slice(0); // Copia del array ya que después tocaremos la variable esta.
-			
-			// Se setea el paloQueSiempreManda y se quita del mazo
-			thisT.cartaPaloQueMandaSiempre = thisT.mazoCartas.splice(Math.floor(Math.random()*thisT.mazoCartas.length),1)[0];
-			thisT.paloQueMandaSiempre = T.IABriscaBaseInstancia.paloCarta(thisT.cartaPaloQueMandaSiempre);
+			if(typeof parametros !== "undefined"){
+				// Se setea el paloQueSiempreManda y se quita del mazo
+				thisT.cartaPaloQueMandaSiempre = thisT.mazoCartas.splice(T.ArrayIndexOf(thisT.mazoCartas, parametros['palo_manda_siempre']))[0];
+				thisT.paloQueMandaSiempre = T.IABriscaBaseInstancia.paloCarta(thisT.cartaPaloQueMandaSiempre);
+			}
+			else{
+				// Se setea el paloQueSiempreManda y se quita del mazo
+				thisT.cartaPaloQueMandaSiempre = thisT.mazoCartas.splice(Math.floor(Math.random()*thisT.mazoCartas.length),1)[0];
+				thisT.paloQueMandaSiempre = T.IABriscaBaseInstancia.paloCarta(thisT.cartaPaloQueMandaSiempre);
+			}
 			T.console2.log('palo que manda siempre: '+thisT.paloQueMandaSiempre);
 			T.moverCarta(thisT.cartaPaloQueMandaSiempre, 'MC0');
 		};
 		
 		// inserta a los jugadores en la mesa
 		this.comienzaPartida = function(jugadores){
-			thisT.jugadoresArray = jugadores;
+			thisT.agregaJugadoresAMesa(jugadores);
 			
+			// Repartirles las cartas
+			thisT.reparteCartasAJugadores();
+			
+			var cuenta = (jugadores.length*3)+1;
+			setTimeout(function(){
+				thisT.quienLanzaPrimero = Math.floor(Math.random() * thisT.jugadoresArray.length);
+				thisT.GO();
+			},thisT.tiempoRepartiendoCarta * cuenta);
+		};
+		
+		// inserta a los jugadores en la mesa
+		this.agregaJugadoresAMesa = function(jugadores){
+			thisT.jugadoresArray = jugadores;
+		};
+		
+		// inserta a los jugadores en la mesa
+		this.reparteCartasAJugadores = function(){
 			// Repartirles las cartas
 			var cuenta = 0;
 			for(var n = 0; n < 3; ++n){
@@ -722,11 +745,6 @@ function IABrisca(){
 					})(jugadores[i]),thisT.tiempoRepartiendoCarta * ++cuenta);
 				}
 			}
-			
-			setTimeout(function(){
-				thisT.quienLanzaPrimero = Math.floor(Math.random() * thisT.jugadoresArray.length);
-				thisT.GO();
-			},thisT.tiempoRepartiendoCarta * ++cuenta);
 		};
 		
 		this.faltanRondasPorJugar = function(){
@@ -831,17 +849,18 @@ function IABrisca(){
 		
 		
 		this.quedanCartasPorRobar = true;
-		this.peticionJugadorRobar = function(jugador){
+		this.peticionJugadorRobar = function(jugador, cartaARobar){
 			if(thisT.quedanCartasPorRobar){
-				var cartaARobar = "";
-				if(thisT.mazoCartas.length > 0){
-					cartaARobar = thisT.mazoCartas.splice(
-						Math.floor(Math.random()*thisT.mazoCartas.length),1)[0];
-				}
-				else{
-					cartaARobar = this.cartaPaloQueMandaSiempre;
-					thisT.cartaPaloQueMandaSiempre = '';
-					thisT.quedanCartasPorRobar = false;
+				if(typeof cartaARobar === "undefined"){
+					if(thisT.mazoCartas.length > 0){
+						cartaARobar = thisT.mazoCartas.splice(
+							Math.floor(Math.random()*thisT.mazoCartas.length),1)[0];
+					}
+					else{
+						cartaARobar = this.cartaPaloQueMandaSiempre;
+						thisT.cartaPaloQueMandaSiempre = '';
+						thisT.quedanCartasPorRobar = false;
+					}
 				}
 				jugador.robaCarta(cartaARobar);
 				T.moverCarta(cartaARobar, 'P'+jugador.jugadorID.toString());
@@ -865,10 +884,10 @@ function IABrisca(){
 
 	this.ClampCircular = function(numero, minimo, maximo){
 		while(numero < minimo){
-			numero += maximo +1;
+			numero += maximo -minimo +1;
 		}
 		while(numero > maximo){
-			numero -= maximo +1;
+			numero -= maximo -minimo +1;
 		}
 		return numero;
 	};

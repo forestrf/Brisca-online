@@ -95,10 +95,13 @@
     width: 20%;
 }
 
-.salas_listado > tbody > tr > td {
-	color: #EEE;
-}
 
+
+.salas_listado > tbody > tr > td {
+    color: #EEEEEE;
+    transition: all 0.5s ease 0s;
+	cursor: pointer;
+}
 
 .salas_listado > tbody > tr:nth-child(2n) > td {
     background-color: rgba(0, 0, 0, 0.3);
@@ -106,6 +109,13 @@
 .salas_listado > tbody > tr:nth-child(2n+1) > td {
     background-color: rgba(0, 0, 0, 0.2);
 }
+
+.salas_listado > tbody > tr:hover > td {
+    background-color: rgba(255, 255, 255, 0.2);
+}
+
+
+
 
 
 .form_crear_sala {
@@ -125,4 +135,8 @@
     left: 5px;
     padding: 0;
     position: relative;
+}
+.boton_en_listado.error {
+    background-color: #FFCBCB;
+    border-color: #FF3030;
 }

@@ -44,8 +44,6 @@
 				var params = "sala=" + t.salaActual + "&msg=" + msg;
 				r.open("POST", url, true);
 				r.setRequestHeader("Content-type", "application/x-www-form-urlencoded");
-				r.setRequestHeader("Content-length", params.length);
-				r.setRequestHeader("Connection", "close");
 				r.send(params);
 			}
 			
@@ -56,8 +54,6 @@
 				var params = "sala=" + t.salaActual + "&ult=" + t.ult;
 				t.loopRequest.open("POST", url, true);
 				t.loopRequest.setRequestHeader("Content-type", "application/x-www-form-urlencoded");
-				t.loopRequest.setRequestHeader("Content-length", params.length);
-				t.loopRequest.setRequestHeader("Connection", "close");
 				t.loopRequest.onreadystatechange = function(){
 					if(t.loopRequest.readyState == 4){
 						if(t.loopRequest.status == 200){

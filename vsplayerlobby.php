@@ -106,8 +106,6 @@
 				var params = "accion=consultar&players=" + filtro_jugadores.value + "&llenas=" + filtro_llenas.checked + "&parejas=" + filtro_parejas.checked;
 				ajax.open("POST", url, true);
 				ajax.setRequestHeader("Content-type", "application/x-www-form-urlencoded");
-				ajax.setRequestHeader("Content-length", params.length);
-				ajax.setRequestHeader("Connection", "close");
 				ajax.onreadystatechange = function(){
 					if(ajax.readyState == 4){
 						if(ajax.status == 200){
@@ -116,6 +114,9 @@
 					}
 				};
 				ajax.send(params);
+				if(autoupdate){
+					contador = tiempoInterval;
+				}
 			}
 			
 			function parsearJSONSalas(json){
@@ -145,6 +146,12 @@
 					parejas.innerHTML = json[i].parejas === "1" ? 'Sí':'No';
 					
 					salas_listado.appendChild(row);
+					
+					row.onclick = (function(id){
+							return function(){
+								window.location = '/vsplayer.php?sala='+id;
+							}
+						})(json[i].ID);
 				}
 			}
 		</script>

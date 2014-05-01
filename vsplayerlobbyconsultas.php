@@ -62,7 +62,7 @@ if(isset($_POST['accion'])){
 			else{
 				$_POST['por_parejas'] = '1';
 			}
-			if(!preg_match('@^[a-z_áéíóúàèìòù -]*$@i',$_POST['nombre'])){
+			if(!preg_match('@^[a-z_áéíóúàèìòù -]+$@i',$_POST['nombre'])){
 				header('Location: /vsplayercreasala.php?nombre='.urlencode('Nombre inválido'));
 				exit;
 			}
@@ -96,12 +96,28 @@ if(isset($_POST['accion'])){
 			
 			if($respuesta === false){
 				// El usuario tenía ya abierta una sala. Pedir que la cierre o se una a la partida
-				echo 'la sala ya existía. HACER ESTOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOO';
+				if($usuario['sala'] !== '-1'){
+					header('Location: /salaabierta.php?sala='.$usuario['sala']);
+					exit;
+				}
 			}
 			else{
 				// Sala creada con éxito. Ir a la sala creada.
-				header('Location: /vsplayer.php?sala='.$GLOBALS["LAST_MYSQL_ID"]);
+				header('Location: /vsplayer.php?sala='.$database->LAST_MYSQL_ID);
 			}
+		break;
+		
+		case 'abandonarsala':
+			$salaInfo = $database->salaInfo($usuario['sala']);
+			$soy = '-1';
+			for($i=1; $i<=4; ++$i){
+				if($salaInfo[$i] === $usuario['ID']){
+					$soy = $i;
+					break;
+				}
+			}
+			$database->salaQuitarUsuario($usuario['ID'], $usuario['sala'], $soy);
+			header('Location: /vsplayerlobby.php');
 		break;
 	
 	

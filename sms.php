@@ -7,6 +7,7 @@ if(!isset($_POST['sala'])){
 
 require_once('definiciones.php');
 require_once('funciones.php');
+require_once('smsfunciones.php');
 
 
 $database = new DB();
@@ -17,52 +18,29 @@ $datos_usuario = detectaLogueadoORedireccion($database, "login.php");
 
 
 
-$ID_User = $_COOKIE['u'];
+$sala = intval($_POST['sala']);
 
-// El archivo de la base de datos se forma del siguiente modo: md5(md5(variable))
-// en el get se usa: md5(variable)
-// variable se forma a partir de: microtime + 4 letras/numeros al azar
-$sala = md5($_POST['sala']);
+$dbsqlite = abredbsqlitesala($sala);
 
-
-
-$archivo = "chats/$sala";
-
-
-
-if(!file_exists($archivo)){
-	$db = new SQLite3($archivo, 0666);
-	$db->exec('CREATE TABLE mensajes (n INTEGER PRIMARY KEY AUTOINCREMENT, usuario STRING, mensaje STRING);');
-	$result = $db->exec('PRAGMA journal_mode=WAL;');
-}
-else{
-	$db = new SQLite3($archivo);
-}
-
-// De esta forma evitamos que de error por tabla bloqueada. Damos 5 segundos de tiempo para que la tabla deje de estar bloqueada.
-$db -> busyTimeout(5000);
-
-// $db->exec('CREATE TABLE mensajes (n INTEGER , usuario STRING, mensaje STRING)');
-// $db->exec('CREATE TABLE integrantes (id_user STRING)');
-// $db->exec("INSERT INTO integrantes (id_user) VALUES ('$id_user')"); // Esto por cada usuario de la sala. Solo ellos podrán escribir después
 
 
 // Dependiendo de qué queremos hacer, leeremos de la db o escribiremos en ella.
+
 if(isset($_POST['msg'])){
+	echo procesasms($_POST['msg'], 'msg', $dbsqlite, $datos_usuario);
+	$dbsqlite->close();
+	unset($dbsqlite);
+}
+elseif(isset($_POST['jugada'])){ // POOOOOOOOOOOOOOOOR HAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAACEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEER
+	// Comprobar si una jugada es válida. Si lo es, agregarla. Si es el último en tirar, decidir ganador e insertar en chat la jugada de llevarse alguien las cartas
+	// Después, insertar las jugadas de respartir de cartas
 	// escribir
-	$msg = mysql_escape_mimic($_POST['msg']);
+	echo procesasms(array($datos_usuario['ID']=>$_POST['jugada']), 'jugada', $dbsqlite, $datos_usuario);
 	
-	$nick = $datos_usuario['NICK'];
+	procesasms(array('lanza'=>id_desde_hueco_sala($prox_jugador_a_tirar)), 'orden', $dbsqlite);
 	
-	$result = $db->query("INSERT INTO mensajes (usuario, mensaje) VALUES ('{$nick}','{$msg}');");
-	if($result){
-		echo '{"resultado":true}';
-	}
-	else{
-		echo '{"resultado":false}';
-	}
-	$db->close();
-	unset($db);
+	$dbsqlite->close();
+	unset($dbsqlite);
 }
 elseif(isset($_POST['ult']) && preg_match("/^[0-9]+?$/", $_POST['ult'])){
 	// leer
@@ -79,7 +57,7 @@ elseif(isset($_POST['ult']) && preg_match("/^[0-9]+?$/", $_POST['ult'])){
 	
 	for($i = 0; $i < $vueltas; ++$i){
 		
-		$result = $db->query("SELECT n, usuario, mensaje FROM mensajes WHERE n > {$n};");
+		$result = $dbsqlite->query("SELECT n, usuario, mensaje FROM mensajes WHERE n > {$n};");
 		$resultado = $result->fetchArray(SQLITE3_ASSOC);
 		if($resultado){
 			$resultados = Array();
@@ -89,8 +67,8 @@ elseif(isset($_POST['ult']) && preg_match("/^[0-9]+?$/", $_POST['ult'])){
 			}
 			echo json_encode($resultados);
 			
-			$db->close();
-			unset($db);
+			$dbsqlite->close();
+			unset($dbsqlite);
 			
 			exit;
 		}
