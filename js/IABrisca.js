@@ -76,7 +76,7 @@ function IABrisca(){
 			"C1","C3","C12","C11","C10","C9","C8","C7","C6","C5","C4","C2"
 		];
 		
-		//Ordenador por valor de numero de carta
+		// Ordenador por valor de numero de carta
 		this.cartasTotalArrayNumero = [1,3,12,11,10,9,8,7,6,5,4,2];
 		
 		// array con la correspondencia de los puntos con las cartas.
@@ -86,15 +86,6 @@ function IABrisca(){
 		
 		// array con la correspondencia de los puntos con las cartas.
 		this.palosCartas = ["O","E","B","C"];
-		
-		// En el siguiente array se guardarán las cartas gastadas para cada jugada.
-		this.cartasUsadas = {
-			"O":[],
-			"E":[],
-			"B":[],
-			"C":[]
-		};
-		
 		
 		
 		
@@ -153,7 +144,7 @@ function IABrisca(){
 			if(typeof palo == "string"){
 				for(var i=0; i<cartas.length; ++i){
 					var paloT = this.paloCarta(cartas[i]);
-					if(palo == paloT){
+					if(palo === paloT){
 						return true;
 					}
 				}
@@ -162,7 +153,7 @@ function IABrisca(){
 				for(var i=0; i<cartas.length; ++i){
 					var paloT = this.paloCarta(cartas[i]);
 					for(var j in palo){
-						if(palo[j] == paloT){
+						if(palo[j] === paloT){
 							return true;
 						}
 					}
@@ -239,7 +230,7 @@ function IABrisca(){
 				// T.console2.log(ordenPalosCartas[i][palo]);
 				for(var carta2 in cartas){
 					var palo2 = this.paloCarta(cartas[carta2]);
-					if((T.ArrayIndexOf(M, palo2)>=0) && this.cartasTotalArrayNumero[carta] == this.numeroCarta(cartas[carta2])){
+					if(T.ArrayIndexOf(M, palo2)>=0 && this.cartasTotalArrayNumero[carta] == this.numeroCarta(cartas[carta2])){
 						// T.console2.log(palo+"=="+palo2);
 						// T.console2.log(ordenPalosCartas[i][palo][carta]+"=="+this.numeroCarta(cartas[carta2]));
 						// T.console2.log("---------");
