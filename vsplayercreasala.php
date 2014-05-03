@@ -28,7 +28,7 @@
 							</td>
 							<td>
 								<div class="boton_en_listado ancho">
-									<select name="jugadores">
+									<select name="jugadores" id="jugadores">
 										<option value="2">2 Jugadores</option>
 										<option value="3">3 Jugadores</option>
 										<option value="4" selected>4 Jugadores</option>
@@ -72,6 +72,21 @@
 						input.className += " error";
 					}
 					return false;
+				}
+			}
+			
+			document.getElementById('jugadores').onchange = function(){
+				enable_disable_filtro_parejas(this);
+			}
+			enable_disable_filtro_parejas(document.getElementById('jugadores'));
+			
+			function enable_disable_filtro_parejas(t){
+				if(t.value === '4'){
+					document.getElementById('filtro_parejas').disabled = false;
+				}
+				else{
+					document.getElementById('filtro_parejas').checked = false;
+					document.getElementById('filtro_parejas').disabled = true;
 				}
 			}
 		</script>
