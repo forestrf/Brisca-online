@@ -90,20 +90,75 @@ function procesasms($entrada, $tipo, $dbsqlite, $datos_usuario=null){
 				
 				$cartas_ordenadas = IABrisca::ordenCartasPorValor($cartas_jugadas, $palo_manda_siempre, $palo_manda_mesa);
 				
-				$ganador = $cartas_jugadas_propietario[$cartas_ordenadas[0]];
+				$ganador_id = $cartas_jugadas_propietario[$cartas_ordenadas[0]];
 				
 				// Permitir terminar la animación de las cartas moviéndose.
 				sleep(1);
 				
-				ganar_cartas($dbsqlite, $ganador, $cartas_jugadas);
+				ganar_cartas($dbsqlite, $ganador_id, $cartas_jugadas);
 				
-				// En caso de continuar la partida, repartir cartas. De lo contrario, terminar partida. POR HACEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEER
+				// En caso de continuar la partida, repartir cartas. De lo contrario, terminar partida.
 				$result = $dbsqlite->query("SELECT count(*) as recuento FROM cartas WHERE posicion LIKE '%ganadas';");
 				$results = array_from_sqliteResponse($result);
 				
 				if($results[0]['recuento'] == count(IABrisca::$cartasTotalArray)){
-					// Partida terminada. POR HACEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEER
+					// Partida terminada.
+					$usuarios = $dbsqlite->query("SELECT ID FROM usuarios;");
+					$usuarios = array_from_sqliteResponse($usuarios);
 					
+					$puntos_jugadores = array();
+					foreach($usuarios as $user){
+						$cartas_arr = $dbsqlite->query("SELECT carta FROM cartas WHERE propietario = {$user['ID']};");
+						$cartas_arr = array_from_sqliteResponse($cartas_arr);
+						$cartas = array();
+						foreach($cartas_arr as $carta){
+							$cartas[] = $carta['carta'];
+						}
+						$puntos = IABrisca::totalPuntosEnCartas($cartas);
+						$puntos_jugadores[$user['ID']] = $puntos;
+					}
+					
+					$empate = false;
+
+					$ganador_partida_id = 0;
+					$ganador_partida_puntos = 0;
+					foreach($puntos_jugadores as $id=>$puntos){
+						if($puntos > $ganador_partida_puntos){
+							$empate = false;
+							$ganador_partida_id = $id;
+							$ganador_partida_puntos = $puntos;
+						}
+						elseif($puntos == $ganador_partida_puntos){
+							$empate = true;
+						}
+					}
+					
+					$database = new DB();
+					
+					foreach($puntos_jugadores as $id=>$puntos){
+						if($empate){
+							if($puntos != $ganador_partida_puntos){
+								guardar_derrota($database, $id);
+							}
+						}
+						else{
+							if($puntos != $ganador_partida_puntos){
+								guardar_derrota($database, $id);
+							}
+							else{
+								guardar_victoria($database, $id);
+							}
+						}
+						guardar_puntuacion_max($database, $id, $puntos);
+					}
+					
+					// En caso de empate enviar la id de un ganador inexistente (-1). De lo contrario enviar la id del ganador.
+					if($empate){
+						procesasms(array('termina'=>array('ganador'=>'-1')), 'orden', $dbsqlite);
+					}
+					else{
+						procesasms(array('termina'=>array('ganador'=>$ganador_partida_id)), 'orden', $dbsqlite);
+					}
 				}
 				else{
 					//La partida puede no estar terminada y no quedar cartas en el mazo
@@ -123,9 +178,9 @@ function procesasms($entrada, $tipo, $dbsqlite, $datos_usuario=null){
 						
 						$i_t=count($usuarios);
 						
-						$p_ganador = array_search($ganador, $usuarios);
+						$p_ganador = array_search($ganador_id, $usuarios);
 						for($i=0; $i<$i_t; ++$i){
-							if($usuarios[$i]['ID'] === $ganador){
+							if($usuarios[$i]['ID'] === $ganador_id){
 								$p_ganador = $i;
 								break;
 							}
@@ -150,7 +205,7 @@ function procesasms($entrada, $tipo, $dbsqlite, $datos_usuario=null){
 					}
 					*/
 					
-					usuario_lanza($dbsqlite, $ganador, true);
+					usuario_lanza($dbsqlite, $ganador_id, true);
 				}
 				
 				
@@ -267,7 +322,7 @@ function usuario_lanza(&$dbsqlite, $ID, $primero=false){
 
 function meter_usuario(&$dbsqlite, &$usuario, $hueco_sala, &$salaInfo){
 	procesasms($usuario['NICK'].' se ha unido a la partida', 'aviso', $dbsqlite);
-	procesasms(array('p'=>$hueco_sala,'ID'=>$usuario['ID']), 'config', $dbsqlite);
+	procesasms(array('p'=>$hueco_sala,'ID'=>$usuario['ID'],'NICK'=>$usuario['NICK']), 'config', $dbsqlite);
 	
 	$r = $salaInfo['jugadores_max'] - $salaInfo['p_total'];
 	//Todavía faltan jugadores
@@ -282,5 +337,19 @@ function quitar_usuario(&$dbsqlite, &$usuario, &$salaInfo){
 	//Todavía faltan jugadores
 	procesasms('Falta'.($r>1||$r==0?'n':'').' '.$r.' jugador'.($r>1||$r==0?'es':''), 'aviso', $dbsqlite);
 }
+
+function guardar_victoria(&$database, $ID){
+	$database->guardar_victoria('online', $ID);
+}
+
+function guardar_derrota(&$database, $ID){
+	$database->guardar_derrota('online', $ID);
+}
+
+function guardar_puntuacion_max(&$database, $ID, $puntos){
+	$database->guardar_puntuacion_max('online', $ID, $puntos);
+}
+
+
 
 ?>

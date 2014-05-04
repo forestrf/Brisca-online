@@ -1,5 +1,5 @@
 var zIndexTemp = 1;
-// Mover la carta a dónde
+// Mover la carta a dÃ³nde
 function moverCartaA(carta, hasta){
 	var cartaObj = document.getElementById('carta_'+carta);
 	var hastaObj = document.getElementById(hasta);
@@ -35,7 +35,7 @@ function moverCartaA(carta, hasta){
 	cartaObj.style.zIndex = ++zIndexTemp;
 }
 
-// Mover la carta a dónde
+// Mover la carta a dÃ³nde
 function moverCartaDeA(carta, desde, hasta){
 	var cartaObj = document.getElementById('carta_'+carta);
 	var desdeObj = document.getElementById(desde);
@@ -54,7 +54,7 @@ function moverCartaDeA(carta, desde, hasta){
 
 
 
-// Retorna el número, del 1 al 3, donde poner la carta a un jugador
+// Retorna el nÃºmero, del 1 al 3, donde poner la carta a un jugador
 function huecoLibreJugador(jugadorID){
 	for(var i = 1; i <= 3; ++i){
 		if(document.getElementById('P'+jugadorID+'C'+i).innerHTML === ''){
@@ -63,7 +63,7 @@ function huecoLibreJugador(jugadorID){
 	}
 }
 
-// Retorna el número, del 1 al 4, donde poner la carta en la mesa
+// Retorna el nÃºmero, del 1 al 4, donde poner la carta en la mesa
 function huecoLibreMesa(){
 	for(var i = 1; i <= 4; ++i){
 		if(document.getElementById('MC'+i).innerHTML === ''){
@@ -166,8 +166,8 @@ function instanciaCartas(){
 	
 	
 	
-	// Indicar el tamaño de las cartas mediante javascript editando el style
-	// Tamaño de las cartas = 201 x 279
+	// Indicar el tamaÃ±o de las cartas mediante javascript editando el style
+	// TamaÃ±o de las cartas = 201 x 279
 	// ratio = 201 / 279 = 0.72
 	// ancho = alto * 0.72
 	// alto = ancho / 0.72
@@ -196,4 +196,18 @@ function instanciaCartas(){
 	for(var i in arrCartas){
 		todas_las_cartas.innerHTML += '<img class="carta" style="position:absolute;width:'+widthCarta+'px;height:'+heightCarta+'px;top:'+(mazo_cartas.offsetTop -heightCarta2)+'px;left:'+(mazo_cartas.offsetLeft -widthCarta2)+'px;" id="carta_'+arrCartas[i]+'" src="img/cartas/back2.jpg">';
 	}
+}
+
+
+
+function fin_mensaje(resultado, misPuntos){
+
+	mensaje = {"-1":"HAS PERDIDO","0":"NO HAY GANADOR","1":"HAS GANADO"}[resultado];
+
+	//console.log(resultados);
+	mensaje_fin = document.getElementById("mensaje_fin");
+	mensaje_fin.className = "";
+	
+	mensaje_fin.innerHTML = mensaje + "<br><br>Tu puntuaciÃ³n es " + misPuntos + " puntos<br><br><br><br><div class='boton' onclick='resetBrisca()'>Volver a jugar</div><br>"+
+	"<a class='boton' href='/'>Ir al home</a><br>";
 }

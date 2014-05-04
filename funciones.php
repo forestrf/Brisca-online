@@ -220,6 +220,30 @@ class DB {
 		return $this->consulta("SELECT * FROM salas WHERE ID={$sala}")[0];
 	}
 	
+	
+	// STATS. agregar victorias, derrotas, y resetear la puntuación máxima
+	function guardar_victoria($variante, $ID){
+		if(!in_array($variante, array('online', 'cpu')))return;
+		$ID = mysql_escape_mimic($ID);
+		$this->consulta("UPDATE usuarios SET victorias_{$variante} = victorias_{$variante} + 1 WHERE ID={$ID};");
+	}
+
+	function guardar_derrota($variante, $ID){
+		if(!in_array($variante, array('online', 'cpu')))return;
+		$ID = mysql_escape_mimic($ID);
+		$this->consulta("UPDATE usuarios SET derrotas_{$variante} = derrotas_{$variante} + 1 WHERE ID={$ID};");
+	}
+
+	function guardar_puntuacion_max($variante, $ID, $puntos){
+		if(!in_array($variante, array('online', 'cpu')))return;
+		$ID = mysql_escape_mimic($ID);
+		$puntos = mysql_escape_mimic($puntos);
+		$result = $this->consulta("SELECT puntuacion_maxima_{$variante} FROM usuarios WHERE ID={$ID};")[0];
+		if($result['puntuacion_maxima_'.$variante] < $puntos){
+			$this->consulta("UPDATE usuarios SET puntuacion_maxima_{$variante} = {$puntos} WHERE ID={$ID};");
+		}
+	}
+	
 	// --------------------------------------------------------
 	
 	//Cachear resultados. $consulta es el sql a cachear, $resultado es el array de la respuesta y $tiempoValido es la cantidad de segundos que se guardaré en cache (usando memcache)

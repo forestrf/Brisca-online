@@ -209,27 +209,6 @@ function id_desde_hueco_sala($i){
 			</div>
 		</div>
 		
-		soy <?php echo $hueco_sala?>
-		
-		
-		
-		
-		
-		
-		
-		
-		
-		
-		
-		
-		
-		
-		
-		
-		
-		
-		
-		
 		
 		
 		
@@ -288,10 +267,10 @@ function id_desde_hueco_sala($i){
 				
 				IABriscaInstancia.moverCarta = moverCarta;
 				IABriscaInstancia.seteaPuntos = function(id, puntos){
-					seteaPuntos(id, puntos, nick_desde_id[id_desde_hueco(id)]);
+					var id2 = cantidadJugadores==2&&id==3?2:id;
+					seteaPuntos(id, puntos, nick_desde_id[id_desde_hueco(id2)]);
 				};
 				IABriscaInstancia.pideCartaHumano = pideCartaHumano;
-				IABriscaInstancia.fin = fin;
 				
 				IABriscaInstancia.console2.on = true;
 			
@@ -321,7 +300,7 @@ function id_desde_hueco_sala($i){
 						jugadores[1] = new IABriscaInstancia.CallbackBriscaJugador();
 						jugadores[1].iniciarJugador(3);
 						seteaPuntos(1, 0, nick_desde_id[id_desde_hueco(1)]);
-						seteaPuntos(3, 0, nick_desde_id[id_desde_hueco(3)]);
+						seteaPuntos(3, 0, nick_desde_id[id_desde_hueco(2)]);
 						document.getElementById("P1N").style.display = "inherit";
 						document.getElementById("P2N").style.display = "none";
 						document.getElementById("P3N").style.display = "inherit";
@@ -393,44 +372,6 @@ function id_desde_hueco_sala($i){
 			
 			
 			
-
-			
-			
-			function fin(resultados){
-				//console.log(resultados);
-				mensaje_fin = document.getElementById("mensaje_fin");
-				mensaje_fin.className = "";
-				
-				var mensaje = "HAS GANADO";
-				
-				var misPuntos = resultados["1"];
-				for(var i in resultados){
-					if(i != "1"){
-						if(resultados[i] > misPuntos){
-							mensaje = "HAS PERDIDO";
-							continue;
-						}
-						else if(resultados[i] ==  misPuntos){
-							mensaje = "NO HAY GANADOR";
-						}
-					}
-				}
-				
-				mensaje_fin.innerHTML = mensaje + "<br><br>Tu puntuación es " + misPuntos + " puntos<br><br><br><br><div class='boton' onclick='resetBrisca()'>Volver a jugar</div><br>"+
-				"<a class='boton' href='/'>Ir al home</a><br>";
-			}
-			
-			
-			
-			
-			
-			
-			
-			
-			
-			
-			
-			
 			//<input type="text" name="entradatxt" id="entradatxt" placeholder="Escribe un mensaje"><input type="submit" value="enviar" id="enviar">
 			enviar = document.getElementById('enviar');
 			entradatxt = document.getElementById('entradatxt');
@@ -467,9 +408,6 @@ function id_desde_hueco_sala($i){
 				//enviar mensaje por ajax. El mensaje se enviará y la conexión se quedará abierta. Cuando la conexión se cierre reabrir en un loop para recibir del chat
 			}
 		
-			
-				
-				
 			function insertarChatComentario(de, que, mio, forzarScroll){
 				var hacerScroll = false;
 				// Este if detecta si tenemos el scroll abajo del todo
@@ -555,6 +493,19 @@ function id_desde_hueco_sala($i){
 								borrarPideCartaHumano();
 							}
 						}
+						else if(typeof orden['termina'] !== "undefined"){
+							var ganador = orden['termina']['ganador'];
+							console.log('Partida terminada. id del ganador: '+ganador);
+							if(ganador == miId){
+								fin_mensaje(1, IABriscaInstancia.IABriscaBaseInstancia.totalPuntosEnCartas(jugadores[0].cartasGanadas));
+							}
+							else if(ganador == -1){
+								fin_mensaje(0, IABriscaInstancia.IABriscaBaseInstancia.totalPuntosEnCartas(jugadores[0].cartasGanadas));
+							}
+							else{
+								fin_mensaje(-1, IABriscaInstancia.IABriscaBaseInstancia.totalPuntosEnCartas(jugadores[0].cartasGanadas));
+							}
+						}
 						else{
 							for(var i in orden){
 								var jugador = jugadores_por_id[i]-1;
@@ -572,10 +523,12 @@ function id_desde_hueco_sala($i){
 					var config = json["config"];
 					if(config["p"] != -1){
 						jugadores_por_id[config["ID"]] = asigna_hueco_correcto(config["p"]);
+						nick_desde_id[config["ID"]] = config["NICK"];
 						console.log('El jugador con ID '+config["ID"]+' ocupará la posición '+config["p"]+' rectificada a '+jugadores_por_id[config["ID"]]);
 					}
 					else{
 						delete jugadores_por_id[config["ID"]];
+						delete nick_desde_id[config["ID"]];
 						console.log('El jugador con ID '+config["ID"]+' se ha quitado de la lista de jugadores.');
 					}
 				}

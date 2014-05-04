@@ -240,28 +240,25 @@
 			
 			function fin(resultados){
 				//console.log(resultados);
-				mensaje_fin = document.getElementById("mensaje_fin");
-				mensaje_fin.className = "";
 				
-				var mensaje = "HAS GANADO";
+				var mensaje = 1;
 				
 				var misPuntos = resultados["1"];
 				for(var i in resultados){
 					if(i != "1"){
 						if(resultados[i] > misPuntos){
-							mensaje = "HAS PERDIDO";
+							mensaje = -1;
 							continue;
 						}
 						else if(resultados[i] ==  misPuntos){
-							mensaje = "NO HAY GANADOR";
+							mensaje = 0;
 						}
 					}
 				}
 				
-				mensaje_fin.innerHTML = mensaje + "<br><br>Tu puntuación es " + misPuntos + " puntos<br><br><br><br><div class='boton' onclick='resetBrisca()'>Volver a jugar</div><br>"+
-				"<a class='boton' href='/'>Ir al home</a><br>";
+				fin_mensaje(mensaje, misPuntos);
 			}
-				
+			
 			
 			
 			function resetBrisca(){
