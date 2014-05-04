@@ -139,15 +139,11 @@ function id_desde_hueco_sala($i){
 	</head>
 	<body>
 		<div id="contenedor">
-			<div id="chat">
-			
-			
-			<form method="POST" action="vsplayerlobbyconsultas.php">
+			<form method="POST" action="vsplayerlobbyconsultas.php" class="boton_abandonar_sala">
 				<input type="submit" value="abandonar sala">
 				<input type="hidden" name="accion" value="abandonarsala">
 			</form>
-			
-			
+			<div id="chat">
 				<div id="historial">
 					<div class="globo">
 						Te has unido a la sala "<?php echo html_entity_decode($salaInfo['nombre']);?>"
@@ -380,8 +376,8 @@ function id_desde_hueco_sala($i){
 			enviar.onclick = enviaMensajeChat;
 			entradatxt.onkeydown = function(e){
 				var code = e.which; // recommended to use e.which, it's normalized across browsers
-				if(code==13)e.preventDefault();
-				if(code==13||code==188||code==186){
+				if(code==13){
+					e.preventDefault();
 					enviaMensajeChat();
 				}
 			};
@@ -411,11 +407,11 @@ function id_desde_hueco_sala($i){
 			function insertarChatComentario(de, que, mio, forzarScroll){
 				var hacerScroll = false;
 				// Este if detecta si tenemos el scroll abajo del todo
-				if(historial.scrollTop + historial.innerHeight >= historial.scrollHeight){
+				if(historial.scrollTop + historial.offsetHeight>= historial.scrollHeight){
 					var hacerScroll = true;
 				}
 				// Agregar nuevo mensaje al chat html
-				historial.innerHTML += '<div class="globo '+(mio?'mio':'')+'">'+
+				historial.innerHTML += '<div class="globo '+(mio?'mio':'')+' '+(de!==null?'aviso':'')+'">'+
 					(de!==null?('<span class="nombre">'+de+'</span>'):'')+que+
 					'</div><div class="clear"></div>';
 				if(hacerScroll || forzarScroll){
@@ -454,7 +450,7 @@ function id_desde_hueco_sala($i){
 			function procesaMensaje(usuario, json){
 				json = JSON.parse(json);
 				if(typeof json["msg"] !== "undefined"){
-					insertarChatComentario(usuario, json["msg"], usuario===miNombre);
+					insertarChatComentario(usuario, json["msg"], usuario===miNombre, usuario===miNombre);
 				}
 				else if(typeof json["aviso"] !== "undefined"){
 					insertarChatComentario(null, json["aviso"], false);

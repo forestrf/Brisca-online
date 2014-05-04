@@ -1,5 +1,6 @@
 #chat {
 	background-color: #222;
+	background-color: rgba(0, 0, 0, 0.5);
 	height: 100%;
 	width: 30%;
 	min-width: 250px;
@@ -16,16 +17,23 @@
 	overflow-y: scroll;
 }
 .globo {
-	background-color: #BBB;
-	display: inline-block;
-	margin: 10px 20px 5px 20px;
-	border-radius: 10px;
-	padding: 10px;
-	word-wrap: break-word;
+	background-color: #838700;
+    border-radius: 0 10px 10px 0;
+    color: #EEEEEE;
+    display: inline-block;
+    margin: 10px 10px 5px 0;
+    padding: 10px;
+    word-wrap: break-word;
+}
+.globo.aviso {
+    background-color: #007F85;
 }
 .globo.mio {
 	float: right;
-	background-color: #8F8;
+	background-color: #029100;
+	border-radius: 10px 0 0 10px;
+	margin-left: 10px;
+	margin-right: 0;
 }
 .globo > .nombre {
 	display: block;
@@ -45,20 +53,26 @@
 }
 
 #entradatxt {
-	width: 70%;
-	border: 0;
-	background-color: #444;
-	color: #FFF;
-	padding: 0 5%;
+	background-color: #222;
+    background-color: rgba(255, 255, 255, 0.2);
+    border: 0 none;
+    color: #FFFFFF;
+    font-size: 14px;
+    padding: 0 5%;
+    width: 70%;
 }
 #enviar {
-	width: 20%;
-	border: 0;
-	background-color: #AAA;
-	transition: .5s background-color ease, .5s box-shadow ease;
-	cursor: pointer;
+    background-color: #AAA;
+    background-color: rgba(0, 0, 0, 0.4);
+    border: 0 none;
+    color: #FFFFFF;
+	font-size: 14px;
+    cursor: pointer;
+    transition: background-color 0.5s ease 0s, box-shadow 0.5s ease 0s;
+    width: 20%;
 }
 #enviar:hover {
 	background-color: #FFF;
 	box-shadow: 0 0 10px #FFF;
+	color: #000;
 }

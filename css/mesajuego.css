@@ -64,7 +64,7 @@
 #MC4{left:70%}
 
 
-#P1N,#P2N,#P3N,#P4N{color:#EEE;background-color:#000;border-radius:7px;font-size:16px;padding:2%;display:none;}
+#P1N,#P2N,#P3N,#P4N{color:#EEE;background-color:#000;background-color:rgba(0, 0, 0, 0.7);border-radius:7px;font-size:16px;padding:2%;display:none;}
 #P1N{
 	border-radius:7px 7px 0 0;
 	height:5%;

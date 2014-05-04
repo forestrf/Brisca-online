@@ -1,13 +1,43 @@
 #mensaje_esperando {
-    background-color: rgba(0, 0, 0, 0.65);
-    background-size: cover;
-    color: #FFFFFF;
-    font-size: 30px;
-    height: 100%;
-    left: 0;
-    line-height: 200px;
-    position: absolute;
-    text-align: center;
-    top: 0;
-    width: 100%;
+	background-color: #000;
+	background-color: rgba(0, 0, 0, 0.65);
+	background-size: cover;
+	color: #FFFFFF;
+	font-size: 30px;
+	height: 100%;
+	left: 0;
+	line-height: 200px;
+	position: absolute;
+	text-align: center;
+	top: 0;
+	width: 100%;
+}
+
+.boton_abandonar_sala {
+	position: absolute;
+	right: 0;
+	z-index: 500;
+}
+
+.boton_abandonar_sala > input {
+    background-color: #FFF;
+    background-color: rgba(255, 255, 255, 0.5);
+    border: 0 none;
+    cursor: pointer;
+    font-size: 16px;
+    padding: 5px;
+	transition: background-color .5s ease;
+}
+
+
+.boton_abandonar_sala > input:hover {
+    background-color: #FFF;
+}
+
+#contenedor {
+	background-image: url("/img/fondos/2.jpg") !important;
+}
+
+#mesa {
+	background-image: none !important;
 }
