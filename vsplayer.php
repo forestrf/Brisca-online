@@ -247,7 +247,9 @@ function id_desde_hueco_sala($i){
 			var jugadores_por_id = {<?php
 				echo '"'.$salaInfo[1].'":asigna_hueco_correcto(1)';
 				for($i=2; $i<=$salaInfo['jugadores_max']; ++$i){
-					echo ',"'.$salaInfo[$i].'":asigna_hueco_correcto('.$i.')';
+					if($salaInfo[$i] != -1){
+						echo ',"'.$salaInfo[$i].'":asigna_hueco_correcto('.$i.')';
+					}
 				}
 			?>};
 			
@@ -255,7 +257,9 @@ function id_desde_hueco_sala($i){
 			var nick_desde_id = {<?php
 				echo '"'.$salaInfo[1].'":"'.$database->nickDesdeId($salaInfo[1]).'"';
 				for($i=2; $i<=$salaInfo['jugadores_max']; ++$i){
-					echo ',"'.$salaInfo[$i].'":"'.$database->nickDesdeId($salaInfo[$i]).'"';
+					if($salaInfo[$i] != -1){
+						echo ',"'.$salaInfo[$i].'":"'.$database->nickDesdeId($salaInfo[$i]).'"';
+					}
 				}
 			?>};
 			
