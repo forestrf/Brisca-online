@@ -70,7 +70,7 @@ function procesasms($entrada, $tipo, $dbsqlite, $datos_usuario=null){
 			
 			if(count($results) === 0){
 				//Todos los jugadores ya han lanzado. Decidir ganador. Después, comprobar si quedan cartas en el mazo
-				$dbsqlite->query("UPDATE usuarios SET lanza = 0;");
+				$dbsqlite->query("UPDATE usuarios SET lanza = 0, primero = 0;");
 				
 				$result = $dbsqlite->query("SELECT carta, propietario FROM cartas WHERE posicion = 'mesa' AND propietario != '';");
 				$results = array_from_sqliteResponse($result);
@@ -118,9 +118,20 @@ function procesasms($entrada, $tipo, $dbsqlite, $datos_usuario=null){
 						// Se pueden repartir cartas
 						
 						// Cartas en mazo para poder repartir (incluir carta palo_siempre_manda AL FINAL)
-						$result = $dbsqlite->query("SELECT ID FROM usuarios;");
-						$results = array_from_sqliteResponse($result);
-						foreach($results as $user){
+						$usuarios = $dbsqlite->query("SELECT ID FROM usuarios;");
+						$usuarios = array_from_sqliteResponse($usuarios);
+						
+						$i_t=count($usuarios);
+						
+						$p_ganador = array_search($ganador, $usuarios);
+						for($i=0; $i<$i_t; ++$i){
+							if($usuarios[$i]['ID'] === $ganador){
+								$p_ganador = $i;
+								break;
+							}
+						}
+						
+						for($i=$p_ganador; $i<$i_t +$p_ganador; ++$i){
 							if(count($cartas_mazo) > 0){
 								$carta = extraer_carta_azar($cartas_mazo);
 							}
@@ -129,7 +140,7 @@ function procesasms($entrada, $tipo, $dbsqlite, $datos_usuario=null){
 							}
 							// Pausar un segundo por cada carta que se reparte. Un segundo después de que el ganador se lleva las cartas se reparte la primera carta
 							sleep(1);
-							repartir_carta($dbsqlite, $user['ID'], $carta);
+							repartir_carta($dbsqlite, $usuarios[ClampCircular($i,0,$i_t-1)]['ID'], $carta);
 						}
 						
 					}/*
@@ -246,6 +257,9 @@ function extraer_carta_azar(&$cartas){
 }
 
 function usuario_lanza(&$dbsqlite, $ID, $primero=false){
+	/*if($primero){
+		$dbsqlite->query("UPDATE usuarios SET primero = 0");
+	}*/
 	$primero = $primero?', primero = 1':'';
 	$dbsqlite->query("UPDATE usuarios SET lanza = 1{$primero} WHERE ID = {$ID};");
 	procesasms(array('lanza'=>$ID), 'orden', $dbsqlite);
