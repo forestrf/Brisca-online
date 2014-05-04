@@ -197,7 +197,7 @@ class DB {
 		
 		if($p234 != '1'){
 			$this->consulta("UPDATE usuarios SET sala=-1 WHERE ID={$ID}");
-			$this->consulta("UPDATE salas SET {$p234}=-1, p_total = p_total - 1 WHERE ID={$sala}");
+			$this->consulta("UPDATE salas SET `{$p234}`=-1, p_total = p_total - 1 WHERE ID={$sala}");
 		}
 		else{
 			$this->consulta("UPDATE usuarios SET sala=-1 WHERE sala={$sala}");

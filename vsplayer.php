@@ -66,13 +66,13 @@ if($hueco_sala === ''){
 			$database->salaMeterUsuario($usuario['ID'], $sala, $hueco_sala);
 			
 			$dbsqlite = abredbsqlitesala($sala);
+			++$salaInfo['p_total'];
 			
-			procesasms($usuario['NICK'].' se ha unido a la partida', 'aviso', $dbsqlite);
-			procesasms(array('p'=>$hueco_sala,'ID'=>$usuario['ID']), 'config', $dbsqlite);
+			meter_usuario($dbsqlite, $usuario, $hueco_sala, $salaInfo);
 			
 			$salaInfo[$hueco_sala] = $usuario['ID'];
 			
-			if($salaInfo['p_total']+1 == $salaInfo['jugadores_max']){
+			if($salaInfo['p_total'] == $salaInfo['jugadores_max']){
 				//Ya están todos los jugadores, lanzar partida
 				procesasms('Iniciando partida', 'aviso', $dbsqlite);
 				procesasms('START', 'orden', $dbsqlite);
@@ -108,11 +108,9 @@ if($hueco_sala === ''){
 				
 				usuario_lanza($dbsqlite, id_desde_hueco_sala($comienza), true);
 			}
-			else{
-				$r = $salaInfo['jugadores_max'] - $salaInfo['p_total']-1;
-				//Todavía faltan jugadores
-				procesasms('Falta'.($r>1?'n':'').' '.$r.' jugador'.($r>1?'es':''), 'aviso', $dbsqlite);
-			}
+			/*else{
+				// Faltan jugadores
+			}*/
 			$dbsqlite->close();
 			unset($dbsqlite);
 		}

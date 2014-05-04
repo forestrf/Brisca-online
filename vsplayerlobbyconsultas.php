@@ -1,7 +1,8 @@
 <?php
 
-require_once('definiciones.php');
-require_once('funciones.php');
+require_once 'definiciones.php';
+require_once 'funciones.php';
+require_once 'smsfunciones.php';
 
 $database = new DB();
 
@@ -117,6 +118,13 @@ if(isset($_POST['accion'])){
 				}
 			}
 			$database->salaQuitarUsuario($usuario['ID'], $usuario['sala'], $soy);
+			
+			$salaInfo = $database->salaInfo($usuario['sala']);
+			
+			$dbsqlite = abredbsqlitesala($usuario['sala']);
+			
+			quitar_usuario($dbsqlite, $usuario, $salaInfo);
+			
 			header('Location: /vsplayerlobby.php');
 		break;
 	

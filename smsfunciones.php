@@ -265,4 +265,22 @@ function usuario_lanza(&$dbsqlite, $ID, $primero=false){
 	procesasms(array('lanza'=>$ID), 'orden', $dbsqlite);
 }
 
+function meter_usuario(&$dbsqlite, &$usuario, $hueco_sala, &$salaInfo){
+	procesasms($usuario['NICK'].' se ha unido a la partida', 'aviso', $dbsqlite);
+	procesasms(array('p'=>$hueco_sala,'ID'=>$usuario['ID']), 'config', $dbsqlite);
+	
+	$r = $salaInfo['jugadores_max'] - $salaInfo['p_total'];
+	//Todavía faltan jugadores
+	procesasms('Falta'.($r>1||$r==0?'n':'').' '.$r.' jugador'.($r>1||$r==0?'es':''), 'aviso', $dbsqlite);
+}
+
+function quitar_usuario(&$dbsqlite, &$usuario, &$salaInfo){
+	procesasms($usuario['NICK'].' ha salido de la partida', 'aviso', $dbsqlite);
+	procesasms(array('p'=>'-1','ID'=>$usuario['ID']), 'config', $dbsqlite);
+	
+	$r = $salaInfo['jugadores_max'] - $salaInfo['p_total'];
+	//Todavía faltan jugadores
+	procesasms('Falta'.($r>1||$r==0?'n':'').' '.$r.' jugador'.($r>1||$r==0?'es':''), 'aviso', $dbsqlite);
+}
+
 ?>
