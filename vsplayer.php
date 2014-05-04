@@ -245,14 +245,14 @@ function id_desde_hueco_sala($i){
 			
 			// "ID":"hueco_sala"
 			var jugadores_por_id = {<?php
-				echo '"'.$salaInfo['1'].'":asigna_hueco_correcto(1)';
+				echo '"'.$salaInfo[1].'":asigna_hueco_correcto(1)';
 				for($i=2; $i<=$salaInfo['jugadores_max']; ++$i){
 					echo ',"'.$salaInfo[$i].'":asigna_hueco_correcto('.$i.')';
 				}
 			?>};
 			
 			function asigna_hueco_correcto(i){
-				return ClampCircular(i+hueco_sala-1,1,cantidadJugadores)
+				return ClampCircular(i-hueco_sala+1,1,cantidadJugadores)
 			}
 		
 		
