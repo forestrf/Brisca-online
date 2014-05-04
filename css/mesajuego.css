@@ -30,6 +30,12 @@
 	font-size: 0px;
 }
 
+#posiciones .nombre_puntos{
+	color: #FFFFFF;
+    font-size: 16px;
+    position: relative;
+}
+
 #P1C1,#P1C2,#P1C3{top:90%}
 #P3C1,#P3C2,#P3C3{top:10%}
 #P1C1,#P3C1{left:30%}
@@ -112,6 +118,7 @@
 	right: 0;
 	top: -30px;
 }
+
 
 
 #mensaje_fin{

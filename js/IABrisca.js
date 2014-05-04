@@ -868,7 +868,7 @@ function IABrisca(){
 				thisT.jugadoresArray[i].cartasJugadasMesa(thisT.cartasEnMesa);
 			}
 			jugador.ganaMesa(thisT.cartasEnMesa);
-			T.seteaPuntos('P'+jugador.jugadorID, T.IABriscaBaseInstancia.totalPuntosEnCartas(jugador.cartasGanadas));
+			T.seteaPuntos(jugador.jugadorID, T.IABriscaBaseInstancia.totalPuntosEnCartas(jugador.cartasGanadas));
 			thisT.cartasEnMesa = [];
 		};
 	};

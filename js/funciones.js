@@ -123,8 +123,13 @@ function pideCartaHumano(id, posiblesCartas, callback){
 	}
 }
 
-function seteaPuntos(id, puntos){
-	document.getElementById(id+'N').innerHTML = "Puntos: "+puntos;
+function seteaPuntos(id, puntos, nick){
+	if(typeof nick === 'undefined'){
+		document.getElementById('P'+id+'N').innerHTML = "Puntos: "+puntos;
+	}
+	else{
+		document.getElementById('P'+id+'N').innerHTML = '<div class="nombre_puntos">'+nick+"</div>Puntos: "+puntos;
+	}
 }
 
 function ClampCircular(numero, minimo, maximo){

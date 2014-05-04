@@ -127,6 +127,13 @@ class DB {
 		return $nick["ID"];
 	}
 	
+	// Retorna el NICK del usuario dada una ID
+	function nickDesdeId($ID){
+		$ID = mysql_escape_mimic($ID);
+		$ID = $this->consulta("SELECT NICK FROM usuarios WHERE ID = '{$ID}'", true)[0];
+		return $ID["NICK"];
+	}
+	
 	// Retorna la ID
 	function NickPasswordValidacion($nick, $password){
 		$nick = mysql_escape_mimic($nick);

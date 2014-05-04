@@ -251,8 +251,24 @@ function id_desde_hueco_sala($i){
 				}
 			?>};
 			
+			// "ID":"NICK"
+			var nick_desde_id = {<?php
+				echo '"'.$salaInfo[1].'":"'.$database->nickDesdeId($salaInfo[1]).'"';
+				for($i=2; $i<=$salaInfo['jugadores_max']; ++$i){
+					echo ',"'.$salaInfo[$i].'":"'.$database->nickDesdeId($salaInfo[$i]).'"';
+				}
+			?>};
+			
 			function asigna_hueco_correcto(i){
 				return ClampCircular(i-hueco_sala+1,1,cantidadJugadores)
+			}
+			
+			function id_desde_hueco(hueco){
+				for(var i in jugadores_por_id){
+					if(jugadores_por_id[i] == hueco){
+						return i;
+					}
+				}
 			}
 		
 		
@@ -267,7 +283,9 @@ function id_desde_hueco_sala($i){
 				IABriscaInstancia = new IABrisca();
 				
 				IABriscaInstancia.moverCarta = moverCarta;
-				IABriscaInstancia.seteaPuntos = seteaPuntos;
+				IABriscaInstancia.seteaPuntos = function(id, puntos){
+					seteaPuntos(id, puntos, nick_desde_id[id_desde_hueco(id)]);
+				};
 				IABriscaInstancia.pideCartaHumano = pideCartaHumano;
 				IABriscaInstancia.fin = fin;
 				
@@ -284,6 +302,7 @@ function id_desde_hueco_sala($i){
 			function iniciarPartidaBrisca_VSHUMAN_2(palo_manda_siempre){
 				var cantidadJugadores = <?php echo $salaInfo['jugadores_max']?>;
 				IABriscaInstancia.IABriscaMesaInstancia.iniciarMesa({'palo_manda_siempre':palo_manda_siempre});
+				IABriscaInstancia.IABriscaMesaInstancia.lanzaRonda = function(){};
 				
 				
 				//IABriscaInstancia.IABriscaMesaInstancia.tiempoEntreRondas = 0;
@@ -295,11 +314,10 @@ function id_desde_hueco_sala($i){
 					case 2:
 						jugadores[0] = new IABriscaInstancia.HumanoBriscaJugador();
 						jugadores[0].iniciarJugador(1);
-						jugadores[0].callback = jugadorLanzaCarta;
 						jugadores[1] = new IABriscaInstancia.CallbackBriscaJugador();
 						jugadores[1].iniciarJugador(3);
-						seteaPuntos('P1', 0);
-						seteaPuntos('P3', 0);
+						seteaPuntos(1, 0, nick_desde_id[id_desde_hueco(1)]);
+						seteaPuntos(3, 0, nick_desde_id[id_desde_hueco(3)]);
 						document.getElementById("P1N").style.display = "inherit";
 						document.getElementById("P2N").style.display = "none";
 						document.getElementById("P3N").style.display = "inherit";
@@ -308,14 +326,13 @@ function id_desde_hueco_sala($i){
 					case 3:
 						jugadores[0] = new IABriscaInstancia.HumanoBriscaJugador();
 						jugadores[0].iniciarJugador(1);
-						jugadores[0].callback = jugadorLanzaCarta;
 						jugadores[1] = new IABriscaInstancia.CallbackBriscaJugador();
 						jugadores[1].iniciarJugador(2);
 						jugadores[2] = new IABriscaInstancia.CallbackBriscaJugador();
 						jugadores[2].iniciarJugador(3);
-						seteaPuntos('P1', 0);
-						seteaPuntos('P2', 0);
-						seteaPuntos('P3', 0);
+						seteaPuntos(1, 0, nick_desde_id[id_desde_hueco(1)]);
+						seteaPuntos(2, 0, nick_desde_id[id_desde_hueco(2)]);
+						seteaPuntos(3, 0, nick_desde_id[id_desde_hueco(3)]);
 						document.getElementById("P1N").style.display = "inherit";
 						document.getElementById("P2N").style.display = "inherit";
 						document.getElementById("P3N").style.display = "inherit";
@@ -324,17 +341,16 @@ function id_desde_hueco_sala($i){
 					case 4:
 						jugadores[0] = new IABriscaInstancia.HumanoBriscaJugador();
 						jugadores[0].iniciarJugador(1);
-						jugadores[0].callback = jugadorLanzaCarta;
 						jugadores[1] = new IABriscaInstancia.CallbackBriscaJugador();
 						jugadores[1].iniciarJugador(2);
 						jugadores[2] = new IABriscaInstancia.CallbackBriscaJugador();
 						jugadores[2].iniciarJugador(3);
 						jugadores[3] = new IABriscaInstancia.CallbackBriscaJugador();
 						jugadores[3].iniciarJugador(4);
-						seteaPuntos('P1', 0);
-						seteaPuntos('P2', 0);
-						seteaPuntos('P3', 0);
-						seteaPuntos('P4', 0);
+						seteaPuntos(1, 0, nick_desde_id[id_desde_hueco(1)]);
+						seteaPuntos(2, 0, nick_desde_id[id_desde_hueco(2)]);
+						seteaPuntos(3, 0, nick_desde_id[id_desde_hueco(3)]);
+						seteaPuntos(4, 0, nick_desde_id[id_desde_hueco(4)]);
 						document.getElementById("P1N").style.display = "inherit";
 						document.getElementById("P2N").style.display = "inherit";
 						document.getElementById("P3N").style.display = "inherit";
@@ -511,7 +527,7 @@ function id_desde_hueco_sala($i){
 						var orden = json["orden"];
 						if(typeof orden['reparte'] !== "undefined"){
 							for(var i in orden['reparte']){
-								console.log('Repartir a '+i+' la '+orden['reparte'][i]);
+								console.log('Repartir a '+nick_desde_id[i]+' la carta '+orden['reparte'][i]);
 								IABriscaInstancia.IABriscaMesaInstancia.peticionJugadorRobar(jugadores[jugadores_por_id[i]-1], orden['reparte'][i]);
 							}
 						}
@@ -520,15 +536,17 @@ function id_desde_hueco_sala($i){
 							iniciarPartidaBrisca_VSHUMAN_2(orden['palo_manda_siempre']);
 						}
 						else if(typeof orden['lanza'] !== "undefined"){
-							console.log('Petición de lanzar carta al jugador '+orden['lanza']);
-							jugadores[jugadores_por_id[orden['lanza']]-1].lanzaCarta(jugadorLanzaCarta);
-							if(miId != orden['lanza']){
+							console.log('Petición de lanzar carta al jugador '+nick_desde_id[orden['lanza']]);
+							if(miId == orden['lanza']){
+								jugadores[jugadores_por_id[orden['lanza']]-1].lanzaCarta(jugadorLanzaCarta);
+							}
+							else{
 								borrarPideCartaHumano();
 							}
 						}
 						else if(typeof orden['gana'] !== "undefined"){
 							for(var id_ganador in orden['gana']){
-								console.log('Petición de ganar cartas al jugador '+id_ganador);
+								console.log('Petición de ganar cartas al jugador '+nick_desde_id[id_ganador]);
 								IABriscaInstancia.IABriscaMesaInstancia.peticionJugadorGanarMesa(jugadores[jugadores_por_id[id_ganador]-1]);
 								borrarPideCartaHumano();
 							}
@@ -548,8 +566,14 @@ function id_desde_hueco_sala($i){
 				}
 				else if(typeof json["config"] !== "undefined"){
 					var config = json["config"];
-					jugadores_por_id[config["ID"]] = asigna_hueco_correcto(config["p"]);
-					console.log('El jugador con ID '+config["ID"]+' ocupará la posición '+config["p"]+' rectificada a '+jugadores_por_id[config["ID"]]);
+					if(config["p"] != -1){
+						jugadores_por_id[config["ID"]] = asigna_hueco_correcto(config["p"]);
+						console.log('El jugador con ID '+config["ID"]+' ocupará la posición '+config["p"]+' rectificada a '+jugadores_por_id[config["ID"]]);
+					}
+					else{
+						delete jugadores_por_id[config["ID"]];
+						console.log('El jugador con ID '+config["ID"]+' se ha quitado de la lista de jugadores.');
+					}
 				}
 			}
 			
