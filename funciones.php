@@ -276,3 +276,13 @@ function mysql_escape_mimic($inp) {
 
     return $inp;
 }
+
+function ClampCircular($numero, $minimo, $maximo){
+	while($numero < $minimo){
+		$numero += $maximo -$minimo +1;
+	}
+	while($numero > $maximo){
+		$numero -= $maximo -$minimo +1;
+	}
+	return $numero;
+};

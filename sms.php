@@ -31,14 +31,8 @@ if(isset($_POST['msg'])){
 	$dbsqlite->close();
 	unset($dbsqlite);
 }
-elseif(isset($_POST['jugada'])){ // POOOOOOOOOOOOOOOOR HAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAACEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEER
-	// Comprobar si una jugada es válida. Si lo es, agregarla. Si es el último en tirar, decidir ganador e insertar en chat la jugada de llevarse alguien las cartas
-	// Después, insertar las jugadas de respartir de cartas
-	// escribir
-	echo procesasms(array($datos_usuario['ID']=>$_POST['jugada']), 'jugada', $dbsqlite, $datos_usuario);
-	
-	procesasms(array('lanza'=>id_desde_hueco_sala($prox_jugador_a_tirar)), 'orden', $dbsqlite);
-	
+elseif(isset($_POST['jugada'])){
+	echo procesasms($_POST['jugada'], 'jugada', $dbsqlite, $datos_usuario);
 	$dbsqlite->close();
 	unset($dbsqlite);
 }

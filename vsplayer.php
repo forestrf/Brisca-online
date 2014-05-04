@@ -13,6 +13,8 @@ if(!isset($_GET['sala'])){
 
 require_once('definiciones.php');
 require_once('funciones.php');
+require_once('php/IABrisca.class.php');
+require_once('smsfunciones.php');
 
 $database = new DB();
 
@@ -63,9 +65,8 @@ if($hueco_sala === ''){
 		if(isset($hueco_sala)){
 			$database->salaMeterUsuario($usuario['ID'], $sala, $hueco_sala);
 			
-			require_once 'smsfunciones.php';
-			
 			$dbsqlite = abredbsqlitesala($sala);
+			
 			procesasms($usuario['NICK'].' se ha unido a la partida', 'aviso', $dbsqlite);
 			procesasms(array('p'=>$hueco_sala,'ID'=>$usuario['ID']), 'config', $dbsqlite);
 			
@@ -80,36 +81,32 @@ if($hueco_sala === ''){
 				$comienza = rand(1,$salaInfo['jugadores_max']);
 				
 				//Repartir cartas
-				$cartas = array(
-					'O1','O3','O12','O11','O10','O9','O8','O7','O6','O5','O4','O2',
-					'E1','E3','E12','E11','E10','E9','E8','E7','E6','E5','E4','E2',
-					'B1','B3','B12','B11','B10','B9','B8','B7','B6','B5','B4','B2',
-					'C1','C3','C12','C11','C10','C9','C8','C7','C6','C5','C4','C2'
-				);
+				$cartas = IABrisca::$cartasTotalArray;
+				
+				foreach($cartas as $c){
+					$dbsqlite->query("INSERT INTO cartas (carta, posicion) VALUES('{$c}', 'mazo');");
+				}
 				
 				$tot = $salaInfo['jugadores_max'];
 				
 				
-				$carta = array_splice($cartas,rand(0,count($cartas)-1),1);
-				procesasms(array('palo_manda_siempre'=>$carta[0]), 'orden', $dbsqlite);
+				$carta_siempre_manda = extraer_carta_azar($cartas);
+				$dbsqlite->query("UPDATE cartas SET posicion = 'carta_siempre_manda', palo_manda_siempre = 1 WHERE carta = '{$carta_siempre_manda}';");
+				procesasms(array('palo_manda_siempre'=>$carta_siempre_manda), 'orden', $dbsqlite);
 				
 				// Por cada jugador
 				for($i=$comienza; $i<$tot+$comienza; ++$i){
-					$j_cartas = array();
 					//Por cada carta
 					for($j=0; $j<3; ++$j){
 						//Sacar una carta al azar de la baraja
-						$carta = array_splice($cartas,rand(0,count($cartas)),1);
-						$n = $i>$tot?$i-$tot:$i;
-						procesasms(array('reparte'=>array(id_desde_hueco_sala($n)=>$carta[0])), 'orden', $dbsqlite);
-						$j_cartas[] = $carta;
+						$carta = extraer_carta_azar($cartas);
+						$n = ClampCircular($i, 1, $tot);
+						repartir_carta($dbsqlite, id_desde_hueco_sala($n), $carta);
 					}
-					$dbsqlite->query("UPDATE usuarios SET cartas_en_mano = '".json_encode($cartas)."';");
+					$dbsqlite->query("INSERT INTO usuarios (ID, lanza, hueco_sala) VALUES (".id_desde_hueco_sala($n).", 0, ".$n.");");
 				}
 				
-				$dbsqlite->query("UPDATE cartas SET cartas_en_mazo = '".json_encode($j_cartas)."'");
-				
-				procesasms(array('lanza'=>id_desde_hueco_sala($comienza)), 'orden', $dbsqlite);
+				usuario_lanza($dbsqlite, id_desde_hueco_sala($comienza), true);
 			}
 			else{
 				$r = $salaInfo['jugadores_max'] - $salaInfo['p_total']-1;
@@ -491,7 +488,8 @@ function id_desde_hueco_sala($i){
 								ult = resp[resp.length-1].n;
 							}
 						}
-						setTimeout(loop, 0);
+						// Medio segundo antes de reconectar al chat tras recibir una respuesta
+						setTimeout(loop, 500);
 					}
 				};
 				loopRequest.send(params);
@@ -527,6 +525,13 @@ function id_desde_hueco_sala($i){
 							console.log('Petición de lanzar carta al jugador '+orden['lanza']);
 							jugadores[jugadores_por_id[orden['lanza']]-1].lanzaCarta(jugadorLanzaCarta);
 							if(miId != orden['lanza']){
+								borrarPideCartaHumano();
+							}
+						}
+						else if(typeof orden['gana'] !== "undefined"){
+							for(var id_ganador in orden['gana']){
+								console.log('Petición de ganar cartas al jugador '+id_ganador);
+								IABriscaInstancia.IABriscaMesaInstancia.peticionJugadorGanarMesa(jugadores[jugadores_por_id[id_ganador]-1]);
 								borrarPideCartaHumano();
 							}
 						}
