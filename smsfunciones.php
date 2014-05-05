@@ -329,6 +329,7 @@ function meter_usuario(&$dbsqlite, &$usuario, $hueco_sala, &$salaInfo){
 	procesasms('Falta'.($r>1||$r==0?'n':'').' '.$r.' jugador'.($r>1||$r==0?'es':''), 'aviso', $dbsqlite);
 }
 
+// En caso de que la partida esté empezada, bloquear la partida pero permitir chatear. // POOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOR HACEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEER
 function quitar_usuario(&$dbsqlite, &$usuario, &$salaInfo){
 	procesasms($usuario['NICK'].' ha salido de la partida', 'aviso', $dbsqlite);
 	procesasms(array('p'=>'-1','ID'=>$usuario['ID']), 'config', $dbsqlite);

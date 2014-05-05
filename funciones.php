@@ -138,7 +138,7 @@ class DB {
 	function NickPasswordValidacion($nick, $password){
 		$nick = mysql_escape_mimic($nick);
 		$password = mysql_escape_mimic($password);
-		return count($this->consulta("SELECT * FROM usuarios WHERE NICK = '{$nick}' AND PASSWORD = '{$password}' AND user_validado = ''")) > 0;
+		return count($this->consulta("SELECT * FROM usuarios WHERE NICK = '{$nick}' AND PASSWORD = '{$password}' AND user_validado = '';")) > 0;
 	}
 	
 	
@@ -150,7 +150,13 @@ class DB {
 		// La cookie dura 1 mes
 		$fechaTope = date('Y-m-d H:i:s', mktime(0, 0, 0, date("m")+1  , date("d"), date("Y")));
 		$this->consulta("UPDATE usuarios SET FECHA_ULT_LOGIN = '{$hoy}' WHERE ID = '{$ID}'");
-		$this->consulta("INSERT INTO login (ID_USER, COOKIE, FECHA_TOPE) VALUES ('{$ID}', '{$passwordCookie}', '{$fechaTope}') ON DUPLICATE KEY UPDATE COOKIE = '{$passwordCookie}', FECHA_TOPE = '{$fechaTope}'");
+		$this->consulta("INSERT INTO login (ID_USER, COOKIE, FECHA_TOPE) VALUES ('{$ID}', '{$passwordCookie}', '{$fechaTope}') ON DUPLICATE KEY UPDATE COOKIE = '{$passwordCookie}', FECHA_TOPE = '{$fechaTope}';");
+	}
+	
+	function SetUsuarioDeslogueadoPorID($ID){
+		$ID = mysql_escape_mimic($ID);
+		
+		$this->consulta("DELETE FROM login WHERE ID_USER = {$ID};");
 	}
 	
 	// Retorna falso si no es un usuario válido, o un array con los datos del usuario: Nombre, Apellidos, Nick
@@ -158,7 +164,8 @@ class DB {
 	function validaCookieLogueado($u, $p){
 		$u = mysql_escape_mimic($u);
 		$p = mysql_escape_mimic($p);
-		return $this->consulta("SELECT ID, NOMBRE, APELLIDO, NICK, sala FROM usuarios WHERE ID = (SELECT ID_USER FROM login WHERE ID_USER = '{$u}' AND COOKIE = '{$p}' AND FECHA_TOPE > NOW())")[0];
+		$result = $this->consulta("SELECT * FROM usuarios WHERE ID = (SELECT ID_USER FROM login WHERE ID_USER = '{$u}' AND COOKIE = '{$p}' AND FECHA_TOPE > NOW())");
+		return count($result)>0?$result[0]:false;
 	}
 	
 	// Consultar salas en curso dado un filtro (array con indices y valores)

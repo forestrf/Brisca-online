@@ -37,6 +37,21 @@
 	padding: 20px;
 	position: relative;
 }
+
+.div_login {
+	top: 35%;
+	left: 20%;
+	width: 60%;
+	position: absolute;
+}
+
+.div_registro {
+	top: 25%;
+	left: 20%;
+	width: 60%;
+	position: absolute;
+}
+
 .filtro_salas {
 	display: inline-block;
 }
