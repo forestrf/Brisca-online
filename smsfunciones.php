@@ -7,12 +7,18 @@ function abredbsqlitesala($sala){
 
 	if(!file_exists($archivo)){
 		$db = new SQLite3($archivo, 0666);
-		$db->exec('CREATE TABLE mensajes (n INTEGER PRIMARY KEY AUTOINCREMENT, usuario STRING, mensaje STRING);');
+		// privacidad tiene un json con el listado de IDs de usuarios que pueden (o no) leer el mensaje. De no poder leerlo lo ignorarán. De no tener nada es público
+		// permitir = los únicos que pueden leer.
+		// denegar = los únicos que NO pueden leer
+		// {'permitir':[12,81,56]}
+		$db->exec('CREATE TABLE mensajes (n INTEGER PRIMARY KEY AUTOINCREMENT, usuario STRING, mensaje STRING, privacidad STRING);');
 		// primero estará en 1 o 0. A partir de quien es primero se calcula a quien le toca tirar
 		// lanza estará en 0, 1 o 2. si está en 1, es el único que puede lanzar. Si está en 2 es que ya ha lanzado. Una vez lanzado si hay jugadores entre el y el primero, se moverá el 1 en lanza al siguiente jugador
 		// hueco_sala no es necesaria ya que la info está en la db, pero para no hacer consultas de más a la db, prefiero ponerlo aquí.
-		$db->exec('CREATE TABLE usuarios (ID INTEGER PRIMARY KEY, primero INTEGER, lanza INTEGER, hueco_sala INTEGER);');
+		$db->exec('CREATE TABLE usuarios (ID INTEGER PRIMARY KEY, primero INTEGER, lanza INTEGER, hueco_sala INTEGER, grupo INTEGER);');
 		$db->exec('CREATE TABLE cartas (carta STRING, posicion STRING, propietario STRING, palo_manda_siempre INTEGER, palo_manda_mesa INTEGER);');
+		// Por defecto, 0. 1 en caso de ser en parejas
+		$db->exec('CREATE TABLE parejas (sino INTEGER);');
 		$result = $db->exec('PRAGMA journal_mode=WAL;');
 	}
 	else{
@@ -26,7 +32,7 @@ function abredbsqlitesala($sala){
 }
 
 //La ejecución de esta función no debe detenerse en caso de que el usuario corte la conexión. OJOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOO
-function procesasms($entrada, $tipo, $dbsqlite, $datos_usuario=null){
+function procesasms($entrada, $tipo, $dbsqlite, $datos_usuario=null, $privacidad=null){
 	switch($tipo){
 		case 'jugada':
 			// Comprobar si una jugada es válida. Si lo es, agregarla. Si es el último en tirar, decidir ganador e insertar en chat la jugada de llevarse alguien las cartas
@@ -272,7 +278,13 @@ function procesasms($entrada, $tipo, $dbsqlite, $datos_usuario=null){
 			
 			$msg = json_encode(array($tipo=>$msg));
 			
-			$result = $dbsqlite->query("INSERT INTO mensajes (mensaje) VALUES ('{$msg}');");
+			if($privacidad === null){
+				$result = $dbsqlite->query("INSERT INTO mensajes (mensaje) VALUES ('{$msg}');");
+			}
+			else{
+				$privacidad = json_encode($privacidad);
+				$result = $dbsqlite->query("INSERT INTO mensajes (mensaje, privacidad) VALUES ('{$msg}', '{$privacidad}');");
+			}
 			
 			if($result){
 				return true;
@@ -294,7 +306,8 @@ function array_from_sqliteResponse(&$result){
 
 function repartir_carta(&$dbsqlite, $ID, $carta){
 	$dbsqlite->query("UPDATE cartas SET posicion = '{$ID}', propietario = '{$ID}' WHERE carta = '{$carta}';");
-	procesasms(array('reparte'=>array($ID=>$carta)), 'orden', $dbsqlite);
+	procesasms(array('reparte'=>array($ID=>$carta)), 'orden', $dbsqlite, null, array('permitir'=>array($ID)));
+	procesasms(array('reparte'=>array($ID=>'x')), 'orden', $dbsqlite, null, array('denegar'=>array($ID)));
 }
 
 function ganar_cartas(&$dbsqlite, $ID, $cartas){

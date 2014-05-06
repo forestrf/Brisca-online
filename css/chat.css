@@ -14,7 +14,7 @@
 #historial {
 	height: 95%;
 	height: calc(100% - 40px);
-	overflow-y: scroll;
+	overflow-y: auto;
 }
 .globo {
 	background-color: #838700;

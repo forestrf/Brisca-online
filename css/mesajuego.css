@@ -32,8 +32,8 @@
 
 #posiciones .nombre_puntos{
 	color: #FFFFFF;
-    font-size: 16px;
-    position: relative;
+	font-size: 16px;
+	position: relative;
 }
 
 #P1C1,#P1C2,#P1C3{top:90%}
@@ -106,6 +106,14 @@
 	-ms-transition: top 1s ease, left 1s ease, -ms-transform 1s ease;
 	-o-transition: top 1s ease, left 1s ease, -o-transform 1s ease;
 	transition: top 1s ease, left 1s ease, transform 1s ease;
+}
+
+.carta.sintransition{
+	-webkit-transition: none !important;
+	-moz-transition: none !important;
+	-ms-transition: none !important;
+	-o-transition: none !important;
+	transition: none !important;
 }
 
 .puntuacion{

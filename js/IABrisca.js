@@ -505,7 +505,7 @@ function IABrisca(){
 			var cartaATirar = "";
 			if(thisT.azar !== 0 && Math.random() < thisT.azar && thisT.cartasEnMano.length > 1){
 				if(thisT.cartasEnMano.length > 1){
-					cartaATirar = thisT.cartasEnMano[Math.floor(Math.random()*thisT.cartasEnMano.length)];
+					cartaATirar = thisT.cartasEnMano[Math.max(0,Math.min(Math.floor(Math.random()*thisT.cartasEnMano.length),thisT.cartasEnMano.length-1))];
 				}
 				else{
 					cartaATirar = thisT.cartasEnMano[0];
@@ -697,7 +697,9 @@ function IABrisca(){
 			}
 			else{
 				// Se setea el paloQueSiempreManda y se quita del mazo
-				thisT.cartaPaloQueMandaSiempre = thisT.mazoCartas.splice(Math.floor(Math.random()*thisT.mazoCartas.length),1)[0];
+				thisT.cartaPaloQueMandaSiempre = thisT.mazoCartas.splice(
+					Math.max(0,Math.min(Math.floor(Math.random()*thisT.mazoCartas.length),thisT.mazoCartas.length-1))
+					,1)[0];
 				thisT.paloQueMandaSiempre = T.IABriscaBaseInstancia.paloCarta(thisT.cartaPaloQueMandaSiempre);
 			}
 			T.console2.log('palo que manda siempre: '+thisT.paloQueMandaSiempre);
@@ -713,7 +715,7 @@ function IABrisca(){
 			
 			var cuenta = (jugadores.length*3)+1;
 			setTimeout(function(){
-				thisT.quienLanzaPrimero = Math.floor(Math.random() * thisT.jugadoresArray.length);
+				thisT.quienLanzaPrimero = Math.max(0,Math.min(Math.floor(Math.random()*thisT.jugadoresArray.length),thisT.jugadoresArray.length-1))
 				thisT.GO();
 			},thisT.tiempoRepartiendoCarta * cuenta);
 		};
@@ -845,7 +847,8 @@ function IABrisca(){
 				if(typeof cartaARobar === "undefined"){
 					if(thisT.mazoCartas.length > 0){
 						cartaARobar = thisT.mazoCartas.splice(
-							Math.floor(Math.random()*thisT.mazoCartas.length),1)[0];
+							Math.max(0,Math.min(Math.floor(Math.random()*thisT.mazoCartas.length),thisT.mazoCartas.length-1))
+							,1)[0];
 					}
 					else{
 						cartaARobar = this.cartaPaloQueMandaSiempre;

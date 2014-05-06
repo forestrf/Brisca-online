@@ -14,7 +14,7 @@ $database = new DB();
 
 
 // Detectar si el usuario está logueado. Si no lo está, enviarlo a login. En caso de que está logueado, pero no se corresponda el login con la base de datos, lo mismo.
-$datos_usuario = detectaLogueadoORedireccion($database, "login.php");
+$usuario = detectaLogueadoORedireccion($database, "login.php");
 
 
 
@@ -27,12 +27,12 @@ $dbsqlite = abredbsqlitesala($sala);
 // Dependiendo de qué queremos hacer, leeremos de la db o escribiremos en ella.
 
 if(isset($_POST['msg'])){
-	echo procesasms($_POST['msg'], 'msg', $dbsqlite, $datos_usuario);
+	echo procesasms($_POST['msg'], 'msg', $dbsqlite, $usuario);
 	$dbsqlite->close();
 	unset($dbsqlite);
 }
 elseif(isset($_POST['jugada'])){
-	echo procesasms($_POST['jugada'], 'jugada', $dbsqlite, $datos_usuario);
+	echo procesasms($_POST['jugada'], 'jugada', $dbsqlite, $usuario);
 	$dbsqlite->close();
 	unset($dbsqlite);
 }
@@ -51,14 +51,38 @@ elseif(isset($_POST['ult']) && preg_match("/^[0-9]+?$/", $_POST['ult'])){
 	
 	for($i = 0; $i < $vueltas; ++$i){
 		
-		$result = $dbsqlite->query("SELECT n, usuario, mensaje FROM mensajes WHERE n > {$n};");
-		$resultado = $result->fetchArray(SQLITE3_ASSOC);
-		if($resultado){
-			$resultados = Array();
-			$resultados[] = $resultado;
-			while($resultado = $result->fetchArray(SQLITE3_ASSOC)){
-				$resultados[] = $resultado;
+		$result = $dbsqlite->query("SELECT n, usuario, mensaje, privacidad FROM mensajes WHERE n > {$n};");
+		$resultados = Array();
+		while($resultado = $result->fetchArray(SQLITE3_ASSOC)){
+			//print_r($resultado);
+			$privacidad = $resultado['privacidad'];
+			if($privacidad == ''){
+				$resultados[] = array(
+					'n'=>$resultado['n'],
+					'usuario'=>$resultado['usuario'],
+					'mensaje'=>$resultado['mensaje']
+				);
 			}
+			else{
+				$privacidad = json_decode($privacidad, true);
+				if(
+					(isset($privacidad['permitir']) && in_array($usuario['ID'], $privacidad['permitir'])) ||
+					(isset($privacidad['denegar']) && !in_array($usuario['ID'], $privacidad['denegar']))
+				){
+					$resultados[] = array(
+						'n'=>$resultado['n'],
+						'usuario'=>$resultado['usuario'],
+						'mensaje'=>$resultado['mensaje']
+					);
+				}
+				else{
+					$n = $resultado['n'];
+				}
+			}
+			
+		}
+		
+		if(count($resultados) > 0){
 			echo json_encode($resultados);
 			
 			$dbsqlite->close();
@@ -66,6 +90,7 @@ elseif(isset($_POST['ult']) && preg_match("/^[0-9]+?$/", $_POST['ult'])){
 			
 			exit;
 		}
+		
 		
 		// 0.2 segundos
 		usleep(200000);

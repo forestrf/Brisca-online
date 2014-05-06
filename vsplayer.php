@@ -129,7 +129,7 @@ function id_desde_hueco_sala($i){
 <html>
 	<head>
 		<meta http-equiv="Content-Type" content="text/html; charset=UTF-8"/>
-		<title>Jugar contra la máquina</title>
+		<title>Jugar contra otro(s) jugadores</title>
 		<link type="text/css" rel="stylesheet" href="css/reset.css">
 		<link type="text/css" rel="stylesheet" href="css/mesajuego.css">
 		<link type="text/css" rel="stylesheet" href="css/chat.css">
@@ -273,7 +273,7 @@ function id_desde_hueco_sala($i){
 		
 		
 		
-				instanciaCartas();
+				instanciaCartas(true);
 				
 			}
 			
@@ -447,6 +447,7 @@ function id_desde_hueco_sala($i){
 				loopRequest.send(params);
 			};
 			
+			cartasFalsas_i = 0;
 			function procesaMensaje(usuario, json){
 				json = JSON.parse(json);
 				if(typeof json["msg"] !== "undefined"){
@@ -465,8 +466,15 @@ function id_desde_hueco_sala($i){
 						var orden = json["orden"];
 						if(typeof orden['reparte'] !== "undefined"){
 							for(var i in orden['reparte']){
-								console.log('Repartir a '+nick_desde_id[i]+' la carta '+orden['reparte'][i]);
-								IABriscaInstancia.IABriscaMesaInstancia.peticionJugadorRobar(jugadores[jugadores_por_id[i]-1], orden['reparte'][i]);
+								if(orden['reparte'][i] === 'x'){
+									console.log('Repartir a '+nick_desde_id[i]+' carta desconocida');
+									IABriscaInstancia.IABriscaMesaInstancia.peticionJugadorRobar(jugadores[jugadores_por_id[i]-1], 'F'+cartasFalsas_i);
+									++cartasFalsas_i;
+								}
+								else{
+									console.log('Repartir a '+nick_desde_id[i]+' la carta '+orden['reparte'][i]);
+									IABriscaInstancia.IABriscaMesaInstancia.peticionJugadorRobar(jugadores[jugadores_por_id[i]-1], orden['reparte'][i]);
+								}
 							}
 						}
 						else if(typeof orden['palo_manda_siempre'] !== "undefined"){
@@ -504,10 +512,22 @@ function id_desde_hueco_sala($i){
 						}
 						else{
 							for(var i in orden){
-								var jugador = jugadores_por_id[i]-1;
+								console.log("El jugador "+nick_desde_id[i]+" tira la carta "+orden[i]);
+								
+								var jugador = jugadores[jugadores_por_id[i]-1];
+								
+								if(i != miId){
+									var cartaFalsaAzar = Math.max(0,Math.min(Math.floor(Math.random()*jugador.cartasEnMano.length),jugador.cartasEnMano.length-1));
+									cartaFalsaAzar_carta = jugador.cartasEnMano[cartaFalsaAzar];
+									console.log(cartaFalsaAzar_carta);
+									
+									sustituyeCarta(cartaFalsaAzar_carta, orden[i]);
+									
+									jugador.cartasEnMano.splice(cartaFalsaAzar, 1);
+								}
 								
 								IABriscaInstancia.IABriscaMesaInstancia.peticionJugadorLanzarRecibiendoCarta(
-									jugadores[jugador],
+									jugador,
 									orden[i]
 								);
 							}

@@ -5,11 +5,11 @@ function moverCartaA(carta, hasta){
 	var hastaObj = document.getElementById(hasta);
 	
 	for(var i = 0; i < arrPosiciones.length; ++i){
-		if(arrPosiciones[i].innerHTML.indexOf('{{'+carta+'}}') != -1){
-			arrPosiciones[i].innerHTML = arrPosiciones[i].innerHTML.split('{{'+carta+'}}').join('');
+		if(arrPosiciones[i].cartas === carta){
+			arrPosiciones[i].cartas = '';
 		}
 	}
-	hastaObj.innerHTML += '{{'+carta+'}}';
+	hastaObj.cartas = carta;
 	
 	/*if(cartaObj.parentElement.id != 'todas_las_cartas_visible'){
 		moverCartaDeA(carta, 'MM', hasta);
@@ -52,12 +52,47 @@ function moverCartaDeA(carta, desde, hasta){
 	})(carta, hasta), 0);
 }
 
+// Deshabilitar transiciones css, intercambiar cartas y rehabilitar transiciones
+// http://stackoverflow.com/questions/11131875/what-is-the-cleanest-way-to-disable-css-transition-effects-temporarily
+function sustituyeCarta(carta1, carta2){
+	carta1Obj = document.getElementById('carta_'+carta1);
+	carta2Obj = document.getElementById('carta_'+carta2);
+	carta1Obj.className += ' sintransition';
+	carta2Obj.className += ' sintransition';
+	var cssTemp = carta1Obj.style.cssText;
+	carta1Obj.style.cssText = carta2Obj.style.cssText;
+	carta2Obj.style.cssText = cssTemp;
+	carta1Obj.offsetHeight;
+	carta1Obj.className = carta1Obj.className.split(" sintransition").join("");
+	carta2Obj.className = carta2Obj.className.split(" sintransition").join("");
+	
+	//Cambiar también en la mesa para que mueveCartaA
+	var posCarta1 = null;
+	var posCarta2 = null;
+	for(var i = 0; i < arrPosiciones.length; ++i){
+		if(arrPosiciones[i].cartas === carta1){
+			posCarta1 = i;
+		}
+		else if(arrPosiciones[i].cartas === carta2){
+			posCarta2 = i;
+		}
+	}
+	if(posCarta1 !== null){
+		arrPosiciones[posCarta1].cartas = '';
+		arrPosiciones[posCarta1].cartas = carta2;
+	}
+	if(posCarta2 !== null){
+		arrPosiciones[posCarta2].cartas = '';
+		arrPosiciones[posCarta2].cartas = carta1;
+	}
+}
+
 
 
 // Retorna el número, del 1 al 3, donde poner la carta a un jugador
 function huecoLibreJugador(jugadorID){
 	for(var i = 1; i <= 3; ++i){
-		if(document.getElementById('P'+jugadorID+'C'+i).innerHTML === ''){
+		if(document.getElementById('P'+jugadorID+'C'+i).cartas === ''){
 			return i;
 		}
 	}
@@ -66,7 +101,7 @@ function huecoLibreJugador(jugadorID){
 // Retorna el número, del 1 al 4, donde poner la carta en la mesa
 function huecoLibreMesa(){
 	for(var i = 1; i <= 4; ++i){
-		if(document.getElementById('MC'+i).innerHTML === ''){
+		if(document.getElementById('MC'+i).cartas === ''){
 			return i;
 		}
 	}
@@ -156,12 +191,11 @@ function viewport(){
 }
 
 
-function instanciaCartas(){
+function instanciaCartas(falsas){
 	arrPosiciones = document.getElementById('posiciones').children;
 	for(var i=0; i < arrPosiciones.length; ++i){
-		arrPosiciones[i].innerHTML = "";
+		arrPosiciones[i].cartas = '';
 	}
-	
 	
 	
 	
@@ -196,8 +230,12 @@ function instanciaCartas(){
 	for(var i in arrCartas){
 		todas_las_cartas.innerHTML += '<img class="carta" style="position:absolute;width:'+widthCarta+'px;height:'+heightCarta+'px;top:'+(mazo_cartas.offsetTop -heightCarta2)+'px;left:'+(mazo_cartas.offsetLeft -widthCarta2)+'px;" id="carta_'+arrCartas[i]+'" src="img/cartas/back2.jpg">';
 	}
+	if(typeof falsas !== 'undefined' && falsas === true){
+		for(var i=0; i<arrCartas.length; ++i){
+			todas_las_cartas.innerHTML += '<img class="carta" style="position:absolute;width:'+widthCarta+'px;height:'+heightCarta+'px;top:'+(mazo_cartas.offsetTop -heightCarta2)+'px;left:'+(mazo_cartas.offsetLeft -widthCarta2)+'px;" id="carta_F'+i+'" src="img/cartas/back2.jpg">';
+		}
+	}
 }
-
 
 
 function fin_mensaje(resultado, misPuntos){
