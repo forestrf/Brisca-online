@@ -18,7 +18,7 @@ function moverCartaA(carta, hasta){
 	
 	cartaObj.style.top = (hastaObj.offsetTop -heightCarta2 +((Math.random()*2) -1) *maximoAzarDesfaseWidth) +"px";
 	cartaObj.style.left = (hastaObj.offsetLeft -widthCarta2 +((Math.random()*2) -1) *maximoAzarDesfaseHeight) +"px";
-	if(hasta.indexOf("P2") != -1 || hasta.indexOf("P4") != -1){
+	if(hasta.indexOf("P2") !== -1 || hasta.indexOf("P4") !== -1){
 		cartaObj.style.webkitTransform =
 		cartaObj.style.mozTransform =
 		cartaObj.style.msTransform =
@@ -108,18 +108,18 @@ function huecoLibreMesa(){
 }
 
 function moverCarta(carta, donde){
-	if(donde.indexOf("P1")!=-1 || donde.indexOf("MC")!=-1 || donde.indexOf("C0")!=-1){
+	if(donde.indexOf("P1")!==-1 || donde.indexOf("MC")!==-1 || donde.indexOf("C0")!==-1){
 		document.getElementById('carta_'+carta).src = "/img/cartas/"+carta+".jpg";
 	}
 	else{
 		document.getElementById('carta_'+carta).src = "/img/cartas/back2.jpg";
 	}
-	if(donde.indexOf("P")!=-1 || donde.indexOf("MC")!=-1 || donde.indexOf("C0")!=-1){
-		if(donde.indexOf("MC")!=-1 && donde.indexOf("0",2)==-1){
+	if(donde.indexOf("P")!==-1 || donde.indexOf("MC")!==-1 || donde.indexOf("C0")!==-1){
+		if(donde.indexOf("MC")!==-1 && donde.indexOf("0",2)===-1){
 			var huecoLibre = huecoLibreMesa();
 			moverCartaA(carta, donde+huecoLibre);
 		}
-		else if(donde.indexOf("P")!=-1 && donde.indexOf("0",2)==-1){
+		else if(donde.indexOf("P")!==-1 && donde.indexOf("0",2)===-1){
 			var huecoLibre = huecoLibreJugador(donde.substr(1, donde.length -1));
 			moverCartaA(carta, donde+'C'+huecoLibre);
 		}
