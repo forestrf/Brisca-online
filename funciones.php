@@ -219,6 +219,14 @@ class DB {
 		}
 	}
 	
+	function salaMarcarIniciada($sala){
+		$ID = mysql_escape_mimic($ID);
+		$sala = mysql_escape_mimic($sala);
+		$p234 = mysql_escape_mimic($p234);
+		
+		$this->consulta("UPDATE salas SET iniciada = 1 WHERE ID={$sala}");
+	}
+	
 	// Un usuario se mete en la db en dos lugares cuando se entra en una sala. Una, en salas, la otra, en usuarios (en una columna indicando la sala actual)
 	// Esta función debe llamarse en caso de poder meterse el usuario y conociendo el hueco de la sala donde meterlo, la sala y la id del usuario
 	function salaInfo($sala){

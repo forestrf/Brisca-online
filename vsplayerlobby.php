@@ -23,9 +23,6 @@
 					</div><label class="boton_en_listado pointer" for="filtro_parejas">
 						<input type="checkbox" id="filtro_parejas">
 						Por parejas
-					</label><label class="boton_en_listado pointer" for="filtro_llenas">
-						<input type="checkbox" id="filtro_llenas">
-						Mostrar salas llenas
 					</label>
 				</div><div class="boton_en_listado pointer" id="boton_refrescar" style="float:right">
 					Actualizar listado de salas
@@ -48,9 +45,6 @@
 							<th>
 								Parejas
 							</th>
-							<th>
-								Llena
-							</th>
 						</tr>
 					</thead>
 					<tbody id="salas_listado_tbody"></tbody>
@@ -59,13 +53,13 @@
 		</div>
 		<script>
 			var filtro_jugadores = document.getElementById("filtro_jugadores");
-			var filtro_llenas = document.getElementById("filtro_llenas");
+			//var filtro_llenas = document.getElementById("filtro_llenas");
 			var filtro_parejas = document.getElementById("filtro_parejas");
 			var boton_refrescar = document.getElementById("boton_refrescar");
 			var auto_update = document.getElementById("auto_update");
 			
 			filtro_jugadores.onchange = refrescar;
-			filtro_llenas.onchange = refrescar;
+			//filtro_llenas.onchange = refrescar;
 			filtro_parejas.onchange = refrescar;
 			boton_refrescar.onclick = refrescar;
 			
@@ -103,7 +97,7 @@
 			function refrescar(){
 				var ajax = new XMLHttpRequest();
 				var url = "vsplayerlobbyconsultas.php";
-				var params = "accion=consultar&players=" + filtro_jugadores.value + "&llenas=" + filtro_llenas.checked + "&parejas=" + filtro_parejas.checked;
+				var params = "accion=consultar&players=" + filtro_jugadores.value + /*"&llenas=" + filtro_llenas.checked + */"&parejas=" + filtro_parejas.checked;
 				ajax.open("POST", url, true);
 				ajax.setRequestHeader("Content-type", "application/x-www-form-urlencoded");
 				ajax.onreadystatechange = function(){
@@ -131,18 +125,18 @@
 					var creador = document.createElement("td");
 					var jugadores = document.createElement("td");
 					var parejas = document.createElement("td");
-					var llena = document.createElement("td");
+					//var llena = document.createElement("td");
 					
 					row.appendChild(nombre);
 					row.appendChild(creador);
 					row.appendChild(jugadores);
 					row.appendChild(parejas);
-					row.appendChild(llena);
+					//row.appendChild(llena);
 					
 					creador.innerHTML = json[i].nick;
 					jugadores.innerHTML = json[i].p_total+"/"+json[i].jugadores_max;
 					nombre.innerHTML = json[i].nombre;
-					llena.innerHTML = json[i].p_total > json[i].jugadores_max ? 'Sí':'No';
+					//llena.innerHTML = json[i].p_total >= json[i].jugadores_max ? 'Sí':'No';
 					parejas.innerHTML = json[i].parejas === "1" ? 'Sí':'No';
 					
 					salas_listado.appendChild(row);
@@ -157,16 +151,3 @@
 		</script>
 	</body>
 </html>
-
-
-crear sala
-	cuantos jugadores
-	contraseña
-
-meterse en una sala
-	ver jugadores en la sala
-	en caso de poder meterte
-		meter contraseña si hay una
-
-Una sala se cierra cuando el creador se va o la partida se acaba.
-El creador se irá en un momento u otro
