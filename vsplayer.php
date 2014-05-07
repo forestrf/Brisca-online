@@ -103,6 +103,7 @@ if($hueco_sala === ''){
 						$n = ClampCircular($i, 1, $tot);
 						repartir_carta($dbsqlite, id_desde_hueco_sala($n), $carta);
 					}
+					// En caso de ser por parejas, decidir aquí las parejas. POOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOR HAAAAAAAAAAAAAAAAAAAAAACEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEER
 					$dbsqlite->query("INSERT INTO usuarios (ID, lanza, hueco_sala) VALUES (".id_desde_hueco_sala($n).", 0, ".$n.");");
 				}
 				

@@ -86,6 +86,7 @@ function procesasms($entrada, $tipo, $dbsqlite, $datos_usuario=null, $privacidad
 			
 			if(count($results) === 0){
 				//Todos los jugadores ya han lanzado. Decidir ganador. Después, comprobar si quedan cartas en el mazo
+				// Decidir ganador dependiendo de si se trata de una partida por parejas. POOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOR HAAAAAAAAAAAAAAAACEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEER
 				$dbsqlite->query("UPDATE usuarios SET lanza = 0, primero = 0;");
 				
 				$result = $dbsqlite->query("SELECT carta, propietario FROM cartas WHERE posicion = 'mesa' AND propietario != '';");
@@ -362,7 +363,7 @@ function meter_usuario(&$dbsqlite, &$usuario, $hueco_sala, &$salaInfo){
 	procesasms('Falta'.($r>1||$r==0?'n':'').' '.$r.' jugador'.($r>1||$r==0?'es':''), 'aviso', $dbsqlite);
 }
 
-// En caso de que la partida esté empezada, bloquear la partida pero permitir chatear. // POOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOR HACEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEER
+// En caso de que la partida esté empezada, bloquear la partida pero permitir chatear.
 function quitar_usuario(&$dbsqlite, &$usuario, &$salaInfo){
 	procesasms($usuario['NICK'].' ha salido de la partida', 'aviso', $dbsqlite);
 	
