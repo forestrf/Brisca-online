@@ -171,11 +171,12 @@ class DB {
 	// Consultar salas en curso dado un filtro (array con indices y valores)
 	function consultarSalasEnCurso(&$filtro){
 		$filtro['players'] = mysql_escape_mimic($filtro['players']);
-		$filtro['llenas'] = mysql_escape_mimic($filtro['llenas']);
+		$filtro['parejas'] = mysql_escape_mimic($filtro['parejas']);
+		//$filtro['llenas'] = mysql_escape_mimic($filtro['llenas']);
 		$players_filtro = $filtro['players']===false?'':' AND jugadores_max = '.$filtro['players'].' ';
-		$llenas_filtro = $filtro['llenas']===true?'':' AND p_total < jugadores_max ';
+		//$llenas_filtro = $filtro['llenas']===true?'':' AND p_total < jugadores_max ';
 		$parejas_filtro = $filtro['parejas']===true?' AND parejas = true ':' AND parejas = false ';
-		return $this->consulta("SELECT salas.ID, salas.nombre, salas.jugadores_max, salas.iniciada, salas.`1`, usuarios.nick, salas.`2`, salas.`3`, salas.`4`, salas.p_total, salas.parejas FROM salas LEFT JOIN usuarios ON salas.`1` = usuarios.ID WHERE iniciada = 0 ".$players_filtro.$llenas_filtro.$parejas_filtro);
+		return $this->consulta("SELECT salas.ID, salas.nombre, salas.jugadores_max, salas.iniciada, salas.`1`, usuarios.nick, salas.`2`, salas.`3`, salas.`4`, salas.p_total, salas.parejas FROM salas LEFT JOIN usuarios ON salas.`1` = usuarios.ID WHERE iniciada = 0 ".$players_filtro.$parejas_filtro);
 	}
 	
 	// Crear una sala. La consulta que lo mete en la db

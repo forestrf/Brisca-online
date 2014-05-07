@@ -19,14 +19,14 @@ if(isset($_POST['accion'])){
 		case 'consultar':
 			if(
 				!isset($_POST['players']) ||
-				!isset($_POST['llenas']) ||
+				//!isset($_POST['llenas']) ||
 				!isset($_POST['parejas'])
 			){
 				exit;
 			}
 			$posibles=array(
 				'players' => array('0','2','3','4'),
-				'llenas' => array('true','false','1','0'),
+				//'llenas' => array('true','false','1','0'),
 				'parejas' => array('true','false','1','0'),
 			);
 			$filtro = array();
