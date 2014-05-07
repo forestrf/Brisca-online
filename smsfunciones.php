@@ -18,8 +18,11 @@ function abredbsqlitesala($sala){
 		$db->exec('CREATE TABLE usuarios (ID INTEGER PRIMARY KEY, primero INTEGER, lanza INTEGER, hueco_sala INTEGER, grupo INTEGER);');
 		$db->exec('CREATE TABLE cartas (carta STRING, posicion STRING, propietario STRING, palo_manda_siempre INTEGER, palo_manda_mesa INTEGER);');
 		// Por defecto, 0. 1 en caso de ser en parejas
-		$db->exec('CREATE TABLE parejas (sino INTEGER);');
-		$result = $db->exec('PRAGMA journal_mode=WAL;');
+		$db->exec('CREATE TABLE estados (clave STRING, valor STRING);');
+		$db->exec('PRAGMA journal_mode=WAL;');
+		
+		$db->query("INSERT INTO estados (clave, valor) VALUES ('iniciado', '0');");
+		$db->query("INSERT INTO estados (clave, valor) VALUES ('detenido', '0');");
 	}
 	else{
 		$db = new SQLite3($archivo);
@@ -35,6 +38,13 @@ function abredbsqlitesala($sala){
 function procesasms($entrada, $tipo, $dbsqlite, $datos_usuario=null, $privacidad=null){
 	switch($tipo){
 		case 'jugada':
+			// Comprobar si la partida está detenida
+			$res = $dbsqlite->query("SELECT valor FROM estados WHERE clave = 'detenido';");
+			$res = array_from_sqliteResponse($res);
+			if($res[0]['valor'] == '0'){
+				return '{"resultado":false}';
+			}
+		
 			// Comprobar si una jugada es válida. Si lo es, agregarla. Si es el último en tirar, decidir ganador e insertar en chat la jugada de llevarse alguien las cartas
 			// Después, insertar las jugadas de respartir de cartas
 			// escribir
@@ -355,11 +365,22 @@ function meter_usuario(&$dbsqlite, &$usuario, $hueco_sala, &$salaInfo){
 // En caso de que la partida esté empezada, bloquear la partida pero permitir chatear. // POOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOR HACEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEER
 function quitar_usuario(&$dbsqlite, &$usuario, &$salaInfo){
 	procesasms($usuario['NICK'].' ha salido de la partida', 'aviso', $dbsqlite);
-	procesasms(array('p'=>'-1','ID'=>$usuario['ID']), 'config', $dbsqlite);
 	
-	$r = $salaInfo['jugadores_max'] - $salaInfo['p_total'];
-	//Todavía faltan jugadores
-	procesasms('Falta'.($r>1||$r==0?'n':'').' '.$r.' jugador'.($r>1||$r==0?'es':''), 'aviso', $dbsqlite);
+	//Comprobar si la partida está iniciada. De estarlo, bloquear la partida
+	$res = $dbsqlite->query("SELECT valor FROM estados WHERE clave = 'iniciado';");
+	$res = $res->fetchArray(SQLITE3_ASSOC);
+	if($res['valor'] != '1'){
+		procesasms(array('p'=>'-1','ID'=>$usuario['ID']), 'config', $dbsqlite);
+	
+		$r = $salaInfo['jugadores_max'] - $salaInfo['p_total'];
+		//Todavía faltan jugadores
+		procesasms('Falta'.($r>1||$r==0?'n':'').' '.$r.' jugador'.($r>1||$r==0?'es':''), 'aviso', $dbsqlite);
+	}
+	else{
+		procesasms('detener', 'orden', $dbsqlite);
+		$dbsqlite->query("UPDATE estados SET valor = '1' WHERE clave = 'detenido';");
+		procesasms('La partida ha sido bloqueada ya que se encuentra iniciada y uno de los jugadores se ha ido.', 'aviso', $dbsqlite);
+	}
 }
 
 function guardar_victoria(&$database, $ID){

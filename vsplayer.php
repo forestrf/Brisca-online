@@ -107,6 +107,8 @@ if($hueco_sala === ''){
 				}
 				
 				$database->salaMarcarIniciada($sala);
+				$dbsqlite->query("UPDATE estados SET valor = '1' WHERE clave = 'iniciado';");
+				$dbsqlite->query("INSERT INTO estados (clave, valor) VALUES ('parejas', '{$salaInfo['parejas']}');");
 				
 				usuario_lanza($dbsqlite, id_desde_hueco_sala($comienza), true);
 			}
@@ -465,6 +467,10 @@ function id_desde_hueco_sala($i){
 					if(json["orden"] === 'START'){
 						console.log('gogogo');
 						iniciarPartidaBrisca_VSHUMAN();
+					}
+					else if(json["orden"] === 'detener'){
+						console.log('detener partida');
+						borrarPideCartaHumano();
 					}
 					else{
 						var orden = json["orden"];

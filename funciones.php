@@ -221,9 +221,7 @@ class DB {
 	}
 	
 	function salaMarcarIniciada($sala){
-		$ID = mysql_escape_mimic($ID);
 		$sala = mysql_escape_mimic($sala);
-		$p234 = mysql_escape_mimic($p234);
 		
 		$this->consulta("UPDATE salas SET iniciada = 1 WHERE ID={$sala}");
 	}
