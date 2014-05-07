@@ -152,6 +152,7 @@ function id_desde_hueco_sala($i){
 					<div class="globo">
 						Te has unido a la sala "<?php echo html_entity_decode($salaInfo['nombre']);?>"
 					</div>
+					<div class="clear"></div>
 				</div>
 				<input type="text" name="entradatxt" id="entradatxt" placeholder="Escribe un mensaje"><input type="button" value="enviar" id="enviar">
 			</div>

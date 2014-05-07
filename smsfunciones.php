@@ -41,7 +41,7 @@ function procesasms($entrada, $tipo, $dbsqlite, $datos_usuario=null, $privacidad
 			// Comprobar si la partida está detenida
 			$res = $dbsqlite->query("SELECT valor FROM estados WHERE clave = 'detenido';");
 			$res = array_from_sqliteResponse($res);
-			if($res[0]['valor'] == '0'){
+			if($res[0]['valor'] == '1'){
 				return '{"resultado":false}';
 			}
 		
