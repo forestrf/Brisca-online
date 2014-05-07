@@ -447,6 +447,8 @@ function id_desde_hueco_sala($i){
 				loopRequest.send(params);
 			};
 			
+			recuentoCartas = IABriscaInstancia.IABriscaBaseInstancia.cartasTotalArray.length;
+			
 			cartasFalsas_i = 0;
 			function procesaMensaje(usuario, json){
 				json = JSON.parse(json);
@@ -474,6 +476,24 @@ function id_desde_hueco_sala($i){
 								else{
 									console.log('Repartir a '+nick_desde_id[i]+' la carta '+orden['reparte'][i]);
 									IABriscaInstancia.IABriscaMesaInstancia.peticionJugadorRobar(jugadores[jugadores_por_id[i]-1], orden['reparte'][i]);
+								}
+								--recuentoCartas;
+								if(recuentoCartas===0){
+									// Se han repartido todas las cartas. Eliminar cartas F que no estén en uso
+									for(var j = 0; j < IABriscaInstancia.IABriscaBaseInstancia.cartasTotalArray.length; ++j){
+										cartaF = document.getElementById('carta_F'+j);
+										var cartaEnPersona = false;
+										for(var k in jugadores){
+											if(ArrayIndexOf(jugadores[k].cartasEnMano, cartaF)){
+												cartaEnPersona = true;
+												break;
+											}
+										}
+										if(!cartaEnPersona){
+											// La carta no está en ningún usuario, borrar
+											destroy carta
+										}
+									}
 								}
 							}
 						}
