@@ -194,14 +194,19 @@ function procesasms($entrada, $tipo, $dbsqlite, $datos_usuario=null, $privacidad
 						
 						for($i=$p_ganador; $i<$i_t +$p_ganador; ++$i){
 							if(count($cartas_mazo) > 0){
+								// Pausar un segundo por cada carta que se reparte. Un segundo después de que el ganador se lleva las cartas se reparte la primera carta
+								sleep(1);
 								$carta = extraer_carta_azar($cartas_mazo);
+								repartir_carta($dbsqlite, $usuarios[ClampCircular($i,0,$i_t-1)]['ID'], $carta);
 							}
 							else{
+								// Pausar un segundo por cada carta que se reparte. Un segundo después de que el ganador se lleva las cartas se reparte la primera carta
+								sleep(1);
 								$carta = $carta_manda_siempre;
+								repartir_carta($dbsqlite, $usuarios[ClampCircular($i,0,$i_t-1)]['ID'], $carta, false);
 							}
-							// Pausar un segundo por cada carta que se reparte. Un segundo después de que el ganador se lleva las cartas se reparte la primera carta
-							sleep(1);
-							repartir_carta($dbsqlite, $usuarios[ClampCircular($i,0,$i_t-1)]['ID'], $carta);
+							
+							
 						}
 						
 					}/*
@@ -304,10 +309,15 @@ function array_from_sqliteResponse(&$result){
 	return $results;
 }
 
-function repartir_carta(&$dbsqlite, $ID, $carta){
+function repartir_carta(&$dbsqlite, $ID, $carta, $privatizar = true){
 	$dbsqlite->query("UPDATE cartas SET posicion = '{$ID}', propietario = '{$ID}' WHERE carta = '{$carta}';");
-	procesasms(array('reparte'=>array($ID=>$carta)), 'orden', $dbsqlite, null, array('permitir'=>array($ID)));
-	procesasms(array('reparte'=>array($ID=>'x')), 'orden', $dbsqlite, null, array('denegar'=>array($ID)));
+	if($privatizar){
+		procesasms(array('reparte'=>array($ID=>$carta)), 'orden', $dbsqlite, null, array('permitir'=>array($ID)));
+		procesasms(array('reparte'=>array($ID=>'x')), 'orden', $dbsqlite, null, array('denegar'=>array($ID)));
+	}
+	else{
+		procesasms(array('reparte'=>array($ID=>$carta)), 'orden', $dbsqlite, null);
+	}
 }
 
 function ganar_cartas(&$dbsqlite, $ID, $cartas){
