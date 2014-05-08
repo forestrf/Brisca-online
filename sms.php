@@ -37,6 +37,9 @@ elseif(isset($_POST['jugada'])){
 	unset($dbsqlite);
 }
 elseif(isset($_POST['ult']) && preg_match("/^[0-9]+?$/", $_POST['ult'])){
+	// Estas llamadas se puede cortar en cualquier momento
+	ignore_user_abort(false);
+
 	// leer
 	// Se mantendrá la conexión abierta y 
 	
