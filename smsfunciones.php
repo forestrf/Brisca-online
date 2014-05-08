@@ -2,6 +2,10 @@
 
 require_once 'php/IABrisca.class.php';
 
+// Estas llamadas acceden a la db varias veces en una sola consulta y realizan modificaciones. Únicamente en caso de que sms pregunte por ult debe de terminarse el script en caso de que el usuario cierre.
+ignore_user_abort(true);
+
+
 function abredbsqlitesala($sala){
 	$archivo = "chats/$sala.sqlite";
 
@@ -15,7 +19,7 @@ function abredbsqlitesala($sala){
 		// primero estará en 1 o 0. A partir de quien es primero se calcula a quien le toca tirar
 		// lanza estará en 0, 1 o 2. si está en 1, es el único que puede lanzar. Si está en 2 es que ya ha lanzado. Una vez lanzado si hay jugadores entre el y el primero, se moverá el 1 en lanza al siguiente jugador
 		// hueco_sala no es necesaria ya que la info está en la db, pero para no hacer consultas de más a la db, prefiero ponerlo aquí.
-		$db->exec('CREATE TABLE usuarios (ID INTEGER PRIMARY KEY, primero INTEGER, lanza INTEGER, hueco_sala INTEGER, grupo INTEGER);');
+		$db->exec('CREATE TABLE usuarios (ID INTEGER PRIMARY KEY, primero INTEGER, lanza INTEGER, hueco_sala INTEGER, pareja INTEGER);');
 		$db->exec('CREATE TABLE cartas (carta STRING, posicion STRING, propietario STRING, palo_manda_siempre INTEGER, palo_manda_mesa INTEGER);');
 		// Por defecto, 0. 1 en caso de ser en parejas
 		$db->exec('CREATE TABLE estados (clave STRING, valor STRING);');
@@ -34,7 +38,7 @@ function abredbsqlitesala($sala){
 	return $db;
 }
 
-//La ejecución de esta función no debe detenerse en caso de que el usuario corte la conexión. OJOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOO
+//La ejecución de esta función no debe detenerse en caso de que el usuario corte la conexión.
 function procesasms($entrada, $tipo, $dbsqlite, $datos_usuario=null, $privacidad=null){
 	switch($tipo){
 		case 'jugada':
