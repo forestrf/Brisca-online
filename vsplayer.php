@@ -104,7 +104,14 @@ if($hueco_sala === ''){
 						repartir_carta($dbsqlite, id_desde_hueco_sala($n), $carta);
 					}
 					// En caso de ser por parejas, decidir aquí las parejas. POOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOR HAAAAAAAAAAAAAAAAAAAAAACEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEER
-					$dbsqlite->query("INSERT INTO usuarios (ID, lanza, hueco_sala) VALUES (".id_desde_hueco_sala($n).", 0, ".$n.");");
+					// Las parejas serán asignadas 1-3 y 2-4
+					if($salaInfo['parejas'] === '1'){
+						$pareja = $n%2===0?2:1;
+						$dbsqlite->query("INSERT INTO usuarios (ID, lanza, hueco_sala, pareja) VALUES (".id_desde_hueco_sala($n).", 0, ".$n.", {$pareja});");
+					}
+					else{
+						$dbsqlite->query("INSERT INTO usuarios (ID, lanza, hueco_sala) VALUES (".id_desde_hueco_sala($n).", 0, ".$n.");");
+					}
 				}
 				
 				$database->salaMarcarIniciada($sala);
