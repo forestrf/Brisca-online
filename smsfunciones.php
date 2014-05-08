@@ -90,7 +90,7 @@ function procesasms($entrada, $tipo, $dbsqlite, $datos_usuario=null, $privacidad
 			
 			if(count($results) === 0){
 				//Todos los jugadores ya han lanzado. Decidir ganador. Después, comprobar si quedan cartas en el mazo
-				// Decidir ganador dependiendo de si se trata de una partida por parejas. POOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOR HAAAAAAAAAAAAAAAACEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEER
+				// Decidir ganador dependiendo de si se trata de una partida por parejas.
 				$dbsqlite->query("UPDATE usuarios SET lanza = 0, primero = 0;");
 				
 				$result = $dbsqlite->query("SELECT carta, propietario FROM cartas WHERE posicion = 'mesa' AND propietario != '';");
@@ -124,62 +124,111 @@ function procesasms($entrada, $tipo, $dbsqlite, $datos_usuario=null, $privacidad
 				
 				if($results[0]['recuento'] == count(IABrisca::$cartasTotalArray)){
 					// Partida terminada.
-					$usuarios = $dbsqlite->query("SELECT ID FROM usuarios;");
-					$usuarios = array_from_sqliteResponse($usuarios);
 					
+					$usuarios = $dbsqlite->query("SELECT ID, pareja FROM usuarios;");
+					$usuarios_pre = array_from_sqliteResponse($usuarios);
+					$usuarios = array();
+					$parejas_usuarios = array();
+					foreach($usuarios_pre as $user){
+						$usuarios[$user['ID']] = $user['pareja'];
+						$parejas_usuarios[$user['pareja']] = array();
+					}
+						
 					$puntos_jugadores = array();
-					foreach($usuarios as $user){
-						$cartas_arr = $dbsqlite->query("SELECT carta FROM cartas WHERE propietario = {$user['ID']};");
+					foreach($usuarios as $ID=>$pareja){
+						$cartas_arr = $dbsqlite->query("SELECT carta FROM cartas WHERE propietario = {$ID};");
 						$cartas_arr = array_from_sqliteResponse($cartas_arr);
 						$cartas = array();
 						foreach($cartas_arr as $carta){
 							$cartas[] = $carta['carta'];
 						}
-						$puntos = IABrisca::totalPuntosEnCartas($cartas);
-						$puntos_jugadores[$user['ID']] = $puntos;
+						$puntos_jugadores[$ID] = IABrisca::totalPuntosEnCartas($cartas);
+						$parejas_usuarios[$pareja][] = $ID;
 					}
 					
 					$empate = false;
 
-					$ganador_partida_id = 0;
-					$ganador_partida_puntos = 0;
-					foreach($puntos_jugadores as $id=>$puntos){
-						if($puntos > $ganador_partida_puntos){
-							$empate = false;
-							$ganador_partida_id = $id;
-							$ganador_partida_puntos = $puntos;
-						}
-						elseif($puntos == $ganador_partida_puntos){
-							$empate = true;
-						}
-					}
 					
-					$database = new DB();
+					// Averiguar ganador teniendo en cuenta si se juega por parejas. Posibilidad de empate.
+					$parejas = $dbsqlite->query("SELECT valor FROM estados WHERE clave = 'parejas';");
+					$parejas = array_from_sqliteResponse($parejas);
+					var_dump($parejas);
+					$parejas = $parejas[0]['valor'];
+					var_dump($parejas);
+					if($parejas == '1'){
+						// La partida es por parejas
+						foreach($usuarios as $ID=>$pareja){
+							$usuarios[$user['ID']] = $user['pareja'];
+						}
+						$puntos_parejas = array();
+						foreach($puntos_jugadores as $id=>$puntos){
+							$puntos_parejas[$usuarios[$id]] = isset($puntos_parejas[$usuarios[$id]])?$puntos_parejas[$usuarios[$id]]+$puntos:$puntos;
+						}
+						
 					
-					foreach($puntos_jugadores as $id=>$puntos){
-						if($empate){
-							if($puntos != $ganador_partida_puntos){
-								guardar_derrota($database, $id);
+						$ganador_partida_pareja = array('pareja' => 0, 'puntos' => 0);
+						foreach($puntos_parejas as $pareja=>$puntos){
+							if($puntos > $ganador_partida_pareja['puntos']){
+								$empate = false;
+								$ganador_partida_pareja = array('pareja' => $pareja, 'puntos' => $puntos);
+							}
+							elseif($puntos == $ganador_partida_pareja['puntos']){
+								$empate = true;
 							}
 						}
-						else{
-							if($puntos != $ganador_partida_puntos){
-								guardar_derrota($database, $id);
+						
+						$database = new DB();
+						
+						foreach($puntos_parejas as $pareja=>$puntos){
+							if($puntos != $ganador_partida_pareja['puntos']){
+								foreach($parejas_usuarios[$pareja] as $id){
+									guardar_derrota($database, $id);
+								}
 							}
-							else{
-								guardar_victoria($database, $id);
+							elseif(!$empate){
+								foreach($parejas_usuarios[$pareja] as $id){
+									guardar_derrota($database, $id);
+								}
+							}
+							foreach($parejas_usuarios[$pareja] as $id){
+								guardar_puntuacion_max($database, $id, $puntos);
 							}
 						}
-						guardar_puntuacion_max($database, $id, $puntos);
-					}
-					
-					// En caso de empate enviar la id de un ganador inexistente (-1). De lo contrario enviar la id del ganador.
-					if($empate){
-						procesasms(array('termina'=>array('ganador'=>'-1')), 'orden', $dbsqlite);
+						
+						// En caso de empate enviar la id de un ganador inexistente (-1). De lo contrario enviar la id del ganador.
+						procesasms(array('termina'=>array('ganador'=> $empate ? '-1' : $ganador_partida_pareja['pareja'])), 'orden', $dbsqlite);
 					}
 					else{
-						procesasms(array('termina'=>array('ganador'=>$ganador_partida_id)), 'orden', $dbsqlite);
+						// La partida es un all vs all
+						$ganador_partida = array('id' => 0, 'puntos' => 0);
+						foreach($puntos_jugadores as $id=>$puntos){
+							if($puntos > $ganador_partida['puntos']){
+								$empate = false;
+								$ganador_partida = array('id' => $id, 'puntos' => $puntos);
+							}
+							elseif($puntos == $ganador_partida['puntos']){
+								$empate = true;
+							}
+						}
+						
+						$database = new DB();
+						
+						foreach($puntos_jugadores as $id=>$puntos){
+							if($puntos != $ganador_partida['puntos']){
+								guardar_derrota($database, $id);
+							}
+							elseif(!$empate){
+								guardar_victoria($database, $id);
+							}
+							guardar_puntuacion_max($database, $id, $puntos);
+						}
+						
+						// En caso de empate enviar la id de un ganador inexistente (-1). De lo contrario enviar la id del ganador.
+						procesasms(array('termina'=>array('ganador'=> $empate ? '-1' : $ganador_partida['id'])), 'orden', $dbsqlite);
 					}
+					
+					
+					
 				}
 				else{
 					//La partida puede no estar terminada y no quedar cartas en el mazo

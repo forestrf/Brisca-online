@@ -33,7 +33,7 @@ $database = new DB();
 							<td class="b b2">Partidas pertidas</td>
 						</tr>
 						<tr>
-							<td class="b b3 b4">VS Otros jugadores</td>
+							<td class="b b3 b4">VS otros jugadores</td>
 							<td><?php echo $usuario['puntuacion_maxima_online']?></td>
 							<td><?php echo $usuario['victorias_online']?></td>
 							<td><?php echo $usuario['derrotas_online']?></td>

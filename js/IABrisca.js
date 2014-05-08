@@ -1,45 +1,77 @@
 /*
-IABriscaBaseInstancia = new IABriscaBase();
-IABriscaMesaInstancia = new IABriscaMesa();
-
-
-var jugador1 = new IABriscaJugador();
-jugador1.iniciarJugador("a");
-var jugador2 = new IABriscaJugador();
-jugador2.iniciarJugador("b");
-var jugador3 = new IABriscaJugador();
-jugador3.iniciarJugador("c");
-var jugador4 = new IABriscaJugador();
-jugador4.iniciarJugador("d");
-
-IABriscaMesaInstancia.iniciarMesa();
-
-IABriscaMesaInstancia.comienzaPartida([jugador1,jugador2,jugador3,jugador4]);
-
-
-
-
-
-contadorrr = 30;
-
-
-IABriscaMesaInstancia.iniciaRonda();
-IABriscaMesaInstancia.informaEstado();
-IABriscaMesaInstancia.lanzaRonda(again);
-
-
-function again(){
-	if(IABriscaMesaInstancia.faltanRondasPorJugar()){
-		if(contadorrr == 0)
-			awgawawghw();
-		--contadorrr;
-		
-		
-		
-		IABriscaMesaInstancia.iniciaRonda();
-		IABriscaMesaInstancia.informaEstado();
-		IABriscaMesaInstancia.lanzaRonda(again);
+function iniciarPartidaBrisca_VSCPU(cantidadJugadores, azar){
+	if(typeof cantidadJugadores === "undefined" || cantidadJugadores < 2 || cantidadJugadores > 4)
+		return;
+	
+	if(typeof azar === "undefined"){
+		azar = 0;
 	}
+	
+	document.getElementById("contenedor_vscpu").style.display = "none";
+	document.getElementById("contenedor").style.display = "";
+
+	IABriscaInstancia = new IABrisca();
+	
+	IABriscaInstancia.moverCarta = moverCarta;
+	IABriscaInstancia.seteaPuntos = seteaPuntos;
+	IABriscaInstancia.pideCartaHumano = pideCartaHumano;
+	IABriscaInstancia.fin = fin;
+	
+	//IABriscaInstancia.console2.on = true;
+
+
+
+
+	instanciaCartas();
+	
+	IABriscaInstancia.IABriscaMesaInstancia.iniciarMesa();
+	
+	
+	//IABriscaInstancia.IABriscaMesaInstancia.tiempoEntreRondas = 0;
+	//IABriscaInstancia.IABriscaMesaInstancia.tiempoRepartiendoCarta = 0;
+	
+	
+	
+	
+	jugadores = [];
+	
+	for(var j = 1; j <= 4; ++j){
+		document.getElementById("P"+j+"N").style.display = "none";
+	}
+	
+	
+	switch(cantidadJugadores){
+		case 2:
+			j_array = [1,3];
+		break;
+		case 3:
+			j_array = [1,2,3];
+		break;
+		case 4:
+			j_array = [1,2,3,4];
+		break;
+	}
+	
+	jugadores[0] = new IABriscaInstancia.HumanoBriscaJugador();
+	jugadores[0].iniciarJugador(1);
+	seteaPuntos(1, 0);
+	document.getElementById("P1N").style.display = "inherit";
+	
+	for(var i = 1; i < j_array.length; ++i){
+		jugadores[i] = new IABriscaInstancia.IABriscaJugador();
+		jugadores[i].iniciarJugador(j_array[i], azar/100);
+		seteaPuntos(j_array[i], 0);
+		document.getElementById("P"+j_array[i]+"N").style.display = "inherit";
+	}
+	
+	if(cantidadJugadores < 2 || cantidadJugadores > 4){
+		return;
+	}
+	
+	// Inserta jugadores y comienza
+	IABriscaInstancia.IABriscaMesaInstancia.comienzaPartida(jugadores);
+	
+	
 }
 */
 

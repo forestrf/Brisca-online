@@ -103,11 +103,12 @@ if($hueco_sala === ''){
 						$n = ClampCircular($i, 1, $tot);
 						repartir_carta($dbsqlite, id_desde_hueco_sala($n), $carta);
 					}
-					// En caso de ser por parejas, decidir aquí las parejas. POOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOR HAAAAAAAAAAAAAAAAAAAAAACEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEER
+					// En caso de ser por parejas, decidir aquí las parejas.
 					// Las parejas serán asignadas 1-3 y 2-4
 					if($salaInfo['parejas'] === '1'){
 						$pareja = $n%2===0?2:1;
 						$dbsqlite->query("INSERT INTO usuarios (ID, lanza, hueco_sala, pareja) VALUES (".id_desde_hueco_sala($n).", 0, ".$n.", {$pareja});");
+						procesasms(array('pareja'=>array('ID'=>id_desde_hueco_sala($n), 'pareja'=>$pareja)), 'orden', $dbsqlite);
 					}
 					else{
 						$dbsqlite->query("INSERT INTO usuarios (ID, lanza, hueco_sala) VALUES (".id_desde_hueco_sala($n).", 0, ".$n.");");
@@ -229,26 +230,28 @@ function id_desde_hueco_sala($i){
 			var miId = <?php echo $usuario['ID']?>;
 			var miNombre = '<?php echo $usuario['NICK']?>';
 			
+			var parejas = [];
+			
 			var cantidadJugadores = <?php echo $salaInfo['jugadores_max']?>;
 			
 			// "ID":"hueco_sala"
-			var jugadores_por_id = {<?php
-				echo '"'.$salaInfo[1].'":asigna_hueco_correcto(1)';
-				for($i=2; $i<=$salaInfo['jugadores_max']; ++$i){
+			var jugadores_por_id = {<?php $t='';
+				for($i=1; $i<=$salaInfo['jugadores_max']; ++$i){
 					if($salaInfo[$i] != -1){
-						echo ',"'.$salaInfo[$i].'":asigna_hueco_correcto('.$i.')';
+						$t.=',"'.$salaInfo[$i].'":asigna_hueco_correcto('.$i.')';
 					}
 				}
+				echo substr($t, 1);
 			?>};
 			
 			// "ID":"NICK"
-			var nick_desde_id = {<?php
-				echo '"'.$salaInfo[1].'":"'.$database->nickDesdeId($salaInfo[1]).'"';
-				for($i=2; $i<=$salaInfo['jugadores_max']; ++$i){
+			var nick_desde_id = {<?php $t='';
+				for($i=1; $i<=$salaInfo['jugadores_max']; ++$i){
 					if($salaInfo[$i] != -1){
-						echo ',"'.$salaInfo[$i].'":"'.$database->nickDesdeId($salaInfo[$i]).'"';
+						$t.=',"'.$salaInfo[$i].'":"'.$database->nickDesdeId($salaInfo[$i]).'"';
 					}
 				}
+				echo substr($t, 1);
 			?>};
 			
 			function asigna_hueco_correcto(i){
@@ -267,9 +270,6 @@ function id_desde_hueco_sala($i){
 		
 			// Iniciar el script de la brisca
 			function iniciarPartidaBrisca_VSHUMAN(){
-				
-				
-				
 				document.getElementById("mensaje_esperando").style.display = "none";
 			
 				IABriscaInstancia = new IABrisca();
@@ -281,13 +281,10 @@ function id_desde_hueco_sala($i){
 				};
 				IABriscaInstancia.pideCartaHumano = pideCartaHumano;
 				
-				IABriscaInstancia.console2.on = true;
-			
-		
-		
-		
-				instanciaCartas(true);
+				//IABriscaInstancia.console2.on = true;
 				
+				
+				instanciaCartas(true);
 			}
 			
 			
@@ -301,58 +298,30 @@ function id_desde_hueco_sala($i){
 				//IABriscaInstancia.IABriscaMesaInstancia.tiempoRepartiendoCarta = 0;
 				
 				jugadores = [];
+				var j_array = [];
+				
+				for(var j = 1; j <= 4; ++j){
+					document.getElementById("P"+j+"N").style.display = "none";
+				}
 				
 				switch(cantidadJugadores){
 					case 2:
-						jugadores[0] = new IABriscaInstancia.HumanoBriscaJugador();
-						jugadores[0].iniciarJugador(1);
-						jugadores[1] = new IABriscaInstancia.CallbackBriscaJugador();
-						jugadores[1].iniciarJugador(3);
-						seteaPuntos(1, 0, nick_desde_id[id_desde_hueco(1)]);
-						seteaPuntos(3, 0, nick_desde_id[id_desde_hueco(2)]);
-						document.getElementById("P1N").style.display = "inherit";
-						document.getElementById("P2N").style.display = "none";
-						document.getElementById("P3N").style.display = "inherit";
-						document.getElementById("P4N").style.display = "none";
+						j_array = [1,3];
 					break;
 					case 3:
-						jugadores[0] = new IABriscaInstancia.HumanoBriscaJugador();
-						jugadores[0].iniciarJugador(1);
-						jugadores[1] = new IABriscaInstancia.CallbackBriscaJugador();
-						jugadores[1].iniciarJugador(2);
-						jugadores[2] = new IABriscaInstancia.CallbackBriscaJugador();
-						jugadores[2].iniciarJugador(3);
-						seteaPuntos(1, 0, nick_desde_id[id_desde_hueco(1)]);
-						seteaPuntos(2, 0, nick_desde_id[id_desde_hueco(2)]);
-						seteaPuntos(3, 0, nick_desde_id[id_desde_hueco(3)]);
-						document.getElementById("P1N").style.display = "inherit";
-						document.getElementById("P2N").style.display = "inherit";
-						document.getElementById("P3N").style.display = "inherit";
-						document.getElementById("P4N").style.display = "none";
+						j_array = [1,2,3];
 					break;
 					case 4:
-						jugadores[0] = new IABriscaInstancia.HumanoBriscaJugador();
-						jugadores[0].iniciarJugador(1);
-						jugadores[1] = new IABriscaInstancia.CallbackBriscaJugador();
-						jugadores[1].iniciarJugador(2);
-						jugadores[2] = new IABriscaInstancia.CallbackBriscaJugador();
-						jugadores[2].iniciarJugador(3);
-						jugadores[3] = new IABriscaInstancia.CallbackBriscaJugador();
-						jugadores[3].iniciarJugador(4);
-						seteaPuntos(1, 0, nick_desde_id[id_desde_hueco(1)]);
-						seteaPuntos(2, 0, nick_desde_id[id_desde_hueco(2)]);
-						seteaPuntos(3, 0, nick_desde_id[id_desde_hueco(3)]);
-						seteaPuntos(4, 0, nick_desde_id[id_desde_hueco(4)]);
-						document.getElementById("P1N").style.display = "inherit";
-						document.getElementById("P2N").style.display = "inherit";
-						document.getElementById("P3N").style.display = "inherit";
-						document.getElementById("P4N").style.display = "inherit";
-					break;
-					default:
-						return;
+						j_array = [1,2,3,4];
 					break;
 				}
 				
+				for(var i = 0; i < j_array.length; ++i){
+					jugadores[i] = new IABriscaInstancia.HumanoBriscaJugador();
+					jugadores[i].iniciarJugador(j_array[i]);
+					seteaPuntos(j_array[i], 0, nick_desde_id[id_desde_hueco(j_array[i])]);
+					document.getElementById("P"+j_array[i]+"N").style.display = "inherit";
+				}
 				
 				
 				// Inserta jugadores y comienza
@@ -473,126 +442,148 @@ function id_desde_hueco_sala($i){
 				}
 				else if(typeof json["orden"] !== "undefined"){
 					//console.log(json["orden"]);
-					if(json["orden"] === 'START'){
-						console.log('gogogo');
-						iniciarPartidaBrisca_VSHUMAN();
-					}
-					else if(json["orden"] === 'detener'){
-						console.log('detener partida');
-						borrarPideCartaHumano();
-					}
-					else{
-						var orden = json["orden"];
-						if(typeof orden['reparte'] !== "undefined"){
-							for(var i in orden['reparte']){
-								if(orden['reparte'][i] === 'x'){
-									console.log('Repartir a '+nick_desde_id[i]+' carta desconocida');
-									IABriscaInstancia.IABriscaMesaInstancia.peticionJugadorRobar(jugadores[jugadores_por_id[i]-1], 'F'+cartasFalsas_i);
-									++cartasFalsas_i;
+					switch(json["orden"]){
+						case 'START':
+							console.log('gogogo');
+							iniciarPartidaBrisca_VSHUMAN();
+						break;
+						case 'detener':
+							console.log('detener partida');
+							borrarPideCartaHumano();
+						break;
+						default:
+							var orden = json["orden"];
+							if(typeof orden['reparte'] !== "undefined"){
+								for(var i in orden['reparte']){
+									if(orden['reparte'][i] === 'x'){
+										console.log('Repartir a '+nick_desde_id[i]+' carta desconocida');
+										IABriscaInstancia.IABriscaMesaInstancia.peticionJugadorRobar(jugadores[jugadores_por_id[i]-1], 'F'+cartasFalsas_i);
+										++cartasFalsas_i;
+									}
+									else{
+										console.log('Repartir a '+nick_desde_id[i]+' la carta '+orden['reparte'][i]);
+										IABriscaInstancia.IABriscaMesaInstancia.peticionJugadorRobar(jugadores[jugadores_por_id[i]-1], orden['reparte'][i]);
+									}
+									--recuentoCartas;
+									if(recuentoCartas===0){
+										// Se han repartido todas las cartas. Eliminar cartas F que no estén en uso
+										for(var j = 0; j < IABriscaInstancia.IABriscaBaseInstancia.cartasTotalArray.length; ++j){
+											var carta = 'F'+j;
+											var cartaF = document.getElementById('carta_'+carta);
+											var cartaEnPersona = false;
+											for(var k in jugadores){
+												if(ArrayIndexOf(jugadores[k].cartasEnMano, carta) !== -1){
+													cartaEnPersona = true;
+													break;
+												}
+											}
+											if(!cartaEnPersona){
+												// La carta no está en ningún usuario, borrar
+												cartaF.remove();
+											}
+										}
+										for(var j in IABriscaInstancia.IABriscaBaseInstancia.cartasTotalArray){
+											var carta = IABriscaInstancia.IABriscaBaseInstancia.cartasTotalArray[j];
+											var cartaF = document.getElementById('carta_'+carta);
+											var cartaEnPersona = false;
+											for(var k in jugadores){
+												if(ArrayIndexOf(jugadores[k].cartasEnMano, carta) !== -1){
+													cartaEnPersona = true;
+													break;
+												}
+											}
+											
+											if(!cartaEnPersona){
+												// La carta no está en ningún usuario, borrar
+												cartaF.style.top = "-100%";
+												cartaF.className += ' sintransition';
+												cartaF.offsetHeight;
+												cartaF.className = carta1Obj.className.split(" sintransition").join("");
+											}
+										}
+									}
+								}
+							}
+							else if(typeof orden['palo_manda_siempre'] !== "undefined"){
+								console.log('Palo manda siempre = '+orden['palo_manda_siempre']);
+								iniciarPartidaBrisca_VSHUMAN_2(orden['palo_manda_siempre']);
+							}
+							else if(typeof orden['lanza'] !== "undefined"){
+								console.log('Petición de lanzar carta al jugador '+nick_desde_id[orden['lanza']]);
+								if(miId == orden['lanza']){
+									jugadores[jugadores_por_id[orden['lanza']]-1].lanzaCarta(jugadorLanzaCarta);
 								}
 								else{
-									console.log('Repartir a '+nick_desde_id[i]+' la carta '+orden['reparte'][i]);
-									IABriscaInstancia.IABriscaMesaInstancia.peticionJugadorRobar(jugadores[jugadores_por_id[i]-1], orden['reparte'][i]);
+									borrarPideCartaHumano();
 								}
-								--recuentoCartas;
-								if(recuentoCartas===0){
-									// Se han repartido todas las cartas. Eliminar cartas F que no estén en uso
-									for(var j = 0; j < IABriscaInstancia.IABriscaBaseInstancia.cartasTotalArray.length; ++j){
-										var carta = 'F'+j;
-										var cartaF = document.getElementById('carta_'+carta);
-										var cartaEnPersona = false;
-										for(var k in jugadores){
-											if(ArrayIndexOf(jugadores[k].cartasEnMano, carta) !== -1){
-												cartaEnPersona = true;
-												break;
-											}
-										}
-										if(!cartaEnPersona){
-											// La carta no está en ningún usuario, borrar
-											cartaF.remove();
-										}
-									}
-									for(var j in IABriscaInstancia.IABriscaBaseInstancia.cartasTotalArray){
-										var carta = IABriscaInstancia.IABriscaBaseInstancia.cartasTotalArray[j];
-										var cartaF = document.getElementById('carta_'+carta);
-										var cartaEnPersona = false;
-										for(var k in jugadores){
-											if(ArrayIndexOf(jugadores[k].cartasEnMano, carta) !== -1){
-												cartaEnPersona = true;
-												break;
-											}
-										}
-										
-										if(!cartaEnPersona){
-											// La carta no está en ningún usuario, borrar
-											cartaF.style.top = "-100%";
-											cartaF.className += ' sintransition';
-											cartaF.offsetHeight;
-											cartaF.className = carta1Obj.className.split(" sintransition").join("");
-										}
+							}
+							else if(typeof orden['gana'] !== "undefined"){
+								for(var id_ganador in orden['gana']){
+									console.log('Petición de ganar cartas al jugador '+nick_desde_id[id_ganador]);
+									var cartasMesaTemp = IABriscaInstancia.IABriscaMesaInstancia.cartasEnMesa.slice(0);
+									IABriscaInstancia.IABriscaMesaInstancia.peticionJugadorGanarMesa(jugadores[jugadores_por_id[id_ganador]-1]);
+									borrarPideCartaHumano();
+									if(typeof parejas["p"+miId] != "undefined"){
+										console.log('Victoria de pareja');
+										var jug = jugadores[ClampCircular(jugadores_por_id[id_ganador] +2, 1, 4)-1];
+										jug.ganaMesa(cartasMesaTemp);
+										IABriscaInstancia.seteaPuntos(jug.jugadorID, IABriscaInstancia.IABriscaBaseInstancia.totalPuntosEnCartas(jug.cartasGanadas));
 									}
 								}
 							}
-						}
-						else if(typeof orden['palo_manda_siempre'] !== "undefined"){
-							console.log('Palo manda siempre = '+orden['palo_manda_siempre']);
-							iniciarPartidaBrisca_VSHUMAN_2(orden['palo_manda_siempre']);
-						}
-						else if(typeof orden['lanza'] !== "undefined"){
-							console.log('Petición de lanzar carta al jugador '+nick_desde_id[orden['lanza']]);
-							if(miId == orden['lanza']){
-								jugadores[jugadores_por_id[orden['lanza']]-1].lanzaCarta(jugadorLanzaCarta);
+							else if(typeof orden['termina'] !== "undefined"){
+								var ganador = orden['termina']['ganador'];
+								if(typeof parejas["p"+miId] != "undefined"){
+									if(parejas["p"+miId] == ganador){
+										ganador = miId;
+									}
+									else{
+										ganador = -1;
+									}
+								}
+								else{
+									console.log('Partida terminada. id del ganador: '+ganador);
+								}
+								if(ganador == miId){
+									fin_mensaje(1, IABriscaInstancia.IABriscaBaseInstancia.totalPuntosEnCartas(jugadores[0].cartasGanadas));
+								}
+								else if(ganador == -1){
+									fin_mensaje(0, IABriscaInstancia.IABriscaBaseInstancia.totalPuntosEnCartas(jugadores[0].cartasGanadas));
+								}
+								else{
+									fin_mensaje(-1, IABriscaInstancia.IABriscaBaseInstancia.totalPuntosEnCartas(jugadores[0].cartasGanadas));
+								}
+							}
+							else if(typeof orden['pareja'] !== "undefined"){
+								parejas["p"+orden['pareja']['ID']] = orden['pareja']['pareja'];
 							}
 							else{
-								borrarPideCartaHumano();
-							}
-						}
-						else if(typeof orden['gana'] !== "undefined"){
-							for(var id_ganador in orden['gana']){
-								console.log('Petición de ganar cartas al jugador '+nick_desde_id[id_ganador]);
-								IABriscaInstancia.IABriscaMesaInstancia.peticionJugadorGanarMesa(jugadores[jugadores_por_id[id_ganador]-1]);
-								borrarPideCartaHumano();
-							}
-						}
-						else if(typeof orden['termina'] !== "undefined"){
-							var ganador = orden['termina']['ganador'];
-							console.log('Partida terminada. id del ganador: '+ganador);
-							if(ganador == miId){
-								fin_mensaje(1, IABriscaInstancia.IABriscaBaseInstancia.totalPuntosEnCartas(jugadores[0].cartasGanadas));
-							}
-							else if(ganador == -1){
-								fin_mensaje(0, IABriscaInstancia.IABriscaBaseInstancia.totalPuntosEnCartas(jugadores[0].cartasGanadas));
-							}
-							else{
-								fin_mensaje(-1, IABriscaInstancia.IABriscaBaseInstancia.totalPuntosEnCartas(jugadores[0].cartasGanadas));
-							}
-						}
-						else{
-							for(var i in orden){
-								console.log("El jugador "+nick_desde_id[i]+" tira la carta "+orden[i]);
-								
-								var jugador = jugadores[jugadores_por_id[i]-1];
-								
-								if(i != miId){
-									if(ArrayIndexOf(jugador.cartasEnMano, orden[i]) === -1){
-										var cartaFalsaAzar = Math.max(0,Math.min(Math.floor(Math.random()*jugador.cartasEnMano.length),jugador.cartasEnMano.length-1));
-										while(jugador.cartasEnMano[cartaFalsaAzar].indexOf("F") === -1){
-											cartaFalsaAzar = Math.max(0,Math.min(Math.floor(Math.random()*jugador.cartasEnMano.length),jugador.cartasEnMano.length-1));
+								for(var i in orden){
+									console.log("El jugador "+nick_desde_id[i]+" tira la carta "+orden[i]);
+									
+									var jugador = jugadores[jugadores_por_id[i]-1];
+									
+									if(i != miId){
+										if(ArrayIndexOf(jugador.cartasEnMano, orden[i]) === -1){
+											var cartaFalsaAzar = Math.max(0,Math.min(Math.floor(Math.random()*jugador.cartasEnMano.length),jugador.cartasEnMano.length-1));
+											while(jugador.cartasEnMano[cartaFalsaAzar].indexOf("F") === -1){
+												cartaFalsaAzar = Math.max(0,Math.min(Math.floor(Math.random()*jugador.cartasEnMano.length),jugador.cartasEnMano.length-1));
+											}
+											cartaFalsaAzar_carta = jugador.cartasEnMano[cartaFalsaAzar];
+											
+											sustituyeCarta(cartaFalsaAzar_carta, orden[i]);
+											
+											jugador.cartasEnMano.splice(cartaFalsaAzar, 1);
 										}
-										cartaFalsaAzar_carta = jugador.cartasEnMano[cartaFalsaAzar];
-										
-										sustituyeCarta(cartaFalsaAzar_carta, orden[i]);
-										
-										jugador.cartasEnMano.splice(cartaFalsaAzar, 1);
 									}
+									
+									IABriscaInstancia.IABriscaMesaInstancia.peticionJugadorLanzarRecibiendoCarta(
+										jugador,
+										orden[i]
+									);
 								}
-								
-								IABriscaInstancia.IABriscaMesaInstancia.peticionJugadorLanzarRecibiendoCarta(
-									jugador,
-									orden[i]
-								);
 							}
-						}
+						break;
 						//console.log(orden);
 					}
 				}
@@ -624,17 +615,10 @@ function id_desde_hueco_sala($i){
 			}
 			
 			
+			
 			// loop recibir msg
-			
 			ult = 0;
-			
 			loop();
-			
-			
-			
-			
-			
-			
 
 		</script>
 	</body>
