@@ -367,7 +367,7 @@ function procesasms($entrada, $tipo, $dbsqlite, $datos_usuario=null, $privacidad
 }
 
 function array_from_sqliteResponse(&$result){
-	return $result;
+	return $result->fetchAll();
 	/*
 	$results = array();
 	while($r = $result->fetchArray(SQLITE3_ASSOC)){
