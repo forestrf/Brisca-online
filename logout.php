@@ -6,7 +6,7 @@ $database = new DB();
 
 if(!$usuario = detectaLogueadoORedireccion($database)){
 	// Redireccionar al usuario a index
-	header('Location: '.PATH.'index.php', true, 302);
+	header('Location: /index.php', true, 302);
 }
 
 
@@ -16,5 +16,5 @@ setcookie('p', '', 0);
 $database->SetUsuarioDeslogueadoPorID($usuario['ID']);
 
 // Redireccionar al usuario a index
-header('Location: '.PATH.'index.php', true, 302);
+header('Location: /index.php', true, 302);
 ?>

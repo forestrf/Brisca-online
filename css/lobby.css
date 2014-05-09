@@ -52,6 +52,12 @@
 	position: absolute;
 }
 
+.tabla_salaabierta {
+	width: 70%;
+	margin-left: 15%;
+	margin-top: 20px
+}
+
 .filtro_salas {
 	display: inline-block;
 }
@@ -94,9 +100,9 @@
 }
 
 .salas_listado {
-    margin-top: 20px;
-    text-align: left;
-    width: 100%;
+	margin-top: 20px;
+	text-align: left;
+	width: 100%;
 }
 
 .salas_listado tr > * {
@@ -104,29 +110,29 @@
 	font-size: 13px;
 }
 .salas_listado > thead > tr > th {
-    background-color: #343434;
-    color: #B5B5B5;
-    font-weight: bold;
-    width: 20%;
+	background-color: #343434;
+	color: #B5B5B5;
+	font-weight: bold;
+	width: 20%;
 }
 
 
 
 .salas_listado > tbody > tr > td {
-    color: #EEEEEE;
-    transition: all 0.5s ease 0s;
+	color: #EEEEEE;
+	transition: all 0.5s ease 0s;
 	cursor: pointer;
 }
 
 .salas_listado > tbody > tr:nth-child(2n) > td {
-    background-color: rgba(0, 0, 0, 0.3);
+	background-color: rgba(0, 0, 0, 0.3);
 }
 .salas_listado > tbody > tr:nth-child(2n+1) > td {
-    background-color: rgba(0, 0, 0, 0.2);
+	background-color: rgba(0, 0, 0, 0.2);
 }
 
 .salas_listado > tbody > tr:hover > td {
-    background-color: rgba(255, 255, 255, 0.2);
+	background-color: rgba(255, 255, 255, 0.2);
 }
 
 
@@ -134,9 +140,9 @@
 
 
 .form_crear_sala {
-    margin-left: 50px;
-    margin-top: 30px;
-    width: 70%;
+	margin-left: 50px;
+	margin-top: 30px;
+	width: 70%;
 }
 .form_crear_sala td {
 	padding: 5px;
@@ -145,13 +151,13 @@
 	width: 80%;
 }
 .boton_en_listado.modbutton {
-    display: block;
-    height: 30px;
-    left: 5px;
-    padding: 0;
-    position: relative;
+	display: block;
+	height: 30px;
+	left: 5px;
+	padding: 0;
+	position: relative;
 }
 .boton_en_listado.error {
-    background-color: #FFCBCB;
-    border-color: #FF3030;
+	background-color: #FFCBCB;
+	border-color: #FF3030;
 }

@@ -1,6 +1,6 @@
 #contenedor_vscpu {
-    background-image: url("/img/fondos/1.jpg");
-    background-size: cover;
+	background-image: url("/img/fondos/1.jpg");
+	background-size: cover;
 	width: 100%;
 	height: 100%;
 	position: absolute;
@@ -38,6 +38,6 @@
 
 .mensajeInicio > .ico:hover {
 	background-color: #FFFFFF;
-    background-color: rgba(255, 255, 255, 0.5);
-    box-shadow: 0 0 35px #8E8E8E;
+	background-color: rgba(255, 255, 255, 0.5);
+	box-shadow: 0 0 35px #8E8E8E;
 }

@@ -224,13 +224,27 @@
 							mensaje = -1;
 							continue;
 						}
-						else if(resultados[i] ==  misPuntos){
+						else if(resultados[i] == misPuntos){
 							mensaje = 0;
 						}
 					}
 				}
 				
 				fin_mensaje(mensaje, misPuntos);
+				
+				ajax = new XMLHttpRequest();
+				var url = "vscpuguardador.php";
+				var params = "puntuacion="+misPuntos+"&victoria=" + ({"-1":"no","1":"si"})[mensaje];
+				ajax.open("POST", url, true);
+				ajax.setRequestHeader("Content-type", "application/x-www-form-urlencoded");
+				ajax.onreadystatechange = function(){
+					if(ajax.readyState == 4){
+						if(ajax.status == 200){
+							//alert('Tu puntuación se ha enviado al servidor.');
+						}
+					}
+				};
+				ajax.send(params);
 			}
 			
 			

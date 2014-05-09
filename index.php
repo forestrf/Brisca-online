@@ -21,7 +21,7 @@ $database = new DB();
 				<a href="vscpu.html" class="cpu">Jugar contra la máquina<br>(no requiere registrarse)</a>
 			<?php } else { ?>
 				<a href="vscpu.html" class="l_cpu">Jugar contra la máquina</a><br>
-				<a href="vsplayerlobby.php" class="l_online">Jugar contra otros jugadores (Ir a la sala de espera)</a><br>
+				<a href="vsplayerlobby.php" class="l_online">Jugar contra otros jugadores</a><br>
 				<a href="logout.php" class="logout">Cerrar sesión</a><br>
 				<br>
 				<table class="puntuaciones">

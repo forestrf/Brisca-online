@@ -69,7 +69,7 @@
 					
 					$para		= $_POST['email'];
 					$titulo		= 'Correo de validación de '.DOMINIO;
-					$mensaje	= "Es necesario que valides el correo clicando en el siguiente enlace: <a href='http://".DOMINIO.PATH."validaremail.php?n={$idUser}&p=".urlencode($passwordValidacion)."'>http://".DOMINIO.PATH."validaremail.php?n={$idUser}&p=".urlencode($passwordValidacion)."</a>";
+					$mensaje	= "Es necesario que valides el correo clicando en el siguiente enlace: <a href='http://".DOMINIO."/validaremail.php?n={$idUser}&p=".urlencode($passwordValidacion)."'>http://".DOMINIO."/validaremail.php?n={$idUser}&p=".urlencode($passwordValidacion)."</a>";
 					$cabeceras	= "From: do-not-reply@".DOMINIO."\r\n";
 
 					mail($para, $titulo, $mensaje, $cabeceras);
@@ -77,8 +77,8 @@
 					// Redireccionar a la página de registro correcto donde se pide que se confirme el correo y terminar el script
 					
 					
-					echo $mensaje;
-					//header("Location: ".PATH."compruebatucorreo.html", true, 302);
+					//echo $mensaje;
+					header("Location: /compruebatucorreo.html", true, 302);
 					exit;
 				}
 				else{

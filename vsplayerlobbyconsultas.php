@@ -64,7 +64,7 @@ if(isset($_POST['accion'])){
 				$_POST['por_parejas'] = '1';
 			}
 			if(!preg_match('@^[a-z_áéíóúàèìòù -]+$@i',$_POST['nombre'])){
-				header('Location: /vsplayercreasala.php?nombre='.urlencode('Nombre inválido'));
+				header('Location: /vsplayercreasala.php?nombre='.urlencode('Nombre inválido'), true, 302);
 				exit;
 			}
 			$posibles=array(
@@ -98,13 +98,13 @@ if(isset($_POST['accion'])){
 			if($respuesta === false){
 				// El usuario tenía ya abierta una sala. Pedir que la cierre o se una a la partida
 				if($usuario['sala'] !== '-1'){
-					header('Location: /salaabierta.php?sala='.$usuario['sala']);
+					header('Location: /salaabierta.php?sala='.$usuario['sala'], true, 302);
 					exit;
 				}
 			}
 			else{
 				// Sala creada con éxito. Ir a la sala creada.
-				header('Location: /vsplayer.php?sala='.$database->LAST_MYSQL_ID);
+				header('Location: /vsplayer.php?sala='.$database->LAST_MYSQL_ID, true, 302);
 			}
 		break;
 		
@@ -125,7 +125,7 @@ if(isset($_POST['accion'])){
 			
 			quitar_usuario($dbsqlite, $usuario, $salaInfo);
 			
-			header('Location: /vsplayerlobby.php');
+			header('Location: /vsplayerlobby.php', true, 302);
 		break;
 	
 	

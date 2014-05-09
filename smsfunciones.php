@@ -182,16 +182,16 @@ function procesasms($entrada, $tipo, $dbsqlite, $datos_usuario=null, $privacidad
 						foreach($puntos_parejas as $pareja=>$puntos){
 							if($puntos != $ganador_partida_pareja['puntos']){
 								foreach($parejas_usuarios[$pareja] as $id){
-									guardar_derrota($database, $id);
+									$database->guardar_derrota('online', $id);
 								}
 							}
 							elseif(!$empate){
 								foreach($parejas_usuarios[$pareja] as $id){
-									guardar_derrota($database, $id);
+									$database->guardar_victoria('online', $id);
 								}
 							}
 							foreach($parejas_usuarios[$pareja] as $id){
-								guardar_puntuacion_max($database, $id, $puntos);
+								$database->guardar_puntuacion_max('online', $id, $puntos);
 							}
 						}
 						
@@ -215,12 +215,12 @@ function procesasms($entrada, $tipo, $dbsqlite, $datos_usuario=null, $privacidad
 						
 						foreach($puntos_jugadores as $id=>$puntos){
 							if($puntos != $ganador_partida['puntos']){
-								guardar_derrota($database, $id);
+								$database->guardar_derrota('online', $id);
 							}
 							elseif(!$empate){
-								guardar_victoria($database, $id);
+								$database->guardar_victoria('online', $id);
 							}
-							guardar_puntuacion_max($database, $id, $puntos);
+							$database->guardar_puntuacion_max('online', $id, $puntos);
 						}
 						
 						// En caso de empate enviar la id de un ganador inexistente (-1). De lo contrario enviar la id del ganador.
@@ -436,19 +436,4 @@ function quitar_usuario(&$dbsqlite, &$usuario, &$salaInfo){
 		procesasms('La partida ha sido bloqueada ya que se encuentra iniciada y uno de los jugadores se ha ido.', 'aviso', $dbsqlite);
 	}
 }
-
-function guardar_victoria(&$database, $ID){
-	$database->guardar_victoria('online', $ID);
-}
-
-function guardar_derrota(&$database, $ID){
-	$database->guardar_derrota('online', $ID);
-}
-
-function guardar_puntuacion_max(&$database, $ID, $puntos){
-	$database->guardar_puntuacion_max('online', $ID, $puntos);
-}
-
-
-
 ?>

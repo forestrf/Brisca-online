@@ -7,7 +7,7 @@
 
 // No debería llamarse nunca a esta url sin sala desde algún menú, pero quien sabe
 if(!isset($_GET['sala'])){
-	header('Location: /');
+	header('Location: /', true, 302);
 	exit;
 }
 
@@ -27,7 +27,7 @@ if(!$usuario = detectaLogueadoORedireccion($database)){
 
 
 if($usuario['sala'] !== '-1' && $usuario['sala'] !== $_GET['sala']){
-	header('Location: /salaabierta.php?sala='.$usuario['sala']); // POOOOOOOOOR HACEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEER
+	header('Location: /salaabierta.php?sala='.$usuario['sala'], true, 302);
 	exit;
 }
 

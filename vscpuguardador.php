@@ -14,30 +14,16 @@ exit;
 
 
 if(
-  isset($_POST['puntuacion']) && !isset($_POST['victoria']) && 
-  $_POST['puntuacion'] >= 0 && $_POST['puntuacion'] <= 120 &&
-  ($_POST['victoria'] == 'si' || $_POST['victoria'] == 'no')
+	isset($_POST['puntuacion']) && isset($_POST['victoria']) && 
+	$_POST['puntuacion'] >= 0 && $_POST['puntuacion'] <= 120 &&
+	($_POST['victoria'] == 'si' || $_POST['victoria'] == 'no' || $_POST['victoria'] == '')
 ){
-  if($_POST['victoria'] == 'si'){
-    guardar_victoria($database, $usuario['ID']);
-  }
-  else{
-    guardar_derrota($database, $usuario['ID']);
-  }
-  guardar_puntuacion_max($database, $usuario['ID'], $_POST['puntuacion']);
-}
-
-
-
-function guardar_victoria(&$database, $ID){
-$database->guardar_victoria('cpu', $ID);
-}
-
-function guardar_derrota(&$database, $ID){
-$database->guardar_derrota('cpu', $ID);
-}
-
-function guardar_puntuacion_max(&$database, $ID, $puntos){
-$database->guardar_puntuacion_max('cpu', $ID, $puntos);
+	if($_POST['victoria'] == 'si'){
+		$database->guardar_victoria('cpu', $usuario['ID']);
+	}
+	elseif($_POST['victoria'] == 'no'){
+		$database->guardar_derrota('cpu', $usuario['ID']);
+	}
+	$database->guardar_puntuacion_max('cpu', $usuario['ID'], $_POST['puntuacion']);
 }
 ?>

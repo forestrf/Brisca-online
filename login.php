@@ -40,7 +40,7 @@
 				setcookie('p', $cookie, time()+2592000);
 				
 				// Redireccionar al usuario a la página de logueados
-				header('Location: '.PATH.'index.php', true, 302);
+				header('Location: /index.php', true, 302);
 				
 			}
 			else{

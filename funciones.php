@@ -123,14 +123,16 @@ class DB {
 	// Retorna la ID del usuario que tiene ese NICK
 	function idDesdeNick($nick){
 		$nick = mysql_escape_mimic($nick);
-		$nick = $this->consulta("SELECT ID FROM usuarios WHERE NICK = '{$nick}'", true)[0];
+		$nick = $this->consulta("SELECT ID FROM usuarios WHERE NICK = '{$nick}'", true);
+		$nick = $nick[0];
 		return $nick["ID"];
 	}
 	
 	// Retorna el NICK del usuario dada una ID
 	function nickDesdeId($ID){
 		$ID = mysql_escape_mimic($ID);
-		$ID = $this->consulta("SELECT NICK FROM usuarios WHERE ID = '{$ID}'", true)[0];
+		$ID = $this->consulta("SELECT NICK FROM usuarios WHERE ID = '{$ID}'", true);
+		$ID = $ID[0];
 		return $ID["NICK"];
 	}
 	
@@ -148,7 +150,7 @@ class DB {
 		$hoy = date('Y-m-d H:i:s');
 		
 		// La cookie dura 1 mes
-		$fechaTope = date('Y-m-d H:i:s', mktime(0, 0, 0, date("m")+1  , date("d"), date("Y")));
+		$fechaTope = date('Y-m-d H:i:s', mktime(0, 0, 0, date("m")+1, date("d"), date("Y")));
 		$this->consulta("UPDATE usuarios SET FECHA_ULT_LOGIN = '{$hoy}' WHERE ID = '{$ID}'");
 		$this->consulta("INSERT INTO login (ID_USER, COOKIE, FECHA_TOPE) VALUES ('{$ID}', '{$passwordCookie}', '{$fechaTope}') ON DUPLICATE KEY UPDATE COOKIE = '{$passwordCookie}', FECHA_TOPE = '{$fechaTope}';");
 	}
@@ -231,7 +233,8 @@ class DB {
 	function salaInfo($sala){
 		$sala = mysql_escape_mimic($sala);
 		
-		return $this->consulta("SELECT * FROM salas WHERE ID={$sala}")[0];
+		$sala = $this->consulta("SELECT * FROM salas WHERE ID={$sala}");
+		return $sala[0];
 	}
 	
 	
@@ -252,7 +255,8 @@ class DB {
 		if(!in_array($variante, array('online', 'cpu')))return;
 		$ID = mysql_escape_mimic($ID);
 		$puntos = mysql_escape_mimic($puntos);
-		$result = $this->consulta("SELECT puntuacion_maxima_{$variante} FROM usuarios WHERE ID={$ID};")[0];
+		$result = $this->consulta("SELECT puntuacion_maxima_{$variante} FROM usuarios WHERE ID={$ID};");
+		$result = $result[0];
 		if($result['puntuacion_maxima_'.$variante] < $puntos){
 			$this->consulta("UPDATE usuarios SET puntuacion_maxima_{$variante} = {$puntos} WHERE ID={$ID};");
 		}
@@ -263,13 +267,13 @@ class DB {
 	//Cachear resultados. $consulta es el sql a cachear, $resultado es el array de la respuesta y $tiempoValido es la cantidad de segundos que se guardaré en cache (usando memcache)
 	function cacheaResultado($consulta, $resultado, $tiempoValido = 3600){
 		$resultado = json_encode($resultado);
-		$memcache_obj = memcache_pconnect("localhost", 11211);
+		$memcache_obj = memcache_pconnect('localhost', 11211);
 		$memcache_obj->add($consulta, $resultado, false, $tiempoValido);
 	}
 	
 	//Cachear resultados. $consulta es el sql a cachear, $resultado es el array de la respuesta y $tiempoValido es la cantidad de segundos que se guardaré en cache (usando memcache)
 	function consultaCache($consulta){
-		$memcache_obj = memcache_pconnect("localhost", 11211);
+		$memcache_obj = memcache_pconnect('localhost', 11211);
 		$resultado = $memcache_obj->get($consulta);
 		return $resultado===false?false:json_decode($resultado);
 	}
@@ -303,7 +307,7 @@ function detectaLogueadoORedireccion(&$database, $urlRedireccion = false){
 			return false;
 		}
 		else{
-			header("Location: ".PATH.$urlRedireccion, true, 302);
+			header('Location: '.$urlRedireccion, true, 302);
 			exit;
 		}
 	}
@@ -312,14 +316,14 @@ function detectaLogueadoORedireccion(&$database, $urlRedireccion = false){
 // Copia de mysql_real_escape_string para uso sin conexión abierta
 // http://es1.php.net/mysql_real_escape_string
 function mysql_escape_mimic($inp) {
-    if(is_array($inp))
-        return array_map(__METHOD__, $inp);
+	if(is_array($inp))
+		return array_map(__METHOD__, $inp);
 
-    if(!empty($inp) && is_string($inp)) {
-        return str_replace(array('\\', "\0", "\n", "\r", "'", '"', "\x1a"), array('\\\\', '\\0', '\\n', '\\r', "\\'", '\\"', '\\Z'), $inp);
-    }
+	if(!empty($inp) && is_string($inp)) {
+		return str_replace(array('\\', "\0", "\n", "\r", "'", '"', "\x1a"), array('\\\\', '\\0', '\\n', '\\r', "\\'", '\\"', '\\Z'), $inp);
+	}
 
-    return $inp;
+	return $inp;
 }
 
 function ClampCircular($numero, $minimo, $maximo){

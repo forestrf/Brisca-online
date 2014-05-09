@@ -20,18 +20,18 @@
 }
 
 .boton_abandonar_sala > input {
-    background-color: #FFF;
-    background-color: rgba(255, 255, 255, 0.5);
-    border: 0 none;
-    cursor: pointer;
-    font-size: 16px;
-    padding: 5px;
+	background-color: #FFF;
+	background-color: rgba(255, 255, 255, 0.5);
+	border: 0 none;
+	cursor: pointer;
+	font-size: 16px;
+	padding: 5px;
 	transition: background-color .5s ease;
 }
 
 
 .boton_abandonar_sala > input:hover {
-    background-color: #FFF;
+	background-color: #FFF;
 }
 
 #contenedor {

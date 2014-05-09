@@ -10,11 +10,11 @@ if(isset($_GET['n']) && isset($_GET['p'])){
 		$database->ValidaEmailPorID($_GET['n']);
 		// Usuario marcado como email válido.
 		// Redireccionar a login.php
-		header("Location: ".PATH."login.php", true, 302);
+		header("Location: /login.php", true, 302);
 		exit;
 	}
 }
 // Redireccionar a fallo
-header("Location: ".PATH."emailvalidacionincorrecto.html", true, 302);
+header("Location: /emailvalidacionincorrecto.html", true, 302);
 
 ?>
