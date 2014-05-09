@@ -10,7 +10,7 @@ function abredbsqlitesala($sala){
 	$archivo = "chats/$sala.sqlite";
 
 	if(!file_exists($archivo)){
-		$db = new SQLite3($archivo, 0666);
+		$db = new PDO('sqlite:'.$archivo);
 		// privacidad tiene un json con el listado de IDs de usuarios que pueden (o no) leer el mensaje. De no poder leerlo lo ignorarán. De no tener nada es público
 		// permitir = los únicos que pueden leer.
 		// denegar = los únicos que NO pueden leer
@@ -29,11 +29,11 @@ function abredbsqlitesala($sala){
 		$db->query("INSERT INTO estados (clave, valor) VALUES ('detenido', '0');");
 	}
 	else{
-		$db = new SQLite3($archivo);
+		$db = new PDO('sqlite:'.$archivo);
 	}
 
 	// De esta forma evitamos que de error por tabla bloqueada. Damos 5 segundos de tiempo para que la tabla deje de estar bloqueada.
-	$db -> busyTimeout(5000);
+	$db -> setAttribute(PDO::ATTR_TIMEOUT, 5); 
 
 	return $db;
 }
@@ -313,7 +313,8 @@ function procesasms($entrada, $tipo, $dbsqlite, $datos_usuario=null, $privacidad
 					
 					// Hacer lanzar al próximo usuario
 					$result = $dbsqlite->query("SELECT ID FROM usuarios WHERE hueco_sala = '{$hueco_sala_prox}';");
-					$ID_prox_usuario = $result->fetchArray(SQLITE3_ASSOC);
+					$result = array_from_sqliteResponse($result);
+					$ID_prox_usuario = $result[0];
 					$ID_prox_usuario = $ID_prox_usuario['ID'];
 				}
 				
@@ -366,11 +367,14 @@ function procesasms($entrada, $tipo, $dbsqlite, $datos_usuario=null, $privacidad
 }
 
 function array_from_sqliteResponse(&$result){
+	return $result;
+	/*
 	$results = array();
 	while($r = $result->fetchArray(SQLITE3_ASSOC)){
 		$results[] = $r;
 	}
 	return $results;
+	*/
 }
 
 function repartir_carta(&$dbsqlite, $ID, $carta, $privatizar = true){
@@ -422,7 +426,8 @@ function quitar_usuario(&$dbsqlite, &$usuario, &$salaInfo){
 	
 	//Comprobar si la partida está iniciada. De estarlo, bloquear la partida
 	$res = $dbsqlite->query("SELECT valor FROM estados WHERE clave = 'iniciado';");
-	$res = $res->fetchArray(SQLITE3_ASSOC);
+	$res = array_from_sqliteResponse($res);
+	$res = $res[0];
 	if($res['valor'] != '1'){
 		procesasms(array('p'=>'-1','ID'=>$usuario['ID']), 'config', $dbsqlite);
 	

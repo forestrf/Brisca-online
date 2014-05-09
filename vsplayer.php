@@ -124,7 +124,6 @@ if($hueco_sala === ''){
 			/*else{
 				// Faltan jugadores
 			}*/
-			$dbsqlite->close();
 			unset($dbsqlite);
 		}
 	}

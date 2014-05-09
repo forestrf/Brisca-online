@@ -28,12 +28,10 @@ $dbsqlite = abredbsqlitesala($sala);
 
 if(isset($_POST['msg'])){
 	echo procesasms($_POST['msg'], 'msg', $dbsqlite, $usuario);
-	$dbsqlite->close();
 	unset($dbsqlite);
 }
 elseif(isset($_POST['jugada'])){
 	echo procesasms($_POST['jugada'], 'jugada', $dbsqlite, $usuario);
-	$dbsqlite->close();
 	unset($dbsqlite);
 }
 elseif(isset($_POST['ult']) && preg_match("/^[0-9]+?$/", $_POST['ult'])){
@@ -55,8 +53,9 @@ elseif(isset($_POST['ult']) && preg_match("/^[0-9]+?$/", $_POST['ult'])){
 	for($i = 0; $i < $vueltas; ++$i){
 		
 		$result = $dbsqlite->query("SELECT n, usuario, mensaje, privacidad FROM mensajes WHERE n > {$n};");
+		$result = array_from_sqliteResponse($result);
 		$resultados = Array();
-		while($resultado = $result->fetchArray(SQLITE3_ASSOC)){
+		foreach($result as $resultado){
 			//print_r($resultado);
 			$privacidad = $resultado['privacidad'];
 			if($privacidad == ''){
@@ -88,7 +87,6 @@ elseif(isset($_POST['ult']) && preg_match("/^[0-9]+?$/", $_POST['ult'])){
 		if(count($resultados) > 0){
 			echo json_encode($resultados);
 			
-			$dbsqlite->close();
 			unset($dbsqlite);
 			
 			exit;
