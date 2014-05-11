@@ -172,36 +172,36 @@ function id_desde_hueco_sala($i){
 				<!--Posiciones. Para poder ver donde están-->
 				<div id="posiciones">
 					<!--cartas en mano-->
-					<div id="P1C1"></div>
-					<div id="P1C2"></div>
-					<div id="P1C3"></div>
-					<div id="P2C1"></div>
-					<div id="P2C2"></div>
-					<div id="P2C3"></div>
-					<div id="P3C1"></div>
-					<div id="P3C2"></div>
-					<div id="P3C3"></div>
-					<div id="P4C1"></div>
-					<div id="P4C2"></div>
-					<div id="P4C3"></div>
+					<div id="P1C1" class="P1C1"></div>
+					<div id="P1C2" class="P1C2"></div>
+					<div id="P1C3" class="P1C3"></div>
+					<div id="P2C1" class="P2C1"></div>
+					<div id="P2C2" class="P2C2"></div>
+					<div id="P2C3" class="P2C3"></div>
+					<div id="P3C1" class="P3C1"></div>
+					<div id="P3C2" class="P3C2"></div>
+					<div id="P3C3" class="P3C3"></div>
+					<div id="P4C1" class="P4C1"></div>
+					<div id="P4C2" class="P4C2"></div>
+					<div id="P4C3" class="P4C3"></div>
 					
 					<!--cartas ganadas-->
-					<div id="P1C0"></div>
-					<div id="P2C0"></div>
-					<div id="P3C0"></div>
-					<div id="P4C0"></div>
+					<div id="P1C0" class="P1C0"></div>
+					<div id="P2C0" class="P2C0"></div>
+					<div id="P3C0" class="P3C0"></div>
+					<div id="P4C0" class="P4C0"></div>
 					
 					<!--cartas palo que manda-->
-					<div id="MC0"></div>
+					<div id="MC0" class="MC0"></div>
 					
 					<!--cartas en mesa-->
-					<div id="MC1"></div>
-					<div id="MC2"></div>
-					<div id="MC3"></div>
-					<div id="MC4"></div>
+					<div id="MC1" class="MC1"></div>
+					<div id="MC2" class="MC2"></div>
+					<div id="MC3" class="MC3"></div>
+					<div id="MC4" class="MC4"></div>
 					
 					<!--carta mazo-->
-					<div id="MM"></div>
+					<div id="MM" class="MM"></div>
 					
 					<!--Marcador de puntos-->
 					<div id="P1N" style="<?php echo in_array($salaInfo['jugadores_max'], array(2,3,4))?'display:block':''?>"></div>

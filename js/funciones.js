@@ -16,8 +16,9 @@ function moverCartaA(carta, hasta){
 		return;
 	}*/
 	
-	cartaObj.style.top = (hastaObj.offsetTop -heightCarta2 +((Math.random()*2) -1) *maximoAzarDesfaseWidth) +"px";
-	cartaObj.style.left = (hastaObj.offsetLeft -widthCarta2 +((Math.random()*2) -1) *maximoAzarDesfaseHeight) +"px";
+	cartaObj.className = "carta "+hasta;
+	cartaObj.style.marginTop = (-heightCarta2 +((Math.random()*2) -1) *maximoAzarDesfaseWidth) +"px";
+	cartaObj.style.marginLeft = (-widthCarta2 +((Math.random()*2) -1) *maximoAzarDesfaseHeight) +"px";
 	if(hasta.indexOf("P2") !== -1 || hasta.indexOf("P4") !== -1){
 		cartaObj.style.webkitTransform =
 		cartaObj.style.mozTransform =
@@ -43,8 +44,9 @@ function moverCartaDeA(carta, desde, hasta){
 		document.getElementById('todas_las_cartas_visible').appendChild(cartaObj);
 	}*/
 	
-	cartaObj.style.top = desdeObj.offsetTop -heightCarta2+"px";
-	cartaObj.style.left = desdeObj.offsetLeft -widthCarta2+"px";
+	cartaObj.className = "carta "+desde;
+	cartaObj.style.marginTop = -heightCarta2+"px";
+	cartaObj.style.marginLeft = -widthCarta2+"px";
 	setTimeout((function(carta, hasta){
 		return function(){
 			moverCartaA(carta, hasta);
@@ -228,11 +230,11 @@ function instanciaCartas(falsas){
 	mazo_cartas = document.getElementById('MM');
 	arrCartas = IABriscaInstancia.IABriscaBaseInstancia.cartasTotalArray;
 	for(var i in arrCartas){
-		todas_las_cartas.innerHTML += '<img class="carta" style="position:absolute;width:'+widthCarta+'px;height:'+heightCarta+'px;top:'+(mazo_cartas.offsetTop -heightCarta2)+'px;left:'+(mazo_cartas.offsetLeft -widthCarta2)+'px;" id="carta_'+arrCartas[i]+'" src="img/cartas/back2.jpg">';
+		todas_las_cartas.innerHTML += '<img class="carta MM" style="position:absolute;width:'+widthCarta+'px;height:'+heightCarta+'px;margin-top:'+(-heightCarta2)+'px;margin-left:'+(-widthCarta2)+'px;" id="carta_'+arrCartas[i]+'" src="img/cartas/back2.jpg">';
 	}
 	if(typeof falsas !== 'undefined' && falsas === true){
 		for(var i=0; i<arrCartas.length; ++i){
-			todas_las_cartas.innerHTML += '<img class="carta" style="position:absolute;width:'+widthCarta+'px;height:'+heightCarta+'px;top:'+(mazo_cartas.offsetTop -heightCarta2)+'px;left:'+(mazo_cartas.offsetLeft -widthCarta2)+'px;" id="carta_F'+i+'" src="img/cartas/back2.jpg">';
+			todas_las_cartas.innerHTML += '<img class="carta MM" style="position:absolute;width:'+widthCarta+'px;height:'+heightCarta+'px;margin-top:'+(-heightCarta2)+'px;margin-left:'+(-widthCarta2)+'px;" id="carta_F'+i+'" src="img/cartas/back2.jpg">';
 		}
 	}
 }
