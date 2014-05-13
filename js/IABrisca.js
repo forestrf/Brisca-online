@@ -168,7 +168,7 @@ function IABrisca(){
 		
 		
 		
-		// Retorna true o false en caso de que 
+		// Retorna true o false en caso de que una carta del array cartas sea del palo indicado o de alguno de los palos indicados en el array palo
 		this.paloPresenteEnCartas = function(palo, cartas){
 			if(cartas.length === 0 || typeof cartas === 'undefined'){
 				return false;

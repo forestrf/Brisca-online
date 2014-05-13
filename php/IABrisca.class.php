@@ -36,7 +36,7 @@ class IABrisca{
 		return substr($carta, 0, 1);
 	}
 
-	// Retorna el número carta
+	// Retorna el nÃºmero carta
 	public static function numeroCarta($carta){
 		return intval(substr($carta, 1));
 	}
@@ -87,7 +87,7 @@ class IABrisca{
 	}
 	
 	// Valor del palo: 0 = sin valor, 1 = palo de la mesa, 2 = palo que manda
-	// Valor mínimo es el valor en puntos mínimo de la carta
+	// Valor mÃ­nimo es el valor en puntos mï¿½nimo de la carta
 	// Retorna la carta del array cartas que cumple con los requisitos fijados, o false si ninguna carta cumple
 	public static function cartaMenorValor($cartas = array(), $paloQueMandaSiempre = '', $paloQueMandaEnMesa = ''){
 		
@@ -105,7 +105,7 @@ class IABrisca{
 	public static function ordenCartasPorValor($cartas = array(), $paloQueMandaSiempre = '', $paloQueMandaEnMesa = ''){
 		// Clonar un objeto
 		// http://stackoverflow.com/questions/122102/most-efficient-way-to-clone-an-object
-		// Aquí se guardarán los palos y cartas ordenados
+		// AquÃ­ se guardarÃ¡n los palos y cartas ordenados
 		$ordenPalosCartas2 = array();
 		
 		// Este bucle ordena this.cartasTotal de forma que this.cartasTotal[0] = paloQueMandaSiempre y 1 = paloQueMandaEnMesa. 2 y 3 son "aleatorios"
