@@ -61,9 +61,9 @@ function sustituyeCarta(carta1, carta2){
 	carta2Obj = document.getElementById('carta_'+carta2);
 	carta1Obj.className += ' sintransition';
 	carta2Obj.className += ' sintransition';
-	var cssTemp = carta1Obj.style.cssText;
-	carta1Obj.style.cssText = carta2Obj.style.cssText;
-	carta2Obj.style.cssText = cssTemp;
+	var cssTemp = carta1Obj.className;
+	carta1Obj.className = carta2Obj.className;
+	carta2Obj.className = cssTemp;
 	carta1Obj.offsetHeight;
 	carta1Obj.className = carta1Obj.className.split(" sintransition").join("");
 	carta2Obj.className = carta2Obj.className.split(" sintransition").join("");
