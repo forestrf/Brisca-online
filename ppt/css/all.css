@@ -1,0 +1,130 @@
+/* -------- GENERICO -------------------------------------- */
+
+body {
+	background-color: #000;
+}
+
+a.siguiente {
+	position: fixed;
+	width: 20%;
+	top: 0;
+	left: 80%;
+	height: 100%;
+	color: transparent;
+	font-size: 0;
+}
+a.anterior {
+	position: fixed;
+	width: 20%;
+	top: 0;
+	left: 0;
+	height: 100%;
+	color: transparent;
+	font-size: 0;
+}
+
+.fondo {
+	background-color: #000;
+	background-image: url("../img/fondo.jpg");
+	background-repeat: no-repeat;
+	background-size: cover;
+	position: fixed;
+	width: 100%;
+	height: 100%;
+	top: 0;
+	left: 0;
+	z-index: -1000;
+}
+
+.titulo {
+	color: #FFFFFF;
+	font-size: 2em;
+	margin: 3% 0 3% 15%;
+	text-shadow: -1px 1px 5px #FFFFFF;
+}
+
+.img_muestra {
+	width: 100%;
+	text-align: center;
+	margin-bottom: 2%;
+}
+
+.img_muestra > img {
+	background-color: #373737;
+	border: 1px solid #7D7D7D;
+	box-shadow: 0 0 15px -5px #FFFFFF;
+	max-width: 80%;
+	padding: 1%;
+}
+
+.img_muestra > div {
+	color: #FFFFFF;
+	display: inline-block;
+	font-size: 1em;
+	margin-top: 1%;
+	margin-bottom: 3%;
+	text-align: center;
+}
+
+
+
+
+
+
+/* -------- PORTADA -------------------------------------- */
+
+.portada {
+	border: 1px solid;
+	font-family: arial;
+	height: 80%;
+	left: 10%;
+	position: absolute;
+	text-align: center;
+	top: 10%;
+	width: 80%;
+	background-color: #FFFFFF;
+}
+
+.portada img {
+	margin: 2% 10%;
+	width: 16%;
+}
+
+.portada h3 {
+	font-size: 1em;
+	font-weight: 100;
+	margin-top: 3%;
+}
+
+.portada hr {
+	border: 0 none;
+	border-top: 1px solid #000;
+	margin: 5% 3% 3%;
+}
+
+.portada h1 {
+	font-size: 1.7em;
+	font-weight: 100;
+}
+
+.portada h2 {
+	font-size: 1.3em;
+	font-weight: 100;
+	margin-top: 4%;
+}
+
+.portada .autor, .portada .tutor {
+	display: block;
+	position: absolute;
+	right: 3%;
+}
+
+.portada .tutor {
+	bottom: 4%;
+}
+
+.portada .autor {
+	bottom: 11%;
+}
+
+/* -------- --- -------------------------------------- */
