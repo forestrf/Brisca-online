@@ -13,9 +13,9 @@
 		<div id="contenedor_vscpu">
 			<div id="mensajeInicio" class="mensajeInicio">
 				Elije el número de oponentes:<br>
-				<div class="ico" onclick="mostrarDificultad(2);"><img src="/img/iconos/1.png"></div>
-				<div class="ico" onclick="mostrarDificultad(3);"><img src="/img/iconos/2.png"></div>
-				<div class="ico" onclick="mostrarDificultad(4);"><img src="/img/iconos/3.png"></div>
+				<div class="ico" onclick="mostrarDificultad(2);"><img src="img/iconos/1.png"></div>
+				<div class="ico" onclick="mostrarDificultad(3);"><img src="img/iconos/2.png"></div>
+				<div class="ico" onclick="mostrarDificultad(4);"><img src="img/iconos/3.png"></div>
 			</div>
 			<div id="mensajeInicio2" class="mensajeInicio" style="display:none">
 			</div>
@@ -100,17 +100,6 @@
 		
 		
 		<script type="text/javascript">
-		
-			
-		
-			/*window.onresize=function(){
-				var height = window.innerHeight;
-				var mesa = document.getElementById('mesa');
-				var chat = document.getElementById('chat');
-				mesa.style.height = height+"px";
-				mesa.style.width = height+"px";
-				chat.style.width = (window.innerWidth - height)+"px";
-			};*/
 			
 			
 			
@@ -231,20 +220,6 @@
 				}
 				
 				fin_mensaje(mensaje, misPuntos);
-				
-				ajax = new XMLHttpRequest();
-				var url = "vscpuguardador.php";
-				var params = "puntuacion="+misPuntos+"&victoria=" + ({"-1":"no","1":"si"})[mensaje];
-				ajax.open("POST", url, true);
-				ajax.setRequestHeader("Content-type", "application/x-www-form-urlencoded");
-				ajax.onreadystatechange = function(){
-					if(ajax.readyState == 4){
-						if(ajax.status == 200){
-							//alert('Tu puntuación se ha enviado al servidor.');
-						}
-					}
-				};
-				ajax.send(params);
 			}
 			
 			
@@ -261,9 +236,9 @@
 				document.getElementById('mensajeInicio').style.display = 'none';
 				document.getElementById('mensajeInicio2').style.display = '';
 				document.getElementById('mensajeInicio2').innerHTML = 'Elije la dificultad:<br>'+
-				'<div class="ico" onclick="iniciarPartidaBrisca_VSCPU('+nOponentes+',50)"><img src="/img/iconos/'+(nOponentes-1)+'v.png">fácil</div> '+
-				'<div class="ico" onclick="iniciarPartidaBrisca_VSCPU('+nOponentes+',20)"><img src="/img/iconos/'+(nOponentes-1)+'a.png">medio</div> '+
-				'<div class="ico" onclick="iniciarPartidaBrisca_VSCPU('+nOponentes+',0)"><img src="/img/iconos/'+(nOponentes-1)+'r.png">difícil</div> ';
+				'<div class="ico" onclick="iniciarPartidaBrisca_VSCPU('+nOponentes+',50)"><img src="img/iconos/'+(nOponentes-1)+'v.png">fácil</div> '+
+				'<div class="ico" onclick="iniciarPartidaBrisca_VSCPU('+nOponentes+',20)"><img src="img/iconos/'+(nOponentes-1)+'a.png">medio</div> '+
+				'<div class="ico" onclick="iniciarPartidaBrisca_VSCPU('+nOponentes+',0)"><img src="img/iconos/'+(nOponentes-1)+'r.png">difícil</div> ';
 			}
 
 		</script>

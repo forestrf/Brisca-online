@@ -117,10 +117,10 @@ function huecoLibreMesa(){
 
 function moverCarta(carta, donde){
 	if(donde.indexOf("P1")!==-1 || donde.indexOf("MC")!==-1 || donde.indexOf("C0")!==-1){
-		document.getElementById('carta_'+carta).src = "/img/cartas/"+carta+".jpg";
+		document.getElementById('carta_'+carta).src = "img/cartas/"+carta+".jpg";
 	}
 	else{
-		document.getElementById('carta_'+carta).src = "/img/cartas/back2.jpg";
+		document.getElementById('carta_'+carta).src = "img/cartas/back2.jpg";
 	}
 	if(donde.indexOf("P")!==-1 || donde.indexOf("MC")!==-1 || donde.indexOf("C0")!==-1){
 		if(donde.indexOf("MC")!==-1 && donde.indexOf("0",2)===-1){
