@@ -1,0 +1,175 @@
+#contenedor {
+	display: table;
+	width: 100%;
+	height: 100%;
+	position: absolute;
+}
+
+#mesa {
+	background-image: url("/img/fondos/2.jpg");
+	background-repeat: repeat;
+	height: 100%;
+	width: 70%;
+	position: absolute;
+	top: 0;
+	right: 0;
+	display: table-cell;
+	overflow: hidden;
+}
+
+
+
+/*Posición de los jugadores*/
+/*Hacerlo con responsive*/
+#posiciones *{
+	position:absolute;
+	/*width:10px;
+	height:10px;
+	background-color: #FFF;*/
+	color: transparent;
+	font-size: 0px;
+}
+
+#posiciones .nombre_puntos{
+	color: #FFFFFF;
+	font-size: 16px;
+	position: relative;
+}
+
+.P1C1,.P1C2,.P1C3{top:90%}
+.P3C1,.P3C2,.P3C3{top:10%}
+.P1C1,.P3C1{left:30%}
+.P1C2,.P3C2{left:50%}
+.P1C3,.P3C3{left:70%}
+.P1C0{top:120%;left:50%}
+.P3C0{top:-20%;left:50%}
+
+.P2C1,.P2C2,.P2C3{left:10%}
+.P4C1,.P4C2,.P4C3{left:90%}
+.P2C1,.P4C1{top:30%}
+.P2C2,.P4C2{top:50%}
+.P2C3,.P4C3{top:70%}
+.P2C0{top:50%;left:-20%}
+.P4C0{top:50%;left:120%}
+
+
+
+.MC0,.MM{top:35%}
+.MC0{left:70%}
+.MM{left:30%}
+.MC1,.MC2,.MC3,.MC4{top:65%}
+.MC1{left:30%}
+.MC2{left:43.5%}
+.MC3{left:56.5%}
+.MC4{left:70%}
+
+
+#P1N,#P2N,#P3N,#P4N{color:#EEE;background-color:#000;background-color:rgba(0, 0, 0, 0.7);border-radius:7px;font-size:16px;padding:2%;display:none;}
+#P1N{
+	border-radius:7px 7px 0 0;
+	height:5%;
+	right:5%;
+	bottom:0;
+}
+#P2N{
+	border-radius:0 7px 7px 0;
+	left:0;
+	width:10%;
+	bottom:5%;
+	text-align:right;
+}
+#P3N{
+	border-radius:0 0 7px 7px;
+	height:5%;
+	left:5%;
+	top:0;
+}
+#P4N{
+	border-radius:7px 0 0 7px;
+	right:0;
+	width:10%;
+	top:5%;
+}
+
+
+
+
+
+
+.carta{
+	border-radius: 7px;
+	box-shadow: 0 0 5px #000000;
+	-webkit-box-shadow: none;
+	position: absolute;
+	-webkit-transition: top 1s ease, left 1s ease, -webkit-transform 1s ease;
+	-moz-transition: top 1s ease, left 1s ease, -moz-transform 1s ease;
+	-ms-transition: top 1s ease, left 1s ease, -ms-transform 1s ease;
+	-o-transition: top 1s ease, left 1s ease, -o-transform 1s ease;
+	transition: top 1s ease, left 1s ease, transform 1s ease;
+}
+
+.carta.sintransition{
+	-webkit-transition: none !important;
+	-moz-transition: none !important;
+	-ms-transition: none !important;
+	-o-transition: none !important;
+	transition: none !important;
+}
+
+.puntuacion{
+	background-color: #E0E0E0;
+	border-radius: 5px;
+	color: #000000;
+	line-height: 20px;
+	padding: 0 20px;
+	position: absolute;
+	right: 0;
+	top: -30px;
+}
+
+
+
+#mensaje_fin{
+	background-color: rgba(0, 0, 0, 0.69);
+	border: 10px solid #EEEEEE;
+	border-radius: 40px;
+	box-shadow: 0 0 50px #000000;
+	color: #FFFFFF;
+	height: 30%;
+	margin: auto;
+	padding: 20px 50px;
+	position: relative;
+	text-align: center;
+	top: 30%;
+	width: 40%;
+	z-index: 500;
+	overflow: hidden;
+	-webkit-transition: all 1s ease;
+	-moz-transition: all 1s ease;
+	-ms-transition: all 1s ease;
+	-o-transition: all 1s ease;
+	transition: all 1s ease;
+}
+#mensaje_fin.off{
+	height: 0;
+	width: 0;
+	opacity: 0;
+}
+
+#mensaje_fin .boton{
+	background-color: #FFFFFF;
+	color: #000000;
+	display: inline-block;
+	padding: 5px 15px;
+	cursor: pointer;
+	-webkit-transition: all .5s ease;
+	-moz-transition: all .5s ease;
+	-ms-transition: all .5s ease;
+	-o-transition: all .5s ease;
+	transition: all .5s ease;
+	margin: 5px;
+	text-decoration: none;
+}
+#mensaje_fin .boton:hover{
+	box-shadow: 0 0 10px #FFFFFF;
+}
